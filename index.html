@@ -5,16 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Optics Playground — Refraction & Snell's Law</title>
 
-<!--
-PLAUSIBLE ANALYTICS SETUP
-=========================
-1. Publish this site on GitHub Pages first.
-2. Add the GitHub Pages hostname to Plausible.
-3. Plausible will give you a site-specific tracking snippet.
-4. Paste that complete snippet immediately BELOW this comment.
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VB4PLZGGJV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-It currently looks similar to:
-<script async src="https://plausible.io/js/pa-XXXXX.js"></script>
+  gtag('config', 'G-VB4PLZGGJV');
+</script>
 <script>
   window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},
   plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -87,6 +86,14 @@ The helper below lets interaction events queue safely before Plausible loads.
   .muted{color:var(--muted)}
   .analytics-note{margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
   .wave-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}
+  .wave-schematic{
+    margin-top:12px;border:1px solid var(--border);border-radius:12px;
+    background:#fbfcff;padding:10px;overflow:hidden
+  }
+  .wave-schematic svg{display:block;width:100%;height:auto}
+  .wave-schematic-note{
+    margin-top:8px;font-size:13px;color:var(--muted);line-height:1.45
+  }
   .wave-canvas-wrap{
     margin-top:12px;border:1px solid var(--border);border-radius:12px;
     background:#fff;overflow:hidden
@@ -140,6 +147,75 @@ The helper below lets interaction events queue safely before Plausible loads.
           <div id="waveRegimeBadge" class="badge">Wave optics visible</div>
         </div>
 
+        <div class="wave-schematic">
+          <svg viewBox="0 0 980 280" role="img" aria-label="Corrected schematic of the double-slit experiment. A plane wave illuminates two slits. In the geometrical-optics limit, two straight parallel rays pass through the two slits. In wave optics, the two apertures diffract and their fields overlap on the far screen, producing interference fringes.">
+            <defs>
+              <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L10,5 L0,10 z" fill="#315efb"></path>
+              </marker>
+              <marker id="arrowDark" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L10,5 L0,10 z" fill="#344054"></path>
+              </marker>
+              <marker id="arrowRay" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L10,5 L0,10 z" fill="#d64545"></path>
+              </marker>
+            </defs>
+
+            <rect x="0" y="0" width="980" height="280" fill="#fbfcff"></rect>
+
+            <!-- incident plane wave / beam -->
+            <line x1="60" y1="140" x2="290" y2="140" stroke="#315efb" stroke-width="6" marker-end="url(#arrowBlue)"></line>
+            <text x="88" y="112" font-size="20" fill="#172033" font-weight="700">incident light</text>
+            <text x="94" y="166" font-size="18" fill="#667085">wavelength λ</text>
+
+            <!-- double-slit barrier -->
+            <rect x="320" y="35" width="28" height="210" fill="#667085" rx="4"></rect>
+            <rect x="320" y="82" width="28" height="22" fill="#ffffff"></rect>
+            <rect x="320" y="176" width="28" height="22" fill="#ffffff"></rect>
+            <text x="282" y="27" font-size="20" fill="#172033" font-weight="700">double slit</text>
+
+            <!-- dimensions -->
+            <line x1="375" y1="82" x2="375" y2="104" stroke="#344054" stroke-width="2" marker-start="url(#arrowDark)" marker-end="url(#arrowDark)"></line>
+            <text x="388" y="98" font-size="18" fill="#344054">slit width a</text>
+
+            <line x1="426" y1="93" x2="426" y2="187" stroke="#344054" stroke-width="2" marker-start="url(#arrowDark)" marker-end="url(#arrowDark)"></line>
+            <text x="440" y="145" font-size="18" fill="#344054">separation d</text>
+
+            <!-- TWO geometrical rays / narrow beams -->
+            <line x1="348" y1="93" x2="900" y2="93" stroke="#d64545" stroke-width="4" marker-end="url(#arrowRay)"></line>
+            <line x1="348" y1="187" x2="900" y2="187" stroke="#d64545" stroke-width="4" marker-end="url(#arrowRay)"></line>
+            <text x="535" y="75" font-size="18" fill="#d64545" font-weight="700">ray-optics limit: two straight rays / beams</text>
+
+            <!-- wave-optics spreading, shown faintly -->
+            <path d="M348 93 Q560 40 900 52" fill="none" stroke="#315efb" stroke-width="2.5" opacity="0.35"></path>
+            <path d="M348 93 Q560 140 900 228" fill="none" stroke="#315efb" stroke-width="2.5" opacity="0.35"></path>
+            <path d="M348 187 Q560 240 900 228" fill="none" stroke="#315efb" stroke-width="2.5" opacity="0.35"></path>
+            <path d="M348 187 Q560 140 900 52" fill="none" stroke="#315efb" stroke-width="2.5" opacity="0.35"></path>
+            <text x="545" y="258" font-size="17" fill="#315efb">wave optics: diffracted fields overlap and interfere</text>
+
+            <!-- screen -->
+            <rect x="914" y="28" width="16" height="224" fill="#d0d5dd" rx="4"></rect>
+            <text x="875" y="23" font-size="20" fill="#172033" font-weight="700">screen</text>
+
+            <!-- illustrative fringe trace on screen -->
+            <path d="M922 43
+                     C935 49, 935 59, 922 65
+                     C909 71, 909 81, 922 87
+                     C935 93, 935 103, 922 109
+                     C909 115, 909 125, 922 131
+                     C935 137, 935 147, 922 153
+                     C909 159, 909 169, 922 175
+                     C935 181, 935 191, 922 197
+                     C909 203, 909 213, 922 219
+                     C935 225, 935 235, 922 241"
+                  fill="none" stroke="#315efb" stroke-width="3"></path>
+          </svg>
+
+          <div class="wave-schematic-note">
+            <b>Two complementary pictures:</b> in geometrical optics, light passing through the two slits continues as <b>two straight rays/beams</b>. In wave optics, each finite slit diffracts; the two diffracted fields overlap on the screen and interfere. The graph below shows the <b>far-field angular intensity</b>, where the two contributions share essentially the same forward direction as the wavelength becomes very small.
+          </div>
+        </div>
+
         <div class="wave-canvas-wrap">
           <canvas id="waveCanvas" width="1000" height="470" role="img" aria-label="Double-slit angular intensity pattern. The diffraction envelope and interference fringes narrow as wavelength is reduced."></canvas>
         </div>
@@ -182,7 +258,7 @@ The helper below lets interaction events queue safely before Plausible loads.
         <section class="card" style="margin-top:18px">
           <strong>What the graph shows</strong>
           <p class="muted" style="line-height:1.5">
-            The coloured curve is the Fraunhofer double-slit intensity. The dashed centre line is the straight-through direction predicted by geometrical optics.
+            The coloured curve is the Fraunhofer double-slit intensity. In the geometrical-optics picture there are two straight transmitted rays/beams, one through each slit. In the far-field angular plot they correspond to the same forward angle, θ = 0.
           </p>
           <div class="equation" style="font-size:14px;line-height:1.6">
             I(θ) ∝ sinc²(πa sinθ/λ)<br>× cos²(πd sinθ/λ)
@@ -346,7 +422,7 @@ The helper below lets interaction events queue safely before Plausible loads.
       Dr Joe Chen. Centre for Photonics, Department of Physics, University of Bath. Created by ChatGPT GPT-5.6 Sol on 26/09/2026.
     </div>
     <div class="analytics-note">
-      When analytics is enabled, anonymous usage statistics can include page visits, approximate country and interactions with the activities. No student name, email address or student ID is requested by this site.
+      This site uses Google Analytics to understand usage of the teaching activities, including page visits, approximate country and selected interactions. No student name, email address or student ID is requested by this site.
     </div>
   </footer>
 </div>
@@ -356,12 +432,12 @@ The helper below lets interaction events queue safely before Plausible loads.
   const q = s => document.querySelector(s);
   const qa = s => Array.from(document.querySelectorAll(s));
 
-  // ---------- Analytics ----------
+  // ---------- Google Analytics 4 ----------
   // These events intentionally avoid student-identifying information.
-  // We do NOT send every slider movement, to avoid noisy/expensive analytics.
-  function track(eventName) {
-    if (typeof window.plausible === 'function') {
-      window.plausible(eventName);
+  // We do not send every slider movement.
+  function track(eventName, params = {}) {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', eventName, params);
     }
   }
 
@@ -369,15 +445,7 @@ The helper below lets interaction events queue safely before Plausible loads.
   function trackTabOnce(tabName) {
     if (openedTabs.has(tabName)) return;
     openedTabs.add(tabName);
-    const labels = {
-      'wave-ray': 'Wave to Ray',
-      refraction: 'Refraction',
-      interference: 'Interference',
-      diffraction: 'Diffraction',
-      polarisation: 'Polarisation',
-      quantum: 'Quantum Optics'
-    };
-    track('Tab Opened - ' + labels[tabName]);
+    track('tab_opened', { activity: tabName });
   }
 
   let simulationStartedTracked = false;
@@ -387,7 +455,7 @@ The helper below lets interaction events queue safely before Plausible loads.
   function markSimulationStarted() {
     if (simulationStartedTracked) return;
     simulationStartedTracked = true;
-    track('Simulation Started - Refraction');
+    track('simulation_started', { activity: 'refraction' });
   }
 
   // ---------- Tabs ----------
@@ -439,7 +507,7 @@ The helper below lets interaction events queue safely before Plausible loads.
   function markWaveSimulationStarted() {
     if (waveSimulationStartedTracked) return;
     waveSimulationStartedTracked = true;
-    track('Simulation Started - Wave to Ray');
+    track('simulation_started', { activity: 'wave_to_ray' });
   }
 
   function formatLengthMetres(m) {
@@ -510,7 +578,7 @@ The helper below lets interaction events queue safely before Plausible loads.
       statusHTML = `Both the fringe spacing and the main diffraction angular scale are smaller than your ${resolutionDeg.toFixed(2)}° resolution. The detailed wave structure is still there mathematically, but at this scale <b>the geometrical ray direction is a useful approximation.</b>`;
       if (waveSimulationStartedTracked && !rayLimitTracked) {
         rayLimitTracked = true;
-        track('Ray Limit Explored - Wave to Ray');
+        track('ray_limit_explored', { activity: 'wave_to_ray' });
       }
     }
 
@@ -723,7 +791,7 @@ The helper below lets interaction events queue safely before Plausible loads.
 
       if (simulationStartedTracked && !tirTracked) {
         tirTracked = true;
-        track('TIR Reached - Refraction');
+        track('tir_reached', { activity: 'refraction' });
       }
     } else {
       q('#refractedRay').style.display='';
@@ -758,7 +826,7 @@ The helper below lets interaction events queue safely before Plausible loads.
       q('#challengeMessage').innerHTML='<b>Nice!</b> At the critical angle, θ₂ ≈ 90° and the transmitted ray skims the interface.';
       if (simulationStartedTracked && !criticalTracked) {
         criticalTracked = true;
-        track('Critical Angle Reached - Refraction');
+        track('critical_angle_reached', { activity: 'refraction' });
       }
     } else if(tir){
       q('#challengeMessage').textContent='You went past the critical angle — now you have total internal reflection.';
@@ -801,17 +869,17 @@ The helper below lets interaction events queue safely before Plausible loads.
   });
 
   const presets={
-    'air-glass':{values:[1.00,1.50,40],event:'Preset - Air to Glass'},
-    'water-air':{values:[1.33,1.00,40],event:'Preset - Water to Air'},
-    'glass-air':{values:[1.50,1.00,35],event:'Preset - Glass to Air'},
-    'diamond-air':{values:[2.42,1.00,30],event:'Preset - Diamond to Air'}
+    'air-glass':{values:[1.00,1.50,40],event:'air_to_glass'},
+    'water-air':{values:[1.33,1.00,40],event:'water_to_air'},
+    'glass-air':{values:[1.50,1.00,35],event:'glass_to_air'},
+    'diamond-air':{values:[2.42,1.00,30],event:'diamond_to_air'}
   };
 
   qa('[data-preset]').forEach(b=>b.addEventListener('click',()=>{
     markSimulationStarted();
     const preset=presets[b.dataset.preset];
     if(!preset) return;
-    track(preset.event);
+    track('preset_used', { activity: 'refraction', preset: preset.event });
     setValues(...preset.values);
   }));
 

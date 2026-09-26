@@ -14,21 +14,6 @@
 
   gtag('config', 'G-VB4PLZGGJV');
 </script>
-<script>
-  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},
-  plausible.init=plausible.init||function(i){plausible.o=i||{}};
-  plausible.init();
-</script>
-
-Do NOT copy the example above literally: use the exact snippet Plausible gives you.
-The helper below lets interaction events queue safely before Plausible loads.
--->
-<script>
-  window.plausible = window.plausible || function () {
-    (plausible.q = plausible.q || []).push(arguments);
-  };
-</script>
-
 <style>
   :root{
     --bg:#f6f7fb; --card:#ffffff; --text:#172033; --muted:#667085;
@@ -108,11 +93,96 @@ The helper below lets interaction events queue safely before Plausible loads.
     border-radius:8px;padding:11px 12px;line-height:1.5
   }
   .formula-note{margin-top:10px;font-size:14px;color:var(--muted);line-height:1.5}
+
+  .wave-playground{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 320px;
+    gap:18px;
+    align-items:start;
+  }
+  .wave-visuals{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 250px;
+    gap:0;
+    align-items:stretch;
+  }
+  .wave-left-panel{
+    border:1px solid var(--border);
+    border-right:none;
+    border-radius:14px 0 0 14px;
+    background:#fbfcff;
+    overflow:hidden;
+  }
+  .wave-right-panel{
+    border:1px solid var(--border);
+    border-radius:0 14px 14px 0;
+    background:#ffffff;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .wave-left-panel svg{display:block;width:100%;height:auto}
+  .wave-schematic-note{
+    padding:10px 12px 12px;
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.45;
+    border-top:1px solid var(--border);
+    background:#fbfcff;
+  }
+  .wave-screen-header{
+    padding:10px 12px;
+    border-bottom:1px solid var(--border);
+    background:#f9fbff;
+    font-weight:700;
+    color:var(--text);
+  }
+  .wave-screen-sub{
+    font-size:12px;
+    color:var(--muted);
+    font-weight:500;
+    margin-top:2px;
+  }
+  .wave-canvas-wrap{
+    margin-top:0;
+    border:none;
+    border-radius:0;
+    background:#fff;
+    overflow:hidden;
+    flex:1;
+  }
+  #waveCanvas{
+    display:block;
+    width:100%;
+    height:auto;
+    background:#fff;
+  }
+  .wave-screen-note{
+    padding:10px 12px 12px;
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.45;
+    border-top:1px solid var(--border);
+    background:#fcfcfd;
+  }
+  .wave-right .card + .card{margin-top:18px}
+
   footer{margin-top:18px;color:var(--muted);font-size:13px;line-height:1.45}
+  @media (max-width:980px){
+    .wave-playground{grid-template-columns:1fr}
+  }
   @media (max-width:820px){
-    .grid,.below,.wave-grid{grid-template-columns:1fr}
+    .grid,.below,.wave-grid,.wave-visuals{grid-template-columns:1fr}
     .stats{grid-template-columns:1fr 1fr 1fr}
     .wave-metrics{grid-template-columns:1fr 1fr}
+    .wave-left-panel{
+      border-right:1px solid var(--border);
+      border-radius:14px 14px 0 0;
+    }
+    .wave-right-panel{
+      border-top:none;
+      border-radius:0 0 14px 14px;
+    }
   }
   @media (max-width:480px){
     body{padding:12px}
@@ -136,157 +206,143 @@ The helper below lets interaction events queue safely before Plausible loads.
     <button class="tab" id="tab-quantum" role="tab" aria-selected="false" aria-controls="panel-quantum" data-tab="quantum">Quantum Optics</button>
   </nav>
 
+  
+  
   <section id="panel-wave-ray" class="tab-panel" role="tabpanel" aria-labelledby="tab-wave-ray">
-    <div class="wave-grid">
-      <section class="card">
-        <div class="row">
-          <div>
-            <strong>From wave optics to ray optics</strong>
-            <div class="muted">A double-slit experiment viewed in angle. Make the wavelength shorter and watch the wave structure collapse toward the geometrical ray direction.</div>
-          </div>
-          <div id="waveRegimeBadge" class="badge">Wave optics visible</div>
+    <section class="card">
+      <div class="row">
+        <div>
+          <strong>From wave optics to ray optics</strong>
+          <div class="muted">A single-slit experiment at fixed wavelength. Make the slit wider and watch diffraction shrink toward the straight-through ray-optics limit.</div>
         </div>
+        <div id="waveRegimeBadge" class="badge">Wave optics visible</div>
+      </div>
 
-        <div class="wave-schematic">
-          <svg viewBox="0 0 980 280" role="img" aria-label="Corrected schematic of the double-slit experiment. A plane wave illuminates two slits. In the geometrical-optics limit, two straight parallel rays pass through the two slits. In wave optics, the two apertures diffract and their fields overlap on the far screen, producing interference fringes.">
-            <defs>
-              <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-                <path d="M0,0 L10,5 L0,10 z" fill="#315efb"></path>
-              </marker>
-              <marker id="arrowDark" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-                <path d="M0,0 L10,5 L0,10 z" fill="#344054"></path>
-              </marker>
-              <marker id="arrowRay" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-                <path d="M0,0 L10,5 L0,10 z" fill="#d64545"></path>
-              </marker>
-            </defs>
+      <div class="wave-playground" style="margin-top:14px">
+        <div class="wave-visuals">
+          <div class="wave-left-panel">
+            <svg id="singleSlitSchematic" viewBox="0 0 520 500" role="img" aria-label="Schematic of a single-slit experiment. Light of wavelength lambda passes through a slit of width a and travels a distance L to a screen. The simulation panel immediately to the right represents that screen.">
+              <defs>
+                <marker id="arrowBlueSingle" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L10,5 L0,10 z" fill="#315efb"></path>
+                </marker>
+                <marker id="arrowDimSingle" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto-start-reverse" markerUnits="strokeWidth">
+                  <path d="M2,1 L10,6 L2,11" fill="none" stroke="#344054" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </marker>
+                <marker id="arrowRaySingle" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L10,5 L0,10 z" fill="#d64545"></path>
+                </marker>
+              </defs>
 
-            <rect x="0" y="0" width="980" height="280" fill="#fbfcff"></rect>
+              <rect x="0" y="0" width="520" height="500" fill="#fbfcff"></rect>
 
-            <!-- incident plane wave / beam -->
-            <line x1="60" y1="140" x2="290" y2="140" stroke="#315efb" stroke-width="6" marker-end="url(#arrowBlue)"></line>
-            <text x="88" y="112" font-size="20" fill="#172033" font-weight="700">incident light</text>
-            <text x="94" y="166" font-size="18" fill="#667085">wavelength λ</text>
+              <text x="34" y="88" font-size="18" fill="#172033" font-weight="700">incident light</text>
+              <line x1="34" y1="250" x2="174" y2="250" stroke="#315efb" stroke-width="6" marker-end="url(#arrowBlueSingle)"></line>
+              <text x="34" y="292" font-size="16" fill="#667085">λ = 650 nm (fixed)</text>
 
-            <!-- double-slit barrier -->
-            <rect x="320" y="35" width="28" height="210" fill="#667085" rx="4"></rect>
-            <rect x="320" y="82" width="28" height="22" fill="#ffffff"></rect>
-            <rect x="320" y="176" width="28" height="22" fill="#ffffff"></rect>
-            <text x="282" y="27" font-size="20" fill="#172033" font-weight="700">double slit</text>
+              <rect x="210" y="74" width="30" height="352" fill="#667085" rx="4"></rect>
+              <rect id="schematicSlitOpening" x="210" y="214" width="30" height="72" fill="#ffffff"></rect>
+              <text x="180" y="48" font-size="22" fill="#172033" font-weight="700">single slit</text>
 
-            <!-- dimensions -->
-            <line x1="375" y1="82" x2="375" y2="104" stroke="#344054" stroke-width="2" marker-start="url(#arrowDark)" marker-end="url(#arrowDark)"></line>
-            <text x="388" y="98" font-size="18" fill="#344054">slit width a</text>
+              <line id="slitWidthDim" x1="276" y1="214" x2="276" y2="286" stroke="#344054" stroke-width="2.2" marker-start="url(#arrowDimSingle)" marker-end="url(#arrowDimSingle)"></line>
+              <text x="292" y="220" font-size="17" fill="#344054">slit width a</text>
+              <text id="schematicSlitValue" x="292" y="244" font-size="16" fill="#667085">50 μm</text>
 
-            <line x1="426" y1="93" x2="426" y2="187" stroke="#344054" stroke-width="2" marker-start="url(#arrowDark)" marker-end="url(#arrowDark)"></line>
-            <text x="440" y="145" font-size="18" fill="#344054">separation d</text>
+              <line id="screenDistanceDim" x1="242" y1="372" x2="500" y2="372" stroke="#344054" stroke-width="2" marker-start="url(#arrowDimSingle)" marker-end="url(#arrowDimSingle)"></line>
+              <text x="308" y="350" font-size="17" fill="#344054">screen distance L</text>
 
-            <!-- TWO geometrical rays / narrow beams -->
-            <line x1="348" y1="93" x2="900" y2="93" stroke="#d64545" stroke-width="4" marker-end="url(#arrowRay)"></line>
-            <line x1="348" y1="187" x2="900" y2="187" stroke="#d64545" stroke-width="4" marker-end="url(#arrowRay)"></line>
-            <text x="535" y="75" font-size="18" fill="#d64545" font-weight="700">ray-optics limit: two straight rays / beams</text>
+              <line x1="240" y1="250" x2="502" y2="250" stroke="#d64545" stroke-width="4.2" marker-end="url(#arrowRaySingle)"></line>
+              <text x="312" y="232" font-size="17" fill="#d64545" font-weight="700">ray-optics beam</text>
 
-            <!-- wave-optics spreading, shown faintly -->
-            <path d="M348 93 Q560 40 900 52" fill="none" stroke="#315efb" stroke-width="2.5" opacity="0.35"></path>
-            <path d="M348 93 Q560 140 900 228" fill="none" stroke="#315efb" stroke-width="2.5" opacity="0.35"></path>
-            <path d="M348 187 Q560 240 900 228" fill="none" stroke="#315efb" stroke-width="2.5" opacity="0.35"></path>
-            <path d="M348 187 Q560 140 900 52" fill="none" stroke="#315efb" stroke-width="2.5" opacity="0.35"></path>
-            <text x="545" y="258" font-size="17" fill="#315efb">wave optics: diffracted fields overlap and interfere</text>
+              <line x1="510" y1="60" x2="510" y2="440" stroke="#98a2b3" stroke-width="2" stroke-dasharray="8 7"></line>
+              <text x="420" y="42" font-size="20" fill="#172033" font-weight="700">screen →</text>
+              <text x="294" y="468" font-size="15" fill="#667085">simulation panel replaces the screen</text>
+            </svg>
+            <div class="wave-schematic-note">
+              Light passes through a <b>single slit</b> of width <b>a</b> and lands on a screen at distance <b>L</b>. The simulation panel is that screen: the bright vertical strip at the left is the screen itself, and the curve shows intensity as a function of <b>screen position</b>. The slit opening in the schematic changes live with the slit-width slider.
+            </div>
+          </div>
 
-            <!-- screen -->
-            <rect x="914" y="28" width="16" height="224" fill="#d0d5dd" rx="4"></rect>
-            <text x="875" y="23" font-size="20" fill="#172033" font-weight="700">screen</text>
-
-            <!-- illustrative fringe trace on screen -->
-            <path d="M922 43
-                     C935 49, 935 59, 922 65
-                     C909 71, 909 81, 922 87
-                     C935 93, 935 103, 922 109
-                     C909 115, 909 125, 922 131
-                     C935 137, 935 147, 922 153
-                     C909 159, 909 169, 922 175
-                     C935 181, 935 191, 922 197
-                     C909 203, 909 213, 922 219
-                     C935 225, 935 235, 922 241"
-                  fill="none" stroke="#315efb" stroke-width="3"></path>
-          </svg>
-
-          <div class="wave-schematic-note">
-            <b>Two complementary pictures:</b> in geometrical optics, light passing through the two slits continues as <b>two straight rays/beams</b>. In wave optics, each finite slit diffracts; the two diffracted fields overlap on the screen and interfere. The graph below shows the <b>far-field angular intensity</b>, where the two contributions share essentially the same forward direction as the wavelength becomes very small.
+          <div class="wave-right-panel">
+            <div class="wave-screen-header">
+              Screen intensity pattern
+              <div class="wave-screen-sub">single-slit diffraction in <b>space</b> (screen position)</div>
+            </div>
+            <div class="wave-canvas-wrap">
+              <canvas id="waveCanvas" width="330" height="500" role="img" aria-label="Single-slit diffraction intensity on a screen plotted against vertical screen position."></canvas>
+            </div>
+            <div class="wave-screen-note">
+              The pale horizontal band marks one screen-resolution bin <b>Δx</b>. When the diffraction width becomes much smaller than <b>Δx</b>, the detailed wave pattern is no longer resolved and the straight-through ray picture becomes useful.
+            </div>
           </div>
         </div>
 
-        <div class="wave-canvas-wrap">
-          <canvas id="waveCanvas" width="1000" height="470" role="img" aria-label="Double-slit angular intensity pattern. The diffraction envelope and interference fringes narrow as wavelength is reduced."></canvas>
-        </div>
+        <aside class="wave-right">
+          <section class="card">
+            <strong>Tuning knobs</strong>
 
-        <div class="wave-metrics">
-          <div class="wave-metric"><small>Wavelength λ</small><strong id="waveLambdaMetric">500 nm</strong></div>
-          <div class="wave-metric"><small>λ / slit width</small><strong id="waveRatioMetric">0.0250</strong></div>
-          <div class="wave-metric"><small>1st diffraction zero</small><strong id="waveDiffMetric">1.43°</strong></div>
-          <div class="wave-metric"><small>Fringe spacing at 1 m</small><strong id="waveFringeMetric">8.33 mm</strong></div>
-        </div>
+            <label>Fixed wavelength λ: <span id="wavelengthValue">650 nm</span></label>
+            <div class="equation" style="font-size:14px;margin-top:6px">red light</div>
 
-        <div id="waveStatus" class="wave-status" aria-live="polite">
-          The diffraction envelope and interference fringes are easily resolved, so wave optics is essential.
-        </div>
-      </section>
+            <label for="slitWidthRange">Slit width a: <span id="slitWidthValue">50 μm</span></label>
+            <input id="slitWidthRange" type="range" min="1" max="2000" step="1" value="50">
 
-      <aside>
-        <section class="card">
-          <strong>Controls</strong>
+            <label for="screenDistanceRange">Screen distance L: <span id="screenDistanceValue">1.00 m</span></label>
+            <input id="screenDistanceRange" type="range" min="0.2" max="3.0" step="0.05" value="1.00">
 
-          <label for="wavelengthRange">Wavelength λ: <span id="wavelengthValue">500 nm</span></label>
-          <input id="wavelengthRange" type="range" min="0" max="2.90309" step="0.005" value="2.69897">
-          <div class="muted" style="font-size:13px">Logarithmic slider: 1 nm → 800 nm</div>
+            <label for="resolutionRange">Screen resolution Δx: <span id="resolutionValue">0.20 mm</span></label>
+            <input id="resolutionRange" type="range" min="0.02" max="2.00" step="0.01" value="0.20">
 
-          <label for="slitWidthRange">Slit width a: <span id="slitWidthValue">20 μm</span></label>
-          <input id="slitWidthRange" type="range" min="5" max="80" step="1" value="20">
+            <div class="buttons">
+              <button id="strongDiffractionBtn">Strong diffraction</button>
+              <button id="rayLimitBtn" class="primary">Toward ray limit</button>
+            </div>
+          </section>
 
-          <label for="slitSepRange">Slit separation d: <span id="slitSepValue">60 μm</span></label>
-          <input id="slitSepRange" type="range" min="15" max="250" step="1" value="60">
+          <section class="card">
+            <strong>What the plot shows</strong>
+            <p class="muted" style="line-height:1.5">
+              The plot is the <b>single-slit diffraction pattern on the screen</b>. The vertical direction is screen position <b>x</b>, and the curve extending to the right shows the intensity at that position.
+            </p>
+            <div class="equation" style="font-size:14px;line-height:1.6">
+              I(x) ∝ sinc²(πax / λL)
+            </div>
+            <p class="formula-note">
+              The first minimum is at approximately <b>|x₁| ≈ Lλ / a</b>. So making the slit wider makes the diffraction pattern narrower.
+            </p>
+          </section>
+        </aside>
+      </div>
 
-          <label for="resolutionRange">Angular resolution: <span id="resolutionValue">0.10°</span></label>
-          <input id="resolutionRange" type="range" min="0.01" max="1" step="0.01" value="0.10">
+      <div class="wave-metrics">
+        <div class="wave-metric"><small>Wavelength λ</small><strong id="waveLambdaMetric">650 nm</strong></div>
+        <div class="wave-metric"><small>Width ratio a / λ</small><strong id="waveRatioMetric">76.9</strong></div>
+        <div class="wave-metric"><small>First minimum |x₁|</small><strong id="waveFirstZeroMetric">13.0 mm</strong></div>
+        <div class="wave-metric"><small>Central width 2|x₁|</small><strong id="waveWidthMetric">26.0 mm</strong></div>
+      </div>
 
-          <div class="buttons">
-            <button id="visibleWaveBtn">Visible light</button>
-            <button id="rayLimitBtn" class="primary">Toward ray limit</button>
-          </div>
-        </section>
-
-        <section class="card" style="margin-top:18px">
-          <strong>What the graph shows</strong>
-          <p class="muted" style="line-height:1.5">
-            The coloured curve is the Fraunhofer double-slit intensity. In the geometrical-optics picture there are two straight transmitted rays/beams, one through each slit. In the far-field angular plot they correspond to the same forward angle, θ = 0.
-          </p>
-          <div class="equation" style="font-size:14px;line-height:1.6">
-            I(θ) ∝ sinc²(πa sinθ/λ)<br>× cos²(πd sinθ/λ)
-          </div>
-          <p class="formula-note">
-            Ray optics is not different physics. It is a useful approximation when the wavelength-dependent structure is too small to matter at the scale or resolution of the experiment.
-          </p>
-        </section>
-      </aside>
-    </div>
+      <div id="waveStatus" class="wave-status" aria-live="polite">
+        The diffraction pattern is wide compared with the screen resolution, so wave optics is essential.
+      </div>
+    </section>
 
     <div class="below">
       <section class="card">
-        <strong>Two shrinking angular scales</strong>
+        <strong>Why the pattern shrinks</strong>
         <p class="muted" style="line-height:1.6">
-          Diffraction shrinks roughly as <b>λ/a</b>, while the double-slit fringe spacing shrinks roughly as <b>λ/d</b>. With the geometry fixed, both approach zero as λ → 0.
+          For a single slit, the first minimum occurs at approximately <b>|x₁| ≈ Lλ/a</b>. At fixed wavelength, increasing the slit width <b>a</b> makes the whole diffraction pattern narrower.
         </p>
       </section>
       <section class="card">
         <strong>Why this becomes “ray optics”</strong>
         <p class="muted" style="line-height:1.6">
-          If those angular features are much smaller than the resolution you care about, resolving the full wave pattern adds little useful information. The field then appears concentrated around the geometrical ray direction.
+          When the slit width is much larger than the wavelength, the diffraction width becomes tiny compared with the screen resolution <b>Δx</b> or the scale of interest on the screen. The wave is still there, but the straight-through beam is then a very good approximation.
         </p>
       </section>
     </div>
   </section>
 
-  <section id="panel-refraction" class="tab-panel" role="tabpanel" aria-labelledby="tab-refraction" hidden>
+  <section id="panel-refraction" class="tab-panel" role="tabpanel" aria-labelledby="tab-refraction" hidden> class="tab-panel" role="tabpanel" aria-labelledby="tab-refraction" hidden> class="tab-panel" role="tabpanel" aria-labelledby="tab-refraction" hidden>
     <div class="grid">
       <section class="card">
         <div class="row">
@@ -419,7 +475,7 @@ The helper below lets interaction events queue safely before Plausible loads.
 
   <footer>
     <div style="margin-bottom:6px">
-      Dr Joe Chen. Centre for Photonics, Department of Physics, University of Bath. Created by ChatGPT GPT-5.6 Sol on 26/09/2026.
+      Joe Chen. Centre for Photonics, Department of Physics, University of Bath. Created by ChatGPT GPT-5.6 Sol on 26/09/2026.
     </div>
     <div class="analytics-note">
       This site uses Google Analytics to understand usage of the teaching activities, including page visits, approximate country and selected interactions. No student name, email address or student ID is requested by this site.
@@ -493,12 +549,11 @@ The helper below lets interaction events queue safely before Plausible loads.
   const requestedTab = location.hash ? location.hash.slice(1) : 'wave-ray';
   showTab(validTabs.has(requestedTab) ? requestedTab : 'wave-ray', true);
 
-  // ---------- Waves -> Rays / double-slit simulation ----------
+  // ---------- Waves -> Rays / single-slit simulation ----------
   const waveCanvas = q('#waveCanvas');
   const waveCtx = waveCanvas.getContext('2d');
-  const wavelengthRange = q('#wavelengthRange');
   const slitWidthRange = q('#slitWidthRange');
-  const slitSepRange = q('#slitSepRange');
+  const screenDistanceRange = q('#screenDistanceRange');
   const resolutionRange = q('#resolutionRange');
 
   let waveSimulationStartedTracked = false;
@@ -512,70 +567,72 @@ The helper below lets interaction events queue safely before Plausible loads.
 
   function formatLengthMetres(m) {
     const mm = m * 1000;
-    if (mm >= 0.1) return mm.toFixed(mm >= 10 ? 1 : 2) + ' mm';
+    if (mm >= 10) return mm.toFixed(1) + ' mm';
+    if (mm >= 1) return mm.toFixed(2) + ' mm';
+    if (mm >= 0.1) return mm.toFixed(3) + ' mm';
     const um = m * 1e6;
-    if (um >= 0.1) return um.toFixed(2) + ' μm';
+    if (um >= 1) return um.toFixed(1) + ' μm';
     return (m * 1e9).toFixed(1) + ' nm';
   }
 
-  function niceLambda(nm) {
-    if (nm >= 100) return nm.toFixed(0) + ' nm';
-    if (nm >= 10) return nm.toFixed(1) + ' nm';
-    return nm.toFixed(2) + ' nm';
-  }
-
   function sinc(x) {
-    return Math.abs(x) < 1e-10 ? 1 : Math.sin(x) / x;
+    return Math.abs(x) < 1e-12 ? 1 : Math.sin(x) / x;
   }
 
   function updateWavePlayground() {
-    const lambdaNm = Math.pow(10, +wavelengthRange.value);
+    const lambdaNm = 650;
     const lambda = lambdaNm * 1e-9;
     const aUm = +slitWidthRange.value;
-    let dUm = +slitSepRange.value;
     const a = aUm * 1e-6;
+    const L = +screenDistanceRange.value;
+    const resolutionMm = +resolutionRange.value;
+    const resolution = resolutionMm * 1e-3;
 
-    // Keep the two slits physically distinct.
-    if (dUm <= aUm + 2) {
-      dUm = aUm + 3;
-      slitSepRange.value = Math.min(250, dUm);
-    }
-    const d = dUm * 1e-6;
-    const resolutionDeg = +resolutionRange.value;
-
-    q('#wavelengthValue').textContent = niceLambda(lambdaNm);
+    q('#wavelengthValue').textContent = lambdaNm.toFixed(0) + ' nm';
     q('#slitWidthValue').textContent = aUm.toFixed(0) + ' μm';
-    q('#slitSepValue').textContent = dUm.toFixed(0) + ' μm';
-    q('#resolutionValue').textContent = resolutionDeg.toFixed(2) + '°';
+    q('#screenDistanceValue').textContent = L.toFixed(2) + ' m';
+    q('#resolutionValue').textContent = resolutionMm.toFixed(2) + ' mm';
 
-    const ratio = lambda / a;
-    const diffArg = Math.min(1, lambda / a);
-    const diffZeroDeg = Math.asin(diffArg) * 180 / Math.PI;
-    const fringeAngularDeg = (lambda / d) * 180 / Math.PI;
-    const fringeSpacingAt1m = lambda / d; // small-angle x = L lambda/d, L = 1 m
+    // Update the schematic slit opening visually.
+    const slitOpening = q('#schematicSlitOpening');
+    const slitDim = q('#slitWidthDim');
+    const slitVal = q('#schematicSlitValue');
+    const minVisual = 16;
+    const maxVisual = 140;
+    const logMin = Math.log10(1);
+    const logMax = Math.log10(2000);
+    const t = (Math.log10(aUm) - logMin) / (logMax - logMin);
+    const visualHeight = minVisual + t * (maxVisual - minVisual);
+    const slitTop = 250 - visualHeight / 2;
+    const slitBottom = 250 + visualHeight / 2;
+    slitOpening.setAttribute('y', slitTop.toFixed(1));
+    slitOpening.setAttribute('height', visualHeight.toFixed(1));
+    slitDim.setAttribute('y1', slitTop.toFixed(1));
+    slitDim.setAttribute('y2', slitBottom.toFixed(1));
+    slitVal.textContent = aUm.toFixed(0) + ' μm';
 
-    q('#waveLambdaMetric').textContent = niceLambda(lambdaNm);
-    q('#waveRatioMetric').textContent = ratio < 0.001 ? ratio.toExponential(2) : ratio.toFixed(4);
-    q('#waveDiffMetric').textContent = diffZeroDeg < 0.01 ? diffZeroDeg.toFixed(4) + '°' :
-                                      diffZeroDeg < 0.1 ? diffZeroDeg.toFixed(3) + '°' :
-                                      diffZeroDeg.toFixed(2) + '°';
-    q('#waveFringeMetric').textContent = formatLengthMetres(fringeSpacingAt1m);
+    const widthRatio = a / lambda;
+    const x1 = L * lambda / a;
+    const centralWidth = 2 * x1;
 
-    const fringesResolved = fringeAngularDeg >= resolutionDeg;
-    const envelopeResolved = diffZeroDeg >= resolutionDeg;
+    q('#waveLambdaMetric').textContent = lambdaNm.toFixed(0) + ' nm';
+    q('#waveRatioMetric').textContent = widthRatio < 100 ? widthRatio.toFixed(1) : widthRatio.toFixed(0);
+    q('#waveFirstZeroMetric').textContent = formatLengthMetres(x1);
+    q('#waveWidthMetric').textContent = formatLengthMetres(centralWidth);
 
-    let statusHTML = '';
+    const widthVsRes = centralWidth / resolution;
     let badge = '';
+    let statusHTML = '';
 
-    if (fringesResolved && envelopeResolved) {
+    if (widthVsRes > 4) {
       badge = 'Wave optics visible';
-      statusHTML = `Your ${resolutionDeg.toFixed(2)}° angular resolution can resolve both the interference fringes (~${fringeAngularDeg.toFixed(3)}° apart) and the diffraction envelope. <b>Wave optics is essential.</b>`;
-    } else if (!fringesResolved && envelopeResolved) {
-      badge = 'Fringes unresolved';
-      statusHTML = `The interference fringes (~${fringeAngularDeg.toFixed(3)}° apart) are now finer than your ${resolutionDeg.toFixed(2)}° resolution, although the diffraction envelope is still visible. <b>You are entering a coarse-grained ray-optics regime.</b>`;
+      statusHTML = `The central diffraction feature is <b>${widthVsRes.toFixed(1)}×</b> wider than the screen resolution Δx, so diffraction is clearly resolved. <b>Wave optics is essential.</b>`;
+    } else if (widthVsRes > 1) {
+      badge = 'Transition regime';
+      statusHTML = `The central diffraction feature is only a few resolution bins wide. Diffraction is still present, but you are entering a coarse-grained <b>ray-optics regime</b>.`;
     } else {
       badge = 'Ray approximation useful';
-      statusHTML = `Both the fringe spacing and the main diffraction angular scale are smaller than your ${resolutionDeg.toFixed(2)}° resolution. The detailed wave structure is still there mathematically, but at this scale <b>the geometrical ray direction is a useful approximation.</b>`;
+      statusHTML = `The full central diffraction width is now smaller than the screen resolution Δx. The wave pattern still exists, but the transmitted field is effectively seen as a <b>straight-through beam</b>.`;
       if (waveSimulationStartedTracked && !rayLimitTracked) {
         rayLimitTracked = true;
         track('ray_limit_explored', { activity: 'wave_to_ray' });
@@ -585,140 +642,148 @@ The helper below lets interaction events queue safely before Plausible loads.
     q('#waveRegimeBadge').textContent = badge;
     q('#waveStatus').innerHTML = statusHTML;
 
-    // Draw far-field angular intensity pattern.
+    // Draw the screen intensity pattern in position space.
     const ctx = waveCtx;
     const W = waveCanvas.width;
     const H = waveCanvas.height;
-    const padL = 72, padR = 28, padT = 34, padB = 62;
-    const plotW = W - padL - padR;
+    const padT = 30, padB = 34;
+    const screenX = 56;
+    const rightPad = 16;
+    const plotW = W - screenX - rightPad - 10;
     const plotH = H - padT - padB;
-    const thetaMax = 6; // degrees, fixed to reveal the collapse toward theta = 0.
-    const N = 3001;
+    const yMax = 20e-3; // +/- 20 mm on screen
+
+    const yForScreen = x => padT + ((yMax - x) / (2 * yMax)) * plotH;
 
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, W, H);
 
-    // Resolution band around the geometrical ray direction.
-    const xForTheta = t => padL + ((t + thetaMax) / (2 * thetaMax)) * plotW;
-    const bandX1 = xForTheta(-resolutionDeg / 2);
-    const bandX2 = xForTheta(resolutionDeg / 2);
+    // Resolution band around the screen centre.
+    const bandY1 = yForScreen(-resolution / 2);
+    const bandY2 = yForScreen(resolution / 2);
     ctx.fillStyle = 'rgba(49,94,251,0.08)';
-    ctx.fillRect(bandX1, padT, Math.max(1, bandX2 - bandX1), plotH);
+    ctx.fillRect(screenX, Math.min(bandY1, bandY2), plotW, Math.abs(bandY2 - bandY1));
 
-    // Horizontal grid.
+    // Left "screen" strip with brightness showing intensity.
+    const screenStripW = 10;
+    for (let py = 0; py < plotH; py++) {
+      const x = yMax - (2 * yMax * py) / (plotH - 1);
+      const beta = Math.PI * a * x / (lambda * L);
+      const intensity = Math.pow(sinc(beta), 2);
+      const alpha = 0.08 + 0.92 * intensity;
+      ctx.fillStyle = `rgba(49,94,251,${alpha.toFixed(4)})`;
+      ctx.fillRect(screenX - screenStripW, padT + py, screenStripW, 1.4);
+    }
+
+    // Grid and vertical position ticks.
     ctx.strokeStyle = '#e4e7ec';
     ctx.lineWidth = 1;
-    ctx.font = '14px system-ui, sans-serif';
+    ctx.font = '13px system-ui, sans-serif';
     ctx.fillStyle = '#667085';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
-    [0, 0.25, 0.5, 0.75, 1].forEach(v => {
-      const y = padT + (1 - v) * plotH;
+
+    [-20, -10, 0, 10, 20].forEach(mm => {
+      const y = yForScreen(mm * 1e-3);
       ctx.beginPath();
-      ctx.moveTo(padL, y);
-      ctx.lineTo(W - padR, y);
+      ctx.moveTo(screenX, y);
+      ctx.lineTo(W - rightPad, y);
       ctx.stroke();
-      ctx.fillText(v.toFixed(v === 0 || v === 1 ? 0 : 2), padL - 9, y);
+      ctx.fillText(mm.toString(), screenX - 16, y);
     });
 
-    // Vertical angle grid and labels.
+    // Border and screen label.
+    ctx.strokeStyle = '#98a2b3';
+    ctx.strokeRect(screenX, padT, plotW, plotH);
+    ctx.fillStyle = '#344054';
+    ctx.font = '13px system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    for (let t = -6; t <= 6; t += 2) {
-      const x = xForTheta(t);
-      ctx.strokeStyle = '#eef0f4';
-      ctx.beginPath();
-      ctx.moveTo(x, padT);
-      ctx.lineTo(x, padT + plotH);
-      ctx.stroke();
-      ctx.fillStyle = '#667085';
-      ctx.fillText(t + '°', x, padT + plotH + 10);
-    }
+    ctx.fillText('screen', screenX - 5, 8);
 
-    // Axes labels.
-    ctx.fillStyle = '#172033';
-    ctx.font = '15px system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Angle θ from the straight-through direction', padL + plotW / 2, H - 28);
-    ctx.save();
-    ctx.translate(20, padT + plotH / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Normalised intensity', 0, 0);
-    ctx.restore();
-
-    // Geometrical ray direction.
-    const rayX = xForTheta(0);
+    // Ray-optics centre line.
+    const y0 = yForScreen(0);
     ctx.save();
     ctx.setLineDash([8, 7]);
-    ctx.strokeStyle = '#667085';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#d64545';
+    ctx.lineWidth = 1.8;
     ctx.beginPath();
-    ctx.moveTo(rayX, padT);
-    ctx.lineTo(rayX, padT + plotH);
+    ctx.moveTo(screenX, y0);
+    ctx.lineTo(W - rightPad, y0);
     ctx.stroke();
     ctx.restore();
-    ctx.fillStyle = '#475467';
-    ctx.font = '13px system-ui, sans-serif';
+    ctx.fillStyle = '#d64545';
     ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
-    ctx.fillText('ray direction', rayX + 8, padT + 6);
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('ray-optics centre', screenX + 8, y0 - 6);
 
-    // Wave intensity curve.
+    // Diffraction curve: vertical screen position, horizontal intensity.
     ctx.beginPath();
+    const N = 2400;
     for (let i = 0; i < N; i++) {
-      const thetaDeg = -thetaMax + (2 * thetaMax * i) / (N - 1);
-      const theta = thetaDeg * Math.PI / 180;
-      const beta = Math.PI * a * Math.sin(theta) / lambda;
-      const delta = Math.PI * d * Math.sin(theta) / lambda;
-      const envelope = Math.pow(sinc(beta), 2);
-      const interference = Math.pow(Math.cos(delta), 2);
-      const intensity = envelope * interference;
-      const x = xForTheta(thetaDeg);
-      const y = padT + (1 - intensity) * plotH;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
+      const x = yMax - (2 * yMax * i) / (N - 1);
+      const beta = Math.PI * a * x / (lambda * L);
+      const intensity = Math.pow(sinc(beta), 2);
+      const canvasX = screenX + intensity * (plotW - 8);
+      const canvasY = yForScreen(x);
+      if (i === 0) ctx.moveTo(canvasX, canvasY);
+      else ctx.lineTo(canvasX, canvasY);
     }
     ctx.strokeStyle = '#315efb';
     ctx.lineWidth = 2.2;
     ctx.stroke();
 
-    // Plot border.
-    ctx.strokeStyle = '#98a2b3';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(padL, padT, plotW, plotH);
+    // Axis labels.
+    ctx.fillStyle = '#172033';
+    ctx.font = '14px system-ui, sans-serif';
+    ctx.save();
+    ctx.translate(18, H / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('screen position x (mm)', 0, 0);
+    ctx.restore();
 
-    // Legend.
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('normalised intensity →', screenX + plotW / 2, H - 20);
+
+    // Legend
     ctx.fillStyle = '#315efb';
-    ctx.fillRect(padL + 12, padT + 12, 24, 3);
+    ctx.fillRect(screenX + 10, padT + 10, 24, 3);
     ctx.fillStyle = '#344054';
-    ctx.font = '13px system-ui, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    ctx.fillText('wave-optics intensity', padL + 44, padT + 14);
+    ctx.font = '12px system-ui, sans-serif';
+    ctx.fillText('single-slit intensity', screenX + 42, padT + 12);
 
     ctx.fillStyle = 'rgba(49,94,251,0.10)';
-    ctx.fillRect(padL + 12, padT + 30, 24, 12);
+    ctx.fillRect(screenX + 10, padT + 27, 24, 10);
     ctx.fillStyle = '#344054';
-    ctx.fillText('one angular-resolution bin', padL + 44, padT + 36);
+    ctx.fillText('one resolution bin Δx', screenX + 42, padT + 32);
   }
 
-  [wavelengthRange, slitWidthRange, slitSepRange, resolutionRange].forEach(el => {
+  [slitWidthRange, screenDistanceRange, resolutionRange].forEach(el => {
     el.addEventListener('input', () => {
       markWaveSimulationStarted();
       updateWavePlayground();
     });
   });
 
-  q('#visibleWaveBtn').addEventListener('click', () => {
+  q('#strongDiffractionBtn').addEventListener('click', () => {
     markWaveSimulationStarted();
-    wavelengthRange.value = Math.log10(650);
+    slitWidthRange.value = 10;
+    screenDistanceRange.value = 1.00;
+    resolutionRange.value = 0.20;
     updateWavePlayground();
   });
 
   q('#rayLimitBtn').addEventListener('click', () => {
     markWaveSimulationStarted();
-    wavelengthRange.value = Math.log10(5);
+    slitWidthRange.value = 1200;
+    screenDistanceRange.value = 1.00;
+    resolutionRange.value = 0.20;
     updateWavePlayground();
   });
 

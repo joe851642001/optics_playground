@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optics Playground — Refraction & Snell's Law</title>
+
+<!--
+PLAUSIBLE ANALYTICS SETUP
+=========================
+1. Publish this site on GitHub Pages first.
+2. Add the GitHub Pages hostname to Plausible.
+3. Plausible will give you a site-specific tracking snippet.
+4. Paste that complete snippet immediately BELOW this comment.
+
+It currently looks similar to:
+<script async src="https://plausible.io/js/pa-XXXXX.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},
+  plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init();
+</script>
+
+Do NOT copy the example above literally: use the exact snippet Plausible gives you.
+The helper below lets interaction events queue safely before Plausible loads.
+-->
+<script>
+  window.plausible = window.plausible || function () {
+    (plausible.q = plausible.q || []).push(arguments);
+  };
+</script>
+
+<style>
+  :root{
+    --bg:#f6f7fb; --card:#ffffff; --text:#172033; --muted:#667085;
+    --border:#d9dee8; --accent:#315efb; --accent2:#7b61ff;
+    --ray1:#d64545; --ray2:#2463eb; --ray3:#7b61ff;
+    --top:#eef4ff; --bottom:#f8fbff; --good:#117a55; --warn:#b54708;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:24px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--text);
+  }
+  .wrap{max-width:1120px;margin:auto}
+  h1{margin:0 0 6px;font-size:clamp(26px,4vw,40px)}
+  .subtitle{margin:0 0 16px;color:var(--muted)}
+  .tabs{
+    display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;margin-bottom:8px;
+    scrollbar-width:thin;
+  }
+  .tab{
+    flex:0 0 auto;border:1px solid var(--border);background:var(--card);border-radius:999px;
+    padding:9px 14px;min-height:42px;font-size:14px;font-weight:700;white-space:nowrap;
+  }
+  .tab[aria-selected="true"]{background:#edf2ff;border-color:#aebdff;color:#2447c6}
+  .tab-panel[hidden]{display:none}
+  .coming-soon{
+    min-height:260px;display:grid;place-items:center;text-align:center;
+    background:linear-gradient(180deg,#fff,#fafbff);
+  }
+  .coming-soon-inner{max-width:560px}
+  .coming-soon h2{margin:0 0 8px;font-size:26px}
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .badge{border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:14px;font-weight:700}
+  svg{width:100%;height:auto;display:block}
+  label{display:block;font-weight:650;margin:14px 0 6px}
+  input[type=range]{width:100%}
+  button{
+    appearance:none;border:1px solid var(--border);background:white;color:var(--text);
+    border-radius:10px;padding:10px 12px;font:inherit;font-weight:650;cursor:pointer;min-height:44px
+  }
+  button:hover{background:#f3f6fb}
+  button.primary{background:#edf2ff;border-color:#bfcaff}
+  button:focus-visible,input:focus-visible{outline:3px solid rgba(49,94,251,.28);outline-offset:2px}
+  .buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+  .presets{display:grid;gap:8px;margin-top:8px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+  .stat{background:#f5f7fa;border-radius:10px;padding:10px;text-align:center}
+  .stat small{display:block;color:var(--muted);margin-bottom:3px}
+  .equation{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:center;
+    background:#f5f7fa;border-radius:10px;padding:12px;font-size:18px}
+  .below{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+  .challenge{margin-top:18px}
+  .muted{color:var(--muted)}
+  .analytics-note{margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+  .wave-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}
+  .wave-canvas-wrap{
+    margin-top:12px;border:1px solid var(--border);border-radius:12px;
+    background:#fff;overflow:hidden
+  }
+  #waveCanvas{display:block;width:100%;height:auto;background:#fff}
+  .wave-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+  .wave-metric{background:#f5f7fa;border-radius:10px;padding:10px;text-align:center;min-width:0}
+  .wave-metric small{display:block;color:var(--muted);margin-bottom:4px}
+  .wave-metric strong{display:block;overflow-wrap:anywhere}
+  .wave-status{
+    margin-top:12px;border-left:4px solid var(--accent);background:#f5f7ff;
+    border-radius:8px;padding:11px 12px;line-height:1.5
+  }
+  .formula-note{margin-top:10px;font-size:14px;color:var(--muted);line-height:1.5}
+  footer{margin-top:18px;color:var(--muted);font-size:13px;line-height:1.45}
+  @media (max-width:820px){
+    .grid,.below,.wave-grid{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr 1fr 1fr}
+    .wave-metrics{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:480px){
+    body{padding:12px}
+    .stats,.wave-metrics{grid-template-columns:1fr}
+    .buttons{grid-template-columns:1fr}
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <h1>Optics Playground</h1>
+  <p class="subtitle">Interactive physics demos. Start with refraction and Snell's law; more optics activities can be added as tabs later.</p>
+
+  <nav class="tabs" role="tablist" aria-label="Optics activities">
+    <button class="tab" id="tab-wave-ray" role="tab" aria-selected="true" aria-controls="panel-wave-ray" data-tab="wave-ray">Waves → Rays</button>
+    <button class="tab" id="tab-refraction" role="tab" aria-selected="false" aria-controls="panel-refraction" data-tab="refraction">Refraction</button>
+    <button class="tab" id="tab-interference" role="tab" aria-selected="false" aria-controls="panel-interference" data-tab="interference">Interference</button>
+    <button class="tab" id="tab-diffraction" role="tab" aria-selected="false" aria-controls="panel-diffraction" data-tab="diffraction">Diffraction</button>
+    <button class="tab" id="tab-polarisation" role="tab" aria-selected="false" aria-controls="panel-polarisation" data-tab="polarisation">Polarisation</button>
+    <button class="tab" id="tab-quantum" role="tab" aria-selected="false" aria-controls="panel-quantum" data-tab="quantum">Quantum Optics</button>
+  </nav>
+
+  <section id="panel-wave-ray" class="tab-panel" role="tabpanel" aria-labelledby="tab-wave-ray">
+    <div class="wave-grid">
+      <section class="card">
+        <div class="row">
+          <div>
+            <strong>From wave optics to ray optics</strong>
+            <div class="muted">A double-slit experiment viewed in angle. Make the wavelength shorter and watch the wave structure collapse toward the geometrical ray direction.</div>
+          </div>
+          <div id="waveRegimeBadge" class="badge">Wave optics visible</div>
+        </div>
+
+        <div class="wave-canvas-wrap">
+          <canvas id="waveCanvas" width="1000" height="470" role="img" aria-label="Double-slit angular intensity pattern. The diffraction envelope and interference fringes narrow as wavelength is reduced."></canvas>
+        </div>
+
+        <div class="wave-metrics">
+          <div class="wave-metric"><small>Wavelength λ</small><strong id="waveLambdaMetric">500 nm</strong></div>
+          <div class="wave-metric"><small>λ / slit width</small><strong id="waveRatioMetric">0.0250</strong></div>
+          <div class="wave-metric"><small>1st diffraction zero</small><strong id="waveDiffMetric">1.43°</strong></div>
+          <div class="wave-metric"><small>Fringe spacing at 1 m</small><strong id="waveFringeMetric">8.33 mm</strong></div>
+        </div>
+
+        <div id="waveStatus" class="wave-status" aria-live="polite">
+          The diffraction envelope and interference fringes are easily resolved, so wave optics is essential.
+        </div>
+      </section>
+
+      <aside>
+        <section class="card">
+          <strong>Controls</strong>
+
+          <label for="wavelengthRange">Wavelength λ: <span id="wavelengthValue">500 nm</span></label>
+          <input id="wavelengthRange" type="range" min="0" max="2.90309" step="0.005" value="2.69897">
+          <div class="muted" style="font-size:13px">Logarithmic slider: 1 nm → 800 nm</div>
+
+          <label for="slitWidthRange">Slit width a: <span id="slitWidthValue">20 μm</span></label>
+          <input id="slitWidthRange" type="range" min="5" max="80" step="1" value="20">
+
+          <label for="slitSepRange">Slit separation d: <span id="slitSepValue">60 μm</span></label>
+          <input id="slitSepRange" type="range" min="15" max="250" step="1" value="60">
+
+          <label for="resolutionRange">Angular resolution: <span id="resolutionValue">0.10°</span></label>
+          <input id="resolutionRange" type="range" min="0.01" max="1" step="0.01" value="0.10">
+
+          <div class="buttons">
+            <button id="visibleWaveBtn">Visible light</button>
+            <button id="rayLimitBtn" class="primary">Toward ray limit</button>
+          </div>
+        </section>
+
+        <section class="card" style="margin-top:18px">
+          <strong>What the graph shows</strong>
+          <p class="muted" style="line-height:1.5">
+            The coloured curve is the Fraunhofer double-slit intensity. The dashed centre line is the straight-through direction predicted by geometrical optics.
+          </p>
+          <div class="equation" style="font-size:14px;line-height:1.6">
+            I(θ) ∝ sinc²(πa sinθ/λ)<br>× cos²(πd sinθ/λ)
+          </div>
+          <p class="formula-note">
+            Ray optics is not different physics. It is a useful approximation when the wavelength-dependent structure is too small to matter at the scale or resolution of the experiment.
+          </p>
+        </section>
+      </aside>
+    </div>
+
+    <div class="below">
+      <section class="card">
+        <strong>Two shrinking angular scales</strong>
+        <p class="muted" style="line-height:1.6">
+          Diffraction shrinks roughly as <b>λ/a</b>, while the double-slit fringe spacing shrinks roughly as <b>λ/d</b>. With the geometry fixed, both approach zero as λ → 0.
+        </p>
+      </section>
+      <section class="card">
+        <strong>Why this becomes “ray optics”</strong>
+        <p class="muted" style="line-height:1.6">
+          If those angular features are much smaller than the resolution you care about, resolving the full wave pattern adds little useful information. The field then appears concentrated around the geometrical ray direction.
+        </p>
+      </section>
+    </div>
+  </section>
+
+  <section id="panel-refraction" class="tab-panel" role="tabpanel" aria-labelledby="tab-refraction" hidden>
+    <div class="grid">
+      <section class="card">
+        <div class="row">
+          <div>
+            <strong>Interactive ray diagram</strong>
+            <div class="muted">Angles are measured from the normal.</div>
+          </div>
+          <div id="modeBadge" class="badge">Refraction</div>
+        </div>
+
+        <svg id="raySvg" viewBox="0 0 640 420" role="img" aria-label="Snell's law ray diagram">
+          <rect x="0" y="0" width="640" height="210" fill="var(--top)"></rect>
+          <rect x="0" y="210" width="640" height="210" fill="var(--bottom)"></rect>
+          <line x1="20" y1="210" x2="620" y2="210" stroke="var(--text)" stroke-width="2"></line>
+          <line x1="320" y1="25" x2="320" y2="395" stroke="var(--muted)" stroke-width="2" stroke-dasharray="7 7"></line>
+
+          <text x="24" y="38" font-size="18" fill="var(--text)" font-weight="700">Medium 1</text>
+          <text id="svgN1" x="24" y="63" font-size="16" fill="var(--muted)">n₁ = 1.00</text>
+          <text x="24" y="246" font-size="18" fill="var(--text)" font-weight="700">Medium 2</text>
+          <text id="svgN2" x="24" y="271" font-size="16" fill="var(--muted)">n₂ = 1.50</text>
+          <text x="330" y="42" font-size="14" fill="var(--muted)">normal</text>
+          <text x="485" y="201" font-size="14" fill="var(--muted)">interface</text>
+
+          <line id="incidentRay" x1="170" y1="70" x2="320" y2="210" stroke="var(--ray1)" stroke-width="5" stroke-linecap="round"></line>
+          <circle cx="320" cy="210" r="6" fill="var(--text)"></circle>
+          <line id="refractedRay" x1="320" y1="210" x2="420" y2="370" stroke="var(--ray2)" stroke-width="5" stroke-linecap="round"></line>
+          <line id="reflectedRay" x1="320" y1="210" x2="470" y2="70" stroke="var(--ray3)" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 7" opacity=".5"></line>
+
+          <path id="arc1" d="" fill="none" stroke="var(--ray1)" stroke-width="2"></path>
+          <path id="arc2" d="" fill="none" stroke="var(--ray2)" stroke-width="2"></path>
+          <text id="theta1Label" x="270" y="150" font-size="17" fill="var(--ray1)" font-weight="700">θ₁</text>
+          <text id="theta2Label" x="350" y="278" font-size="17" fill="var(--ray2)" font-weight="700">θ₂</text>
+
+          <g id="tirGlow" style="display:none">
+            <line x1="322" y1="214" x2="525" y2="214" stroke="var(--ray2)" stroke-width="4" stroke-dasharray="10 8" opacity=".65"></line>
+            <text x="370" y="239" font-size="14" fill="var(--muted)">no propagating transmitted ray</text>
+          </g>
+        </svg>
+
+        <div class="stats">
+          <div class="stat"><small>Incident</small><strong id="incidentReadout">30.0°</strong></div>
+          <div class="stat"><small>Refracted</small><strong id="refractReadout">19.5°</strong></div>
+          <div class="stat"><small>Critical angle</small><strong id="criticalReadout">—</strong></div>
+        </div>
+      </section>
+
+      <aside>
+        <section class="card">
+          <strong>Controls</strong>
+
+          <label for="n1Range">Refractive index n₁: <span id="n1Value">1.00</span></label>
+          <input id="n1Range" type="range" min="1" max="2.6" step="0.01" value="1">
+
+          <label for="n2Range">Refractive index n₂: <span id="n2Value">1.50</span></label>
+          <input id="n2Range" type="range" min="1" max="2.6" step="0.01" value="1.5">
+
+          <label for="angleRange">Incident angle θ₁: <span id="angleValue">30.0°</span></label>
+          <input id="angleRange" type="range" min="0" max="89" step="0.1" value="30">
+
+          <div class="buttons">
+            <button id="swapBtn">Swap media</button>
+            <button id="tirBtn" class="primary">Try TIR!</button>
+          </div>
+        </section>
+
+        <section class="card" style="margin-top:18px">
+          <strong>Quick presets</strong>
+          <div class="presets">
+            <button data-preset="air-glass">Air → glass</button>
+            <button data-preset="water-air">Water → air</button>
+            <button data-preset="glass-air">Glass → air</button>
+            <button data-preset="diamond-air">Diamond → air</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <div class="below">
+      <section class="card">
+        <strong>Snell's law</strong>
+        <div class="equation" style="margin-top:10px">n₁ sin θ₁ = n₂ sin θ₂</div>
+        <p id="substitution" class="muted">1.00 × sin(30.0°) = 1.50 × sin(19.5°)</p>
+      </section>
+
+      <section class="card">
+        <strong>What is happening?</strong>
+        <p id="explanation">Light enters a higher-index medium, so it bends <b>toward the normal</b>.</p>
+      </section>
+    </div>
+
+    <section class="card challenge">
+      <div class="row">
+        <div>
+          <strong>Mini challenge</strong>
+          <div class="muted">Can you make the refracted ray skim exactly along the interface?</div>
+        </div>
+        <button id="criticalBtn">Set θ₁ = critical angle</button>
+      </div>
+      <p id="challengeMessage" class="muted">Hint: this is only possible when n₁ &gt; n₂.</p>
+    </section>
+  </section>
+
+  <section id="panel-interference" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-interference" hidden>
+    <div class="coming-soon-inner">
+      <h2>Interference</h2>
+      <p class="muted">Ready for a future double-slit or two-source interference activity. The tab is already wired for usage statistics.</p>
+    </div>
+  </section>
+
+  <section id="panel-diffraction" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-diffraction" hidden>
+    <div class="coming-soon-inner">
+      <h2>Diffraction</h2>
+      <p class="muted">Ready for a future single-slit, aperture, or diffraction-grating activity. The tab is already wired for usage statistics.</p>
+    </div>
+  </section>
+
+  <section id="panel-polarisation" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-polarisation" hidden>
+    <div class="coming-soon-inner">
+      <h2>Polarisation</h2>
+      <p class="muted">Ready for a future Malus's-law or polariser activity. The tab is already wired for usage statistics.</p>
+    </div>
+  </section>
+
+  <section id="panel-quantum" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-quantum" hidden>
+    <div class="coming-soon-inner">
+      <h2>Quantum Optics</h2>
+      <p class="muted">Ready for a future single-photon, interference, or entanglement activity. The tab is already wired for usage statistics.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div style="margin-bottom:6px">
+      Dr Joe Chen. Centre for Photonics, Department of Physics, University of Bath. Created by ChatGPT GPT-5.6 Sol on 26/09/2026.
+    </div>
+    <div class="analytics-note">
+      When analytics is enabled, anonymous usage statistics can include page visits, approximate country and interactions with the activities. No student name, email address or student ID is requested by this site.
+    </div>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const q = s => document.querySelector(s);
+  const qa = s => Array.from(document.querySelectorAll(s));
+
+  // ---------- Analytics ----------
+  // These events intentionally avoid student-identifying information.
+  // We do NOT send every slider movement, to avoid noisy/expensive analytics.
+  function track(eventName) {
+    if (typeof window.plausible === 'function') {
+      window.plausible(eventName);
+    }
+  }
+
+  const openedTabs = new Set();
+  function trackTabOnce(tabName) {
+    if (openedTabs.has(tabName)) return;
+    openedTabs.add(tabName);
+    const labels = {
+      'wave-ray': 'Wave to Ray',
+      refraction: 'Refraction',
+      interference: 'Interference',
+      diffraction: 'Diffraction',
+      polarisation: 'Polarisation',
+      quantum: 'Quantum Optics'
+    };
+    track('Tab Opened - ' + labels[tabName]);
+  }
+
+  let simulationStartedTracked = false;
+  let tirTracked = false;
+  let criticalTracked = false;
+
+  function markSimulationStarted() {
+    if (simulationStartedTracked) return;
+    simulationStartedTracked = true;
+    track('Simulation Started - Refraction');
+  }
+
+  // ---------- Tabs ----------
+  const tabs = qa('[role="tab"][data-tab]');
+  const panels = qa('.tab-panel');
+
+  function showTab(tabName, shouldTrack = true) {
+    tabs.forEach(tab => {
+      const active = tab.dataset.tab === tabName;
+      tab.setAttribute('aria-selected', active ? 'true' : 'false');
+      tab.tabIndex = active ? 0 : -1;
+    });
+    panels.forEach(panel => {
+      panel.hidden = panel.id !== 'panel-' + tabName;
+    });
+    if (shouldTrack) trackTabOnce(tabName);
+    if (history.replaceState) {
+      history.replaceState(null, '', '#' + tabName);
+    }
+  }
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => showTab(tab.dataset.tab, true));
+    tab.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const direction = e.key === 'ArrowRight' ? 1 : -1;
+      const next = (index + direction + tabs.length) % tabs.length;
+      tabs[next].focus();
+      showTab(tabs[next].dataset.tab, true);
+    });
+  });
+
+  const validTabs = new Set(tabs.map(t => t.dataset.tab));
+  const requestedTab = location.hash ? location.hash.slice(1) : 'wave-ray';
+  showTab(validTabs.has(requestedTab) ? requestedTab : 'wave-ray', true);
+
+  // ---------- Waves -> Rays / double-slit simulation ----------
+  const waveCanvas = q('#waveCanvas');
+  const waveCtx = waveCanvas.getContext('2d');
+  const wavelengthRange = q('#wavelengthRange');
+  const slitWidthRange = q('#slitWidthRange');
+  const slitSepRange = q('#slitSepRange');
+  const resolutionRange = q('#resolutionRange');
+
+  let waveSimulationStartedTracked = false;
+  let rayLimitTracked = false;
+
+  function markWaveSimulationStarted() {
+    if (waveSimulationStartedTracked) return;
+    waveSimulationStartedTracked = true;
+    track('Simulation Started - Wave to Ray');
+  }
+
+  function formatLengthMetres(m) {
+    const mm = m * 1000;
+    if (mm >= 0.1) return mm.toFixed(mm >= 10 ? 1 : 2) + ' mm';
+    const um = m * 1e6;
+    if (um >= 0.1) return um.toFixed(2) + ' μm';
+    return (m * 1e9).toFixed(1) + ' nm';
+  }
+
+  function niceLambda(nm) {
+    if (nm >= 100) return nm.toFixed(0) + ' nm';
+    if (nm >= 10) return nm.toFixed(1) + ' nm';
+    return nm.toFixed(2) + ' nm';
+  }
+
+  function sinc(x) {
+    return Math.abs(x) < 1e-10 ? 1 : Math.sin(x) / x;
+  }
+
+  function updateWavePlayground() {
+    const lambdaNm = Math.pow(10, +wavelengthRange.value);
+    const lambda = lambdaNm * 1e-9;
+    const aUm = +slitWidthRange.value;
+    let dUm = +slitSepRange.value;
+    const a = aUm * 1e-6;
+
+    // Keep the two slits physically distinct.
+    if (dUm <= aUm + 2) {
+      dUm = aUm + 3;
+      slitSepRange.value = Math.min(250, dUm);
+    }
+    const d = dUm * 1e-6;
+    const resolutionDeg = +resolutionRange.value;
+
+    q('#wavelengthValue').textContent = niceLambda(lambdaNm);
+    q('#slitWidthValue').textContent = aUm.toFixed(0) + ' μm';
+    q('#slitSepValue').textContent = dUm.toFixed(0) + ' μm';
+    q('#resolutionValue').textContent = resolutionDeg.toFixed(2) + '°';
+
+    const ratio = lambda / a;
+    const diffArg = Math.min(1, lambda / a);
+    const diffZeroDeg = Math.asin(diffArg) * 180 / Math.PI;
+    const fringeAngularDeg = (lambda / d) * 180 / Math.PI;
+    const fringeSpacingAt1m = lambda / d; // small-angle x = L lambda/d, L = 1 m
+
+    q('#waveLambdaMetric').textContent = niceLambda(lambdaNm);
+    q('#waveRatioMetric').textContent = ratio < 0.001 ? ratio.toExponential(2) : ratio.toFixed(4);
+    q('#waveDiffMetric').textContent = diffZeroDeg < 0.01 ? diffZeroDeg.toFixed(4) + '°' :
+                                      diffZeroDeg < 0.1 ? diffZeroDeg.toFixed(3) + '°' :
+                                      diffZeroDeg.toFixed(2) + '°';
+    q('#waveFringeMetric').textContent = formatLengthMetres(fringeSpacingAt1m);
+
+    const fringesResolved = fringeAngularDeg >= resolutionDeg;
+    const envelopeResolved = diffZeroDeg >= resolutionDeg;
+
+    let statusHTML = '';
+    let badge = '';
+
+    if (fringesResolved && envelopeResolved) {
+      badge = 'Wave optics visible';
+      statusHTML = `Your ${resolutionDeg.toFixed(2)}° angular resolution can resolve both the interference fringes (~${fringeAngularDeg.toFixed(3)}° apart) and the diffraction envelope. <b>Wave optics is essential.</b>`;
+    } else if (!fringesResolved && envelopeResolved) {
+      badge = 'Fringes unresolved';
+      statusHTML = `The interference fringes (~${fringeAngularDeg.toFixed(3)}° apart) are now finer than your ${resolutionDeg.toFixed(2)}° resolution, although the diffraction envelope is still visible. <b>You are entering a coarse-grained ray-optics regime.</b>`;
+    } else {
+      badge = 'Ray approximation useful';
+      statusHTML = `Both the fringe spacing and the main diffraction angular scale are smaller than your ${resolutionDeg.toFixed(2)}° resolution. The detailed wave structure is still there mathematically, but at this scale <b>the geometrical ray direction is a useful approximation.</b>`;
+      if (waveSimulationStartedTracked && !rayLimitTracked) {
+        rayLimitTracked = true;
+        track('Ray Limit Explored - Wave to Ray');
+      }
+    }
+
+    q('#waveRegimeBadge').textContent = badge;
+    q('#waveStatus').innerHTML = statusHTML;
+
+    // Draw far-field angular intensity pattern.
+    const ctx = waveCtx;
+    const W = waveCanvas.width;
+    const H = waveCanvas.height;
+    const padL = 72, padR = 28, padT = 34, padB = 62;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+    const thetaMax = 6; // degrees, fixed to reveal the collapse toward theta = 0.
+    const N = 3001;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    // Resolution band around the geometrical ray direction.
+    const xForTheta = t => padL + ((t + thetaMax) / (2 * thetaMax)) * plotW;
+    const bandX1 = xForTheta(-resolutionDeg / 2);
+    const bandX2 = xForTheta(resolutionDeg / 2);
+    ctx.fillStyle = 'rgba(49,94,251,0.08)';
+    ctx.fillRect(bandX1, padT, Math.max(1, bandX2 - bandX1), plotH);
+
+    // Horizontal grid.
+    ctx.strokeStyle = '#e4e7ec';
+    ctx.lineWidth = 1;
+    ctx.font = '14px system-ui, sans-serif';
+    ctx.fillStyle = '#667085';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    [0, 0.25, 0.5, 0.75, 1].forEach(v => {
+      const y = padT + (1 - v) * plotH;
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(W - padR, y);
+      ctx.stroke();
+      ctx.fillText(v.toFixed(v === 0 || v === 1 ? 0 : 2), padL - 9, y);
+    });
+
+    // Vertical angle grid and labels.
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (let t = -6; t <= 6; t += 2) {
+      const x = xForTheta(t);
+      ctx.strokeStyle = '#eef0f4';
+      ctx.beginPath();
+      ctx.moveTo(x, padT);
+      ctx.lineTo(x, padT + plotH);
+      ctx.stroke();
+      ctx.fillStyle = '#667085';
+      ctx.fillText(t + '°', x, padT + plotH + 10);
+    }
+
+    // Axes labels.
+    ctx.fillStyle = '#172033';
+    ctx.font = '15px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Angle θ from the straight-through direction', padL + plotW / 2, H - 28);
+    ctx.save();
+    ctx.translate(20, padT + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Normalised intensity', 0, 0);
+    ctx.restore();
+
+    // Geometrical ray direction.
+    const rayX = xForTheta(0);
+    ctx.save();
+    ctx.setLineDash([8, 7]);
+    ctx.strokeStyle = '#667085';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(rayX, padT);
+    ctx.lineTo(rayX, padT + plotH);
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = '#475467';
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('ray direction', rayX + 8, padT + 6);
+
+    // Wave intensity curve.
+    ctx.beginPath();
+    for (let i = 0; i < N; i++) {
+      const thetaDeg = -thetaMax + (2 * thetaMax * i) / (N - 1);
+      const theta = thetaDeg * Math.PI / 180;
+      const beta = Math.PI * a * Math.sin(theta) / lambda;
+      const delta = Math.PI * d * Math.sin(theta) / lambda;
+      const envelope = Math.pow(sinc(beta), 2);
+      const interference = Math.pow(Math.cos(delta), 2);
+      const intensity = envelope * interference;
+      const x = xForTheta(thetaDeg);
+      const y = padT + (1 - intensity) * plotH;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = '#315efb';
+    ctx.lineWidth = 2.2;
+    ctx.stroke();
+
+    // Plot border.
+    ctx.strokeStyle = '#98a2b3';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(padL, padT, plotW, plotH);
+
+    // Legend.
+    ctx.fillStyle = '#315efb';
+    ctx.fillRect(padL + 12, padT + 12, 24, 3);
+    ctx.fillStyle = '#344054';
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('wave-optics intensity', padL + 44, padT + 14);
+
+    ctx.fillStyle = 'rgba(49,94,251,0.10)';
+    ctx.fillRect(padL + 12, padT + 30, 24, 12);
+    ctx.fillStyle = '#344054';
+    ctx.fillText('one angular-resolution bin', padL + 44, padT + 36);
+  }
+
+  [wavelengthRange, slitWidthRange, slitSepRange, resolutionRange].forEach(el => {
+    el.addEventListener('input', () => {
+      markWaveSimulationStarted();
+      updateWavePlayground();
+    });
+  });
+
+  q('#visibleWaveBtn').addEventListener('click', () => {
+    markWaveSimulationStarted();
+    wavelengthRange.value = Math.log10(650);
+    updateWavePlayground();
+  });
+
+  q('#rayLimitBtn').addEventListener('click', () => {
+    markWaveSimulationStarted();
+    wavelengthRange.value = Math.log10(5);
+    updateWavePlayground();
+  });
+
+  updateWavePlayground();
+
+  // ---------- Refraction simulation ----------
+  const n1Range=q('#n1Range'), n2Range=q('#n2Range'), angleRange=q('#angleRange');
+  const deg=r=>r*180/Math.PI, rad=d=>d*Math.PI/180, clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+
+  function polar(cx,cy,r,a){
+    a=rad(a);
+    return {x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};
+  }
+
+  function arcPath(cx,cy,r,a1,a2){
+    const s=polar(cx,cy,r,a1), e=polar(cx,cy,r,a2);
+    return `M ${s.x.toFixed(1)} ${s.y.toFixed(1)} A ${r} ${r} 0 ${Math.abs(a2-a1)>180?1:0} ${a2>a1?1:0} ${e.x.toFixed(1)} ${e.y.toFixed(1)}`;
+  }
+
+  function setLine(el,x1,y1,x2,y2){
+    el.setAttribute('x1',x1.toFixed(1));
+    el.setAttribute('y1',y1.toFixed(1));
+    el.setAttribute('x2',x2.toFixed(1));
+    el.setAttribute('y2',y2.toFixed(1));
+  }
+
+  function setValues(n1,n2,a){
+    n1Range.value=n1;
+    n2Range.value=n2;
+    angleRange.value=a;
+    update();
+  }
+
+  function update(){
+    const n1=clamp(+n1Range.value||1,1,2.6);
+    const n2=clamp(+n2Range.value||1,1,2.6);
+    const t1=clamp(+angleRange.value||0,0,89);
+    const s2=(n1/n2)*Math.sin(rad(t1));
+    const tir=s2>1+1e-10;
+    const t2=tir?null:deg(Math.asin(clamp(s2,-1,1)));
+    const crit=n1>n2?deg(Math.asin(n2/n1)):null;
+
+    q('#n1Value').textContent=n1.toFixed(2);
+    q('#n2Value').textContent=n2.toFixed(2);
+    q('#angleValue').textContent=t1.toFixed(1)+'°';
+    q('#svgN1').textContent='n₁ = '+n1.toFixed(2);
+    q('#svgN2').textContent='n₂ = '+n2.toFixed(2);
+    q('#incidentReadout').textContent=t1.toFixed(1)+'°';
+    q('#refractReadout').textContent=tir?'TIR':t2.toFixed(1)+'°';
+    q('#criticalReadout').textContent=crit===null?'—':crit.toFixed(1)+'°';
+
+    const cx=320,cy=210,L1=190,L2=175,tr1=rad(t1);
+    setLine(q('#incidentRay'),cx-L1*Math.sin(tr1),cy-L1*Math.cos(tr1),cx,cy);
+    setLine(q('#reflectedRay'),cx,cy,cx+L1*Math.sin(tr1),cy-L1*Math.cos(tr1));
+    q('#arc1').setAttribute('d',arcPath(cx,cy,58,-90-t1,-90));
+
+    let p=polar(cx,cy,82,-90-t1/2);
+    q('#theta1Label').setAttribute('x',(p.x-10).toFixed(1));
+    q('#theta1Label').setAttribute('y',(p.y+6).toFixed(1));
+    q('#theta1Label').textContent='θ₁='+t1.toFixed(0)+'°';
+
+    if(tir){
+      q('#refractedRay').style.display='none';
+      q('#arc2').style.display='none';
+      q('#theta2Label').style.display='none';
+      q('#tirGlow').style.display='';
+      q('#modeBadge').textContent='TOTAL INTERNAL REFLECTION';
+      q('#substitution').textContent=`${n1.toFixed(2)} × sin(${t1.toFixed(1)}°) would require sin θ₂ = ${s2.toFixed(3)} > 1`;
+      q('#explanation').innerHTML=`No real refracted angle exists. The incident angle is larger than the critical angle <b>${crit.toFixed(1)}°</b>, so the light undergoes <b>total internal reflection</b>.`;
+
+      if (simulationStartedTracked && !tirTracked) {
+        tirTracked = true;
+        track('TIR Reached - Refraction');
+      }
+    } else {
+      q('#refractedRay').style.display='';
+      q('#arc2').style.display='';
+      q('#theta2Label').style.display='';
+      q('#tirGlow').style.display='none';
+
+      const tr2=rad(t2);
+      setLine(q('#refractedRay'),cx,cy,cx+L2*Math.sin(tr2),cy+L2*Math.cos(tr2));
+      q('#arc2').setAttribute('d',arcPath(cx,cy,58,90-t2,90));
+
+      p=polar(cx,cy,84,90-t2/2);
+      q('#theta2Label').setAttribute('x',(p.x+4).toFixed(1));
+      q('#theta2Label').setAttribute('y',(p.y+5).toFixed(1));
+      q('#theta2Label').textContent='θ₂='+t2.toFixed(0)+'°';
+      q('#substitution').textContent=`${n1.toFixed(2)} × sin(${t1.toFixed(1)}°) = ${n2.toFixed(2)} × sin(${t2.toFixed(1)}°)`;
+
+      if(Math.abs(n1-n2)<.005){
+        q('#modeBadge').textContent='NO BENDING';
+        q('#explanation').innerHTML='The refractive indices are essentially equal, so the ray continues <b>straight through</b>.';
+      } else if(n2>n1){
+        q('#modeBadge').textContent='TOWARD THE NORMAL';
+        q('#explanation').innerHTML='Light enters a higher-index medium, so it slows down and bends <b>toward the normal</b>: θ₂ &lt; θ₁.';
+      } else {
+        q('#modeBadge').textContent='AWAY FROM THE NORMAL';
+        q('#explanation').innerHTML='Light enters a lower-index medium, so it speeds up and bends <b>away from the normal</b>: θ₂ &gt; θ₁.';
+      }
+    }
+
+    const atCritical = crit!==null && Math.abs(t1-crit)<.3;
+    if(atCritical){
+      q('#challengeMessage').innerHTML='<b>Nice!</b> At the critical angle, θ₂ ≈ 90° and the transmitted ray skims the interface.';
+      if (simulationStartedTracked && !criticalTracked) {
+        criticalTracked = true;
+        track('Critical Angle Reached - Refraction');
+      }
+    } else if(tir){
+      q('#challengeMessage').textContent='You went past the critical angle — now you have total internal reflection.';
+    } else if(crit===null){
+      q('#challengeMessage').textContent='To get a critical angle, make n₁ larger than n₂.';
+    } else {
+      q('#challengeMessage').textContent=`For these media, try θ₁ ≈ ${crit.toFixed(1)}°.`;
+    }
+  }
+
+  [n1Range,n2Range,angleRange].forEach(el=>{
+    el.addEventListener('input',()=>{
+      markSimulationStarted();
+      update();
+    });
+  });
+
+  q('#swapBtn').addEventListener('click',()=>{
+    markSimulationStarted();
+    const a=n1Range.value;
+    n1Range.value=n2Range.value;
+    n2Range.value=a;
+    update();
+  });
+
+  q('#tirBtn').addEventListener('click',()=>{
+    markSimulationStarted();
+    setValues(1.50,1.00,50);
+  });
+
+  q('#criticalBtn').addEventListener('click',()=>{
+    markSimulationStarted();
+    const n1=+n1Range.value,n2=+n2Range.value;
+    if(n1<=n2){
+      q('#challengeMessage').textContent='First choose n₁ > n₂ — for example glass → air.';
+      return;
+    }
+    angleRange.value=clamp(deg(Math.asin(n2/n1)),0,89);
+    update();
+  });
+
+  const presets={
+    'air-glass':{values:[1.00,1.50,40],event:'Preset - Air to Glass'},
+    'water-air':{values:[1.33,1.00,40],event:'Preset - Water to Air'},
+    'glass-air':{values:[1.50,1.00,35],event:'Preset - Glass to Air'},
+    'diamond-air':{values:[2.42,1.00,30],event:'Preset - Diamond to Air'}
+  };
+
+  qa('[data-preset]').forEach(b=>b.addEventListener('click',()=>{
+    markSimulationStarted();
+    const preset=presets[b.dataset.preset];
+    if(!preset) return;
+    track(preset.event);
+    setValues(...preset.values);
+  }));
+
+  update();
+})();
+</script>
+</body>
+</html>

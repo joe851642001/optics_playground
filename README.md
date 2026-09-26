@@ -1,2 +1,21 @@
-# optics_playground
-Interactive webpages for exploring basic ray- and wave-optics concepts, designed for *Optics* in *Foundations of Physics* at the University of Bath.
+# Optics Playground
+
+Interactive browser-based optics teaching activities.
+
+Current activities:
+- Waves → Rays: double-slit short-wavelength limit
+- Refraction / Snell's law
+- Total internal reflection
+- Critical angle
+
+Placeholder tabs are included for future activities:
+- Interference
+- Diffraction
+- Polarisation
+- Quantum Optics
+
+## Open locally
+Double-click `index.html`.
+
+## Publish
+See `SETUP.md` for GitHub Pages and Plausible Analytics instructions.

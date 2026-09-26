@@ -23,7 +23,7 @@
   }
   *{box-sizing:border-box}
   body{
-    margin:0; padding:24px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    margin:0; padding:24px; font-family:Aptos,"Aptos Display","Segoe UI",Arial,sans-serif;
     background:var(--bg); color:var(--text);
   }
   .wrap{max-width:1120px;margin:auto}
@@ -64,7 +64,7 @@
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
   .stat{background:#f5f7fa;border-radius:10px;padding:10px;text-align:center}
   .stat small{display:block;color:var(--muted);margin-bottom:3px}
-  .equation{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:center;
+  .equation{font-family:Aptos,"Aptos Display","Segoe UI",Arial,sans-serif;text-align:center;
     background:#f5f7fa;border-radius:10px;padding:12px;font-size:18px}
   .below{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
   .challenge{margin-top:18px}
@@ -218,7 +218,7 @@
   }
   .lens-equation-main{
     text-align:center;
-    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-family:Aptos,"Aptos Display","Segoe UI",Arial,sans-serif;
     font-size:18px;
     line-height:1.45;
     white-space:nowrap;
@@ -311,22 +311,25 @@
     .stats,.wave-metrics{grid-template-columns:1fr}
     .buttons,.lens-controls .control-grid{grid-template-columns:1fr}
   }
+
+  button,input,select,textarea{font-family:Aptos,"Aptos Display","Segoe UI",Arial,sans-serif}
+  svg text{font-family:Aptos,"Aptos Display","Segoe UI",Arial,sans-serif}
+
 </style>
 </head>
 
 <body>
 <div class="wrap">
   <h1>Optics Playground</h1>
-  <p class="subtitle">Interactive physics demos. Start with refraction and Snell's law; more optics activities can be added as tabs later.</p>
 
   <nav class="tabs" role="tablist" aria-label="Optics activities">
     <button class="tab" id="tab-wave-ray" role="tab" aria-selected="true" aria-controls="panel-wave-ray" data-tab="wave-ray">Waves → Rays</button>
     <button class="tab" id="tab-refraction" role="tab" aria-selected="false" aria-controls="panel-refraction" data-tab="refraction">Refraction</button>
-    <button class="tab" id="tab-lenses" role="tab" aria-selected="false" aria-controls="panel-lenses" data-tab="lenses">Lens</button>
+    <button class="tab" id="tab-lens" role="tab" aria-selected="false" aria-controls="panel-lens" data-tab="lens">Lens</button>
+    <button class="tab" id="tab-telescope" role="tab" aria-selected="false" aria-controls="panel-telescope" data-tab="telescope">Telescope</button>
     <button class="tab" id="tab-interference" role="tab" aria-selected="false" aria-controls="panel-interference" data-tab="interference">Interference</button>
     <button class="tab" id="tab-diffraction" role="tab" aria-selected="false" aria-controls="panel-diffraction" data-tab="diffraction">Diffraction</button>
     <button class="tab" id="tab-polarisation" role="tab" aria-selected="false" aria-controls="panel-polarisation" data-tab="polarisation">Polarisation</button>
-    <button class="tab" id="tab-quantum" role="tab" aria-selected="false" aria-controls="panel-quantum" data-tab="quantum">Quantum Optics</button>
   </nav>
 
   
@@ -569,7 +572,7 @@
   </section>
 
 
-  <section id="panel-lenses" class="tab-panel" role="tabpanel" aria-labelledby="tab-lenses" hidden>
+  <section id="panel-lens" class="tab-panel" role="tabpanel" aria-labelledby="tab-lens" hidden>
     <section class="card">
       <div class="row">
         <div>
@@ -666,6 +669,13 @@
     </section>
   </section>
 
+  <section id="panel-telescope" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-telescope" hidden>
+    <strong>Telescope</strong>
+    <p class="muted" style="line-height:1.6">
+      Telescope activity coming next.
+    </p>
+  </section>
+
   <section id="panel-interference" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-interference" hidden>
     <div class="coming-soon-inner">
       <h2>Interference</h2>
@@ -684,13 +694,6 @@
     <div class="coming-soon-inner">
       <h2>Polarisation</h2>
       <p class="muted">Ready for a future Malus's-law or polariser activity. The tab is already wired for usage statistics.</p>
-    </div>
-  </section>
-
-  <section id="panel-quantum" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-quantum" hidden>
-    <div class="coming-soon-inner">
-      <h2>Quantum Optics</h2>
-      <p class="muted">Ready for a future single-photon, interference, or entanglement activity. The tab is already wired for usage statistics.</p>
     </div>
   </section>
 
@@ -900,7 +903,7 @@
     // Grid and vertical position ticks.
     ctx.strokeStyle = '#e4e7ec';
     ctx.lineWidth = 1;
-    ctx.font = '13px system-ui, sans-serif';
+    ctx.font = '13px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
     ctx.fillStyle = '#667085';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
@@ -918,7 +921,7 @@
     ctx.strokeStyle = '#98a2b3';
     ctx.strokeRect(screenX, padT, plotW, plotH);
     ctx.fillStyle = '#344054';
-    ctx.font = '13px system-ui, sans-serif';
+    ctx.font = '13px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText('screen', screenX - 5, 8);
@@ -957,7 +960,7 @@
 
     // Axis labels.
     ctx.fillStyle = '#172033';
-    ctx.font = '14px system-ui, sans-serif';
+    ctx.font = '14px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
     ctx.save();
     ctx.translate(18, H / 2);
     ctx.rotate(-Math.PI / 2);
@@ -976,7 +979,7 @@
     ctx.fillStyle = '#344054';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    ctx.font = '12px system-ui, sans-serif';
+    ctx.font = '12px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
     ctx.fillText('single-slit intensity', screenX + 42, padT + 12);
 
     ctx.fillStyle = 'rgba(49,94,251,0.10)';
@@ -1025,7 +1028,7 @@
   function markLensSimulationStarted() {
     if (lensSimulationStartedTracked) return;
     lensSimulationStartedTracked = true;
-    track('simulation_started', { activity: 'lenses' });
+    track('simulation_started', { activity: 'lens' });
   }
 
   function signedRadius(side, kind, magnitudeMm) {
@@ -1070,7 +1073,7 @@
     ctx.closePath();
     ctx.fill();
 
-    ctx.font = '14px system-ui, sans-serif';
+    ctx.font = '14px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = height >= 0 ? 'bottom' : 'top';
     ctx.fillText(label, x, yTip + (height >= 0 ? -8 : 8));
@@ -1201,7 +1204,7 @@
     ctx.stroke();
 
     ctx.fillStyle = '#344054';
-    ctx.font = '14px system-ui, sans-serif';
+    ctx.font = '14px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillText(`n = ${n.toFixed(2)}`, lensX, yTop - 10);
@@ -1226,7 +1229,7 @@
           ctx.beginPath();
           ctx.arc(x, axisY, 5, 0, Math.PI * 2);
           ctx.fill();
-          ctx.font = '13px system-ui, sans-serif';
+          ctx.font = '13px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
           ctx.fillText(idx === 0 ? 'F' : "F′", x, axisY + 9);
@@ -1288,7 +1291,7 @@
 
     // Caption.
     ctx.fillStyle = '#667085';
-    ctx.font = '13px system-ui, sans-serif';
+    ctx.font = '13px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'bottom';
     ctx.fillText('Thin-lens approximation; surface shape is schematic.', 18, H - 12);

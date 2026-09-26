@@ -3,7 +3,7 @@
 Interactive webpages for exploring basic ray- and wave-optics concepts, designed for Optics in *Foundations of Physics* at the University of Bath.
 
 ## Current activities
-- Lenses: build arbitrary convex / concave / plano surface combinations
+- Lens: build arbitrary convex / concave / plano surface combinations
 - Waves → Rays: single-slit diffraction, showing how a much wider slit approaches the ray-optics limit
 - Refraction / Snell's law
 - Critical angle

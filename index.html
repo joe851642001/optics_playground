@@ -14,16 +14,19 @@
 
   gtag('config', 'G-VB4PLZGGJV');
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#f6f7fb; --card:#ffffff; --text:#172033; --muted:#667085;
     --border:#d9dee8; --accent:#315efb; --accent2:#7b61ff;
-    --ray1:#d64545; --ray2:#2463eb; --ray3:#7b61ff;
+    --ray1:#2463eb; --ray2:#d64545; --ray3:#7b61ff;
     --top:#eef4ff; --bottom:#f8fbff; --good:#117a55; --warn:#b54708;
   }
   *{box-sizing:border-box}
   body{
-    margin:0; padding:24px; font-family:Aptos,"Aptos Display","Segoe UI",Arial,sans-serif;
+    margin:0; padding:24px; font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;
     background:var(--bg); color:var(--text);
   }
   .wrap{max-width:1120px;margin:auto}
@@ -64,7 +67,31 @@
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
   .stat{background:#f5f7fa;border-radius:10px;padding:10px;text-align:center}
   .stat small{display:block;color:var(--muted);margin-bottom:3px}
-  .equation{font-family:Aptos,"Aptos Display","Segoe UI",Arial,sans-serif;text-align:center;
+  .refraction-snell-inline{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid var(--border);
+  }
+  .refraction-snell-inline .equation{
+    margin-top:8px;
+    padding:9px 12px;
+    font-size:17px;
+  }
+  .refraction-snell-inline p{
+    margin:8px 0 0;
+  }
+  .refraction-below{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:18px;
+    margin-top:18px;
+    align-items:stretch;
+  }
+  .refraction-below .challenge{
+    margin-top:0;
+    height:100%;
+  }
+  .equation{font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;text-align:center;
     background:#f5f7fa;border-radius:10px;padding:12px;font-size:18px}
   .below{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
   .challenge{margin-top:18px}
@@ -84,7 +111,8 @@
     background:#fff;overflow:hidden
   }
   #waveCanvas{display:block;width:100%;height:auto;background:#fff}
-  .wave-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+  #raySvg{width:100%;height:360px;display:block;margin:0 auto}
+  .wave-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:0}
   .wave-metric{background:#f5f7fa;border-radius:10px;padding:10px;text-align:center;min-width:0}
   .wave-metric small{display:block;color:var(--muted);margin-bottom:4px}
   .wave-metric strong{display:block;overflow-wrap:anywhere}
@@ -99,6 +127,12 @@
     grid-template-columns:minmax(0,1fr) 320px;
     gap:18px;
     align-items:start;
+  }
+  .wave-main-column{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    min-width:0;
   }
   .wave-visuals{
     display:grid;
@@ -218,7 +252,7 @@
   }
   .lens-equation-main{
     text-align:center;
-    font-family:Aptos,"Aptos Display","Segoe UI",Arial,sans-serif;
+    font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;
     font-size:18px;
     line-height:1.45;
     white-space:nowrap;
@@ -288,13 +322,299 @@
     line-height:1.5;
   }
 
+
+  .mirror-playground{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 330px;
+    gap:18px;
+    align-items:start;
+  }
+  .mirror-left-column{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    min-width:0;
+  }
+  .mirror-visual{
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#fff;
+    overflow:hidden;
+  }
+  #mirrorCanvas{
+    display:block;
+    width:100%;
+    height:auto;
+    background:#fff;
+  }
+  .mirror-equation-card{
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#fff;
+    padding:16px;
+  }
+  .mirror-equation-results{
+    display:grid;
+    grid-template-columns:minmax(0,1.25fr) minmax(250px,0.75fr);
+    gap:14px;
+    align-items:stretch;
+  }
+  .mirror-equations-stack{
+    display:grid;
+    grid-template-rows:1fr 1fr;
+    gap:10px;
+  }
+  .mirror-equation-box{
+    background:#f5f7fa;
+    border-radius:10px;
+    padding:11px 14px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .mirror-equation-box small{
+    color:var(--muted);
+    font-weight:700;
+    margin-bottom:5px;
+  }
+  .mirror-equation-main{
+    text-align:center;
+    font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;
+    font-size:18px;
+    line-height:1.45;
+    white-space:nowrap;
+  }
+  .mirror-sign-note{
+    margin-top:9px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+  }
+  .mirror-controls select{
+    width:100%;
+    min-height:44px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:8px 10px;
+    background:#fff;
+    color:var(--text);
+    font:inherit;
+  }
+  .mirror-result-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:0;
+    align-content:stretch;
+  }
+  .mirror-result{
+    background:#f5f7fa;
+    border-radius:10px;
+    padding:10px;
+    text-align:center;
+    min-width:0;
+  }
+  .mirror-result small{
+    display:block;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  .mirror-result strong{
+    display:block;
+    overflow-wrap:anywhere;
+  }
+  .mirror-note{
+    margin-top:12px;
+    border-left:4px solid var(--accent);
+    background:#f5f7ff;
+    border-radius:8px;
+    padding:11px 12px;
+    line-height:1.5;
+  }
+
+
+  .micro-playground,.telescope-playground{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 330px;
+    gap:18px;
+    align-items:start;
+  }
+  .micro-left-column,.telescope-left-column{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    min-width:0;
+  }
+  .micro-visual{
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#fff;
+    overflow:hidden;
+  }
+  #microscopeCanvas,#telescopeCanvas{
+    display:block;
+    width:100%;
+    height:auto;
+    background:#fff;
+  }
+  .micro-equation-card{
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#fff;
+    padding:16px;
+  }
+  .micro-equation-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1.2fr) minmax(250px,0.8fr);
+    gap:14px;
+    align-items:stretch;
+  }
+  .micro-equation-stack{
+    display:grid;
+    grid-template-rows:1fr 1fr;
+    gap:10px;
+  }
+  .micro-equation-box{
+    background:#f5f7fa;
+    border-radius:10px;
+    padding:11px 14px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+  }
+  .micro-description{
+    font-size:16px;
+    line-height:1.5;
+    color:var(--text);
+    white-space:normal;
+  }
+  .micro-equation-box small{
+    color:var(--muted);
+    font-weight:700;
+    margin-bottom:5px;
+  }
+  .micro-equation-main{
+    text-align:center;
+    font-family:"Source Sans 3","Segoe UI",Arial,sans-serif;
+    font-size:18px;
+    line-height:1.45;
+    white-space:nowrap;
+  }
+  .micro-sign-note{
+    margin-top:9px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+  }
+  .micro-result-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    align-content:stretch;
+  }
+  .micro-result{
+    background:#f5f7fa;
+    border-radius:10px;
+    padding:10px;
+    text-align:center;
+    min-width:0;
+  }
+  .micro-result small{
+    display:block;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  .micro-result strong{
+    display:block;
+    overflow-wrap:anywhere;
+  }
+  .micro-note{
+    margin-top:12px;
+    border-left:4px solid var(--accent);
+    background:#f5f7ff;
+    border-radius:8px;
+    padding:11px 12px;
+    line-height:1.5;
+  }
+  .micro-controls select{
+    width:100%;
+    min-height:44px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:8px 10px;
+    background:#fff;
+    color:var(--text);
+    font:inherit;
+  }
+  .micro-button-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:10px;
+  }
+  .micro-button-grid button{
+    min-width:0;
+  }
+  .micro-focus-line{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.45;
+  }
+
+  .telescope-note{
+    margin-top:9px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+  }
+
+  .aberr-playground{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 330px;
+    gap:18px;
+    align-items:start;
+  }
+  .aberr-left-column{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    min-width:0;
+  }
+  #aberrCanvas{
+    display:block;
+    width:100%;
+    height:auto;
+    background:#fff;
+  }
+  .aberr-button-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:10px;
+  }
+  .aberr-button-grid button.primary{
+    background:#edf2ff;
+    border-color:#bfcaff;
+    color:#2447c6;
+  }
+  .aberr-control-group[hidden]{display:none}
+  .aberr-compact-note{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+  }
+
   footer{margin-top:18px;color:var(--muted);font-size:13px;line-height:1.45}
   @media (max-width:980px){
-    .wave-playground,.lens-playground{grid-template-columns:1fr}
-    .lens-equation-results{grid-template-columns:1fr}
+    .wave-playground,.lens-playground,.mirror-playground,.micro-playground,.telescope-playground,.aberr-playground{grid-template-columns:1fr}
+    .lens-equation-results,.mirror-equation-results,.micro-equation-grid{grid-template-columns:1fr}
   }
   @media (max-width:820px){
-    .grid,.below,.wave-grid,.wave-visuals{grid-template-columns:1fr}
+    .grid,.below,.wave-grid,.wave-visuals,.refraction-below{grid-template-columns:1fr}
     .stats{grid-template-columns:1fr 1fr 1fr}
     .wave-metrics,.lens-result-grid{grid-template-columns:1fr 1fr}
     .wave-left-panel{
@@ -308,12 +628,12 @@
   }
   @media (max-width:480px){
     body{padding:12px}
-    .stats,.wave-metrics{grid-template-columns:1fr}
-    .buttons,.lens-controls .control-grid{grid-template-columns:1fr}
+    .stats,.wave-metrics,.micro-result-grid{grid-template-columns:1fr}
+    .buttons,.lens-controls .control-grid,.micro-button-grid,.aberr-button-grid{grid-template-columns:1fr}
   }
 
-  button,input,select,textarea{font-family:Aptos,"Aptos Display","Segoe UI",Arial,sans-serif}
-  svg text{font-family:Aptos,"Aptos Display","Segoe UI",Arial,sans-serif}
+  button,input,select,textarea{font-family:"Source Sans 3","Segoe UI",Arial,sans-serif}
+  svg text{font-family:"Source Sans 3","Segoe UI",Arial,sans-serif}
 
 </style>
 </head>
@@ -326,10 +646,10 @@
     <button class="tab" id="tab-wave-ray" role="tab" aria-selected="true" aria-controls="panel-wave-ray" data-tab="wave-ray">Waves → Rays</button>
     <button class="tab" id="tab-refraction" role="tab" aria-selected="false" aria-controls="panel-refraction" data-tab="refraction">Refraction</button>
     <button class="tab" id="tab-lens" role="tab" aria-selected="false" aria-controls="panel-lens" data-tab="lens">Lens</button>
+    <button class="tab" id="tab-mirror" role="tab" aria-selected="false" aria-controls="panel-mirror" data-tab="mirror">Mirror</button>
+    <button class="tab" id="tab-microscope" role="tab" aria-selected="false" aria-controls="panel-microscope" data-tab="microscope">Microscope</button>
     <button class="tab" id="tab-telescope" role="tab" aria-selected="false" aria-controls="panel-telescope" data-tab="telescope">Telescope</button>
-    <button class="tab" id="tab-interference" role="tab" aria-selected="false" aria-controls="panel-interference" data-tab="interference">Interference</button>
-    <button class="tab" id="tab-diffraction" role="tab" aria-selected="false" aria-controls="panel-diffraction" data-tab="diffraction">Diffraction</button>
-    <button class="tab" id="tab-polarisation" role="tab" aria-selected="false" aria-controls="panel-polarisation" data-tab="polarisation">Polarisation</button>
+    <button class="tab" id="tab-aberrations" role="tab" aria-selected="false" aria-controls="panel-aberrations" data-tab="aberrations">Aberrations</button>
   </nav>
 
   
@@ -345,25 +665,26 @@
       </div>
 
       <div class="wave-playground" style="margin-top:14px">
-        <div class="wave-visuals">
+        <div class="wave-main-column">
+          <div class="wave-visuals">
           <div class="wave-left-panel">
-            <svg id="singleSlitSchematic" viewBox="0 0 520 500" role="img" aria-label="Schematic of a single-slit experiment. Light of wavelength lambda passes through a slit of width a and travels a distance L to a screen. The simulation panel immediately to the right represents that screen.">
+            <svg id="singleSlitSchematic" viewBox="0 0 520 440" role="img" aria-label="Schematic of a single-slit experiment. Light of wavelength lambda passes through a slit of width a and travels a distance L to a screen. The simulation panel immediately to the right represents that screen.">
               <defs>
-                <marker id="arrowBlueSingle" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                <marker id="arrowBlueSingle" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
                   <path d="M0,0 L10,5 L0,10 z" fill="#315efb"></path>
                 </marker>
                 <marker id="arrowDimSingle" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto-start-reverse" markerUnits="strokeWidth">
                   <path d="M2,1 L10,6 L2,11" fill="none" stroke="#344054" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
                 </marker>
-                <marker id="arrowRaySingle" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                <marker id="arrowRaySingle" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
                   <path d="M0,0 L10,5 L0,10 z" fill="#d64545"></path>
                 </marker>
               </defs>
 
-              <rect x="0" y="0" width="520" height="500" fill="#fbfcff"></rect>
+              <rect x="0" y="0" width="520" height="440" fill="#fbfcff"></rect>
 
               <text x="34" y="88" font-size="18" fill="#172033" font-weight="700">incident light</text>
-              <line x1="34" y1="250" x2="174" y2="250" stroke="#315efb" stroke-width="6" marker-end="url(#arrowBlueSingle)"></line>
+              <line x1="34" y1="250" x2="174" y2="250" stroke="#315efb" stroke-width="4" marker-end="url(#arrowBlueSingle)"></line>
               <text x="34" y="292" font-size="16" fill="#667085">λ = 650 nm (fixed)</text>
 
               <rect x="210" y="74" width="30" height="352" fill="#667085" rx="4"></rect>
@@ -372,17 +693,17 @@
 
               <line id="slitWidthDim" x1="276" y1="214" x2="276" y2="286" stroke="#344054" stroke-width="2.2" marker-start="url(#arrowDimSingle)" marker-end="url(#arrowDimSingle)"></line>
               <text x="292" y="220" font-size="17" fill="#344054">slit width a</text>
-              <text id="schematicSlitValue" x="292" y="244" font-size="16" fill="#667085">50 μm</text>
+              <text id="schematicSlitValue" x="292" y="244" font-size="16" fill="#667085">100 μm</text>
 
               <line id="screenDistanceDim" x1="242" y1="372" x2="500" y2="372" stroke="#344054" stroke-width="2" marker-start="url(#arrowDimSingle)" marker-end="url(#arrowDimSingle)"></line>
               <text x="308" y="350" font-size="17" fill="#344054">screen distance L</text>
 
-              <line x1="240" y1="250" x2="502" y2="250" stroke="#d64545" stroke-width="4.2" marker-end="url(#arrowRaySingle)"></line>
+              <line x1="240" y1="250" x2="502" y2="250" stroke="#d64545" stroke-width="3.2" marker-end="url(#arrowRaySingle)"></line>
               <text x="312" y="232" font-size="17" fill="#d64545" font-weight="700">ray-optics beam</text>
 
-              <line x1="510" y1="60" x2="510" y2="440" stroke="#98a2b3" stroke-width="2" stroke-dasharray="8 7"></line>
+              <line x1="510" y1="60" x2="510" y2="410" stroke="#98a2b3" stroke-width="2" stroke-dasharray="8 7"></line>
               <text x="420" y="42" font-size="20" fill="#172033" font-weight="700">screen →</text>
-              <text x="294" y="468" font-size="15" fill="#667085">simulation panel replaces the screen</text>
+              <text x="294" y="428" font-size="15" fill="#667085">simulation panel replaces the screen</text>
             </svg>
             <div class="wave-schematic-note">
               Light passes through a <b>single slit</b> of width <b>a</b> and lands on a screen at distance <b>L</b>. The simulation panel is that screen: the bright vertical strip at the left is the screen itself, and the curve shows intensity as a function of <b>screen position</b>. The slit opening in the schematic changes live with the slit-width slider.
@@ -395,11 +716,23 @@
               <div class="wave-screen-sub">single-slit diffraction in <b>space</b> (screen position)</div>
             </div>
             <div class="wave-canvas-wrap">
-              <canvas id="waveCanvas" width="330" height="500" role="img" aria-label="Single-slit diffraction intensity on a screen plotted against vertical screen position."></canvas>
+              <canvas id="waveCanvas" width="330" height="440" role="img" aria-label="Single-slit diffraction intensity on a screen plotted against vertical screen position."></canvas>
             </div>
             <div class="wave-screen-note">
-              The pale horizontal band marks one screen-resolution bin <b>Δx</b>. When the diffraction width becomes much smaller than <b>Δx</b>, the detailed wave pattern is no longer resolved and the straight-through ray picture becomes useful.
+              The pale horizontal band marks a fixed <b>0.20 mm screen-resolution scale</b>. When the diffraction width becomes much smaller than this scale, the detailed wave pattern is no longer resolved and the straight-through ray picture becomes useful.
             </div>
+          </div>
+        </div>
+
+          <div class="wave-metrics">
+            <div class="wave-metric"><small>Wavelength λ</small><strong id="waveLambdaMetric">650 nm</strong></div>
+            <div class="wave-metric"><small>Width ratio a / λ</small><strong id="waveRatioMetric">153.8</strong></div>
+            <div class="wave-metric"><small>First minimum |x₁|</small><strong id="waveFirstZeroMetric">6.50 mm</strong></div>
+            <div class="wave-metric"><small>Central width 2|x₁|</small><strong id="waveWidthMetric">13.0 mm</strong></div>
+          </div>
+
+          <div id="waveStatus" class="wave-status" aria-live="polite">
+            The diffraction pattern is wide compared with the screen resolution, so wave optics is essential.
           </div>
         </div>
 
@@ -410,14 +743,11 @@
             <label>Fixed wavelength λ: <span id="wavelengthValue">650 nm</span></label>
             <div class="equation" style="font-size:14px;margin-top:6px">red light</div>
 
-            <label for="slitWidthRange">Slit width a: <span id="slitWidthValue">50 μm</span></label>
-            <input id="slitWidthRange" type="range" min="1" max="2000" step="1" value="50">
+            <label for="slitWidthRange">Slit width a: <span id="slitWidthValue">100 μm</span></label>
+            <input id="slitWidthRange" type="range" min="1" max="2000" step="1" value="100">
 
             <label for="screenDistanceRange">Screen distance L: <span id="screenDistanceValue">1.00 m</span></label>
             <input id="screenDistanceRange" type="range" min="0.2" max="3.0" step="0.05" value="1.00">
-
-            <label for="resolutionRange">Screen resolution Δx: <span id="resolutionValue">0.20 mm</span></label>
-            <input id="resolutionRange" type="range" min="0.02" max="2.00" step="0.01" value="0.20">
 
             <div class="buttons">
               <button id="strongDiffractionBtn">Strong diffraction</button>
@@ -440,16 +770,6 @@
         </aside>
       </div>
 
-      <div class="wave-metrics">
-        <div class="wave-metric"><small>Wavelength λ</small><strong id="waveLambdaMetric">650 nm</strong></div>
-        <div class="wave-metric"><small>Width ratio a / λ</small><strong id="waveRatioMetric">76.9</strong></div>
-        <div class="wave-metric"><small>First minimum |x₁|</small><strong id="waveFirstZeroMetric">13.0 mm</strong></div>
-        <div class="wave-metric"><small>Central width 2|x₁|</small><strong id="waveWidthMetric">26.0 mm</strong></div>
-      </div>
-
-      <div id="waveStatus" class="wave-status" aria-live="polite">
-        The diffraction pattern is wide compared with the screen resolution, so wave optics is essential.
-      </div>
     </section>
 
     <div class="below">
@@ -468,7 +788,7 @@
     </div>
   </section>
 
-  <section id="panel-refraction" class="tab-panel" role="tabpanel" aria-labelledby="tab-refraction" hidden> class="tab-panel" role="tabpanel" aria-labelledby="tab-refraction" hidden> class="tab-panel" role="tabpanel" aria-labelledby="tab-refraction" hidden>
+  <section id="panel-refraction" class="tab-panel" role="tabpanel" aria-labelledby="tab-refraction" hidden>
     <div class="grid">
       <section class="card">
         <div class="row">
@@ -513,6 +833,12 @@
           <div class="stat"><small>Refracted</small><strong id="refractReadout">19.5°</strong></div>
           <div class="stat"><small>Critical angle</small><strong id="criticalReadout">—</strong></div>
         </div>
+
+        <div class="refraction-snell-inline">
+          <strong>Snell's law</strong>
+          <div class="equation">n₁ sin θ₁ = n₂ sin θ₂</div>
+          <p id="substitution" class="muted">1.00 × sin(30.0°) = 1.50 × sin(19.5°)</p>
+        </div>
       </section>
 
       <aside>
@@ -546,29 +872,24 @@
       </aside>
     </div>
 
-    <div class="below">
-      <section class="card">
-        <strong>Snell's law</strong>
-        <div class="equation" style="margin-top:10px">n₁ sin θ₁ = n₂ sin θ₂</div>
-        <p id="substitution" class="muted">1.00 × sin(30.0°) = 1.50 × sin(19.5°)</p>
-      </section>
-
+    <div class="refraction-below">
       <section class="card">
         <strong>What is happening?</strong>
         <p id="explanation">Light enters a higher-index medium, so it bends <b>toward the normal</b>.</p>
       </section>
+
+      <section class="card challenge">
+        <div class="row">
+          <div>
+            <strong>Mini challenge</strong>
+            <div class="muted">Can you make the refracted ray skim exactly along the interface?</div>
+          </div>
+          <button id="criticalBtn">Set θ₁ = critical angle</button>
+        </div>
+        <p id="challengeMessage" class="muted">Hint: this is only possible when n₁ &gt; n₂.</p>
+      </section>
     </div>
 
-    <section class="card challenge">
-      <div class="row">
-        <div>
-          <strong>Mini challenge</strong>
-          <div class="muted">Can you make the refracted ray skim exactly along the interface?</div>
-        </div>
-        <button id="criticalBtn">Set θ₁ = critical angle</button>
-      </div>
-      <p id="challengeMessage" class="muted">Hint: this is only possible when n₁ &gt; n₂.</p>
-    </section>
   </section>
 
 
@@ -585,7 +906,7 @@
       <div class="lens-playground" style="margin-top:14px">
         <div class="lens-left-column">
           <div class="lens-visual">
-            <canvas id="lensCanvas" width="860" height="500" role="img" aria-label="Interactive thin-lens ray diagram and lens shape."></canvas>
+            <canvas id="lensCanvas" width="860" height="400" role="img" aria-label="Interactive thin-lens ray diagram and lens shape."></canvas>
           </div>
 
           <section class="lens-equation-card">
@@ -669,32 +990,313 @@
     </section>
   </section>
 
-  <section id="panel-telescope" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-telescope" hidden>
-    <strong>Telescope</strong>
-    <p class="muted" style="line-height:1.6">
-      Telescope activity coming next.
-    </p>
+
+  <section id="panel-mirror" class="tab-panel" role="tabpanel" aria-labelledby="tab-mirror" hidden>
+    <section class="card">
+      <div class="row">
+        <div>
+          <strong>Curved mirror ray diagram</strong>
+          <div class="muted">Explore spherical concave and convex mirrors in the paraxial approximation.</div>
+        </div>
+        <div id="mirrorTypeBadge" class="badge">Concave mirror</div>
+      </div>
+
+      <div class="mirror-playground" style="margin-top:14px">
+        <div class="mirror-left-column">
+          <div class="mirror-visual">
+            <canvas id="mirrorCanvas" width="860" height="400" role="img" aria-label="Interactive spherical-mirror ray diagram with object tree, image tree and principal rays."></canvas>
+          </div>
+
+          <section class="mirror-equation-card">
+            <div class="mirror-equation-results">
+              <div>
+                <div class="mirror-equations-stack">
+                  <div class="mirror-equation-box">
+                    <small>Spherical mirror</small>
+                    <div class="mirror-equation-main">f = R / 2</div>
+                  </div>
+                  <div class="mirror-equation-box">
+                    <small>Mirror equation</small>
+                    <div class="mirror-equation-main">1/f = 1/s₁ + 1/s₂</div>
+                  </div>
+                </div>
+                <div class="mirror-sign-note">
+                  A real object has s₁ &gt; 0. Concave mirrors have f &gt; 0. Convex mirrors have f &lt; 0. A real image has s₂ &gt; 0; a virtual image has s₂ &lt; 0.
+                </div>
+              </div>
+
+              <div class="mirror-result-grid">
+                <div class="mirror-result"><small>Radius R</small><strong id="mirrorRMetric">+160 mm</strong></div>
+                <div class="mirror-result"><small>Focal length f</small><strong id="mirrorFMetric">+80 mm</strong></div>
+                <div class="mirror-result"><small>Image distance s₂</small><strong id="mirrorImageMetric">+109 mm</strong></div>
+                <div class="mirror-result"><small>Magnification m</small><strong id="mirrorMagMetric">−0.36</strong></div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="mirror-controls">
+          <section class="card">
+            <strong>Mirror controls</strong>
+
+            <label for="mirrorType">Mirror type</label>
+            <select id="mirrorType">
+              <option value="concave" selected>Concave</option>
+              <option value="convex">Convex</option>
+            </select>
+
+            <label for="mirrorRadiusRange">Radius of curvature |R|: <span id="mirrorRadiusValue">160 mm</span></label>
+            <input id="mirrorRadiusRange" type="range" min="60" max="500" step="5" value="160">
+
+            <label for="mirrorObjectDistanceRange">Object distance s₁: <span id="mirrorObjectDistanceValue">300 mm</span></label>
+            <input id="mirrorObjectDistanceRange" type="range" min="80" max="700" step="5" value="300">
+
+            <div class="buttons">
+              <button id="concaveMirrorPreset">Concave</button>
+              <button id="convexMirrorPreset">Convex</button>
+            </div>
+          </section>
+
+          <section class="card">
+            <strong>Three principal rays</strong>
+            <p class="formula-note">
+              For a concave mirror: a parallel ray reflects through F; a ray through F reflects parallel; a ray through C retraces its path. For a convex mirror, the reflected rays diverge as if they originated from virtual F and C behind the mirror.
+            </p>
+          </section>
+        </aside>
+      </div>
+
+      <div id="mirrorStatus" class="mirror-note" aria-live="polite">
+        The current concave mirror forms a real, inverted image.
+      </div>
+    </section>
   </section>
 
-  <section id="panel-interference" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-interference" hidden>
-    <div class="coming-soon-inner">
-      <h2>Interference</h2>
-      <p class="muted">Ready for a future double-slit or two-source interference activity. The tab is already wired for usage statistics.</p>
-    </div>
+
+  <section id="panel-microscope" class="tab-panel" role="tabpanel" aria-labelledby="tab-microscope" hidden>
+    <section class="card">
+      <div class="row">
+        <div>
+          <strong>Microscope with a human eye</strong>
+          <div class="muted">Move the object to explore focus. The fixed objective forms a real intermediate image; the eyepiece magnifies it, and the fixed eye lens focuses the outgoing rays onto the retina.</div>
+        </div>
+        <div id="microscopeStatusBadge" class="badge">Focused on retina</div>
+      </div>
+
+      <div class="micro-playground" style="margin-top:14px">
+        <div class="micro-left-column">
+          <div class="micro-visual">
+            <canvas id="microscopeCanvas" width="860" height="390" role="img" aria-label="Compound microscope ray diagram with object plane, objective lens, intermediate image plane, eyepiece focal plane, eyepiece, human eye lens and retina."></canvas>
+          </div>
+
+          <section class="micro-equation-card">
+            <div class="micro-result-grid">
+              <div class="micro-result"><small>Objective</small><strong id="microObjMetric">10× (f = 20 mm)</strong></div>
+              <div class="micro-result"><small>Eyepiece</small><strong id="microEyeMetric">5× (f = 50 mm)</strong></div>
+              <div class="micro-result"><small>Intermediate − eyepiece focal plane</small><strong id="microOffsetMetric">0.0 mm</strong></div>
+              <div class="micro-result"><small>Retina focus error</small><strong id="microRetinaMetric">0.0 mm</strong></div>
+            </div>
+            <div class="micro-sign-note">
+              The dotted lines mark the main planes, and the purple dots mark the focal points.
+            </div>
+          </section>
+        </div>
+
+        <aside class="micro-controls">
+          <section class="card">
+            <strong>Microscope controls</strong>
+
+            <label for="microObjectDistance">Object distance s<sub>obj</sub>: <span id="microObjectDistanceValue">23.6 mm</span></label>
+            <input id="microObjectDistance" type="range" min="21.0" max="38.0" step="0.1" value="23.6">
+            <div class="micro-focus-line">Correct focus distance: <strong id="microCorrectValue">23.6 mm</strong></div>
+
+            <div class="micro-focus-line">Objective fixed at <strong>10× (f = 20 mm)</strong></div>
+            <div class="micro-focus-line">Eyepiece fixed at <strong>5× (f = 50 mm)</strong></div>
+
+            <div class="buttons">
+              <button id="microFocusBtn">Set correct focus</button>
+            </div>
+          </section>
+
+          <section class="card">
+            <strong>What to look for</strong>
+            <p class="formula-note">
+              When the objective is in the correct position, the intermediate image lands at the <b>focal plane of the eyepiece</b>. Then the eyepiece sends out nearly parallel rays, and the <b>fixed</b> human-eye lens focuses them onto the retina.
+            </p>
+            <p class="formula-note">
+              Move the object away from its correct distance and the retina is no longer sharply focused, even though the objective, eyepiece, and eye lens stay fixed.
+            </p>
+          </section>
+        </aside>
+      </div>
+
+    </section>
   </section>
 
-  <section id="panel-diffraction" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-diffraction" hidden>
-    <div class="coming-soon-inner">
-      <h2>Diffraction</h2>
-      <p class="muted">Ready for a future single-slit, aperture, or diffraction-grating activity. The tab is already wired for usage statistics.</p>
-    </div>
+  <section id="panel-telescope" class="tab-panel" role="tabpanel" aria-labelledby="tab-telescope" hidden>
+    <section class="card">
+      <div class="row">
+        <div>
+          <strong>Keplerian telescope with a human eye</strong>
+          <div class="muted">Parallel rays from a distant object are focused by the objective, re-collimated by the eyepiece at normal adjustment, and then focused by the fixed eye lens onto the retina.</div>
+        </div>
+        <div id="telescopeStatusBadge" class="badge">Normal adjustment</div>
+      </div>
+
+      <div class="telescope-playground" style="margin-top:14px">
+        <div class="telescope-left-column">
+          <div class="micro-visual">
+            <canvas id="telescopeCanvas" width="860" height="390" role="img" aria-label="Keplerian telescope ray diagram with objective, intermediate image, eyepiece, human eye lens and retina."></canvas>
+          </div>
+
+          <section class="micro-equation-card">
+            <div class="micro-result-grid">
+              <div class="micro-result"><small>Objective focal length f<sub>obj</sub></small><strong id="telObjMetric">120 mm</strong></div>
+              <div class="micro-result"><small>Eyepiece focal length f<sub>eye</sub></small><strong id="telEyeMetric">24 mm</strong></div>
+              <div class="micro-result"><small>Separation L</small><strong id="telSepMetric">144.0 mm</strong></div>
+              <div class="micro-result"><small>Angular magnification M</small><strong id="telMagMetric">−5.0×</strong></div>
+            </div>
+            <div class="micro-sign-note">
+              Normal adjustment: L = f<sub>obj</sub> + f<sub>eye</sub>. Purple dots mark focal points; the negative magnification denotes an inverted view.
+            </div>
+          </section>
+        </div>
+
+        <aside class="micro-controls">
+          <section class="card">
+            <strong>Telescope controls</strong>
+
+            <label for="telescopeSeparation">Objective–eyepiece separation L: <span id="telescopeSeparationValue">144.0 mm</span></label>
+            <input id="telescopeSeparation" type="range" min="132" max="156" step="0.1" value="144.0">
+            <div class="micro-focus-line">Normal adjustment: <strong id="telescopeCorrectValue">144.0 mm</strong></div>
+
+            <div class="micro-focus-line">Objective fixed at <strong>f<sub>obj</sub> = 120 mm</strong></div>
+            <div class="micro-focus-line">Eyepiece fixed at <strong>f<sub>eye</sub> = 24 mm</strong></div>
+            <div class="micro-focus-line">Human-eye lens and retina are fixed.</div>
+
+            <div class="buttons">
+              <button id="telescopeFocusBtn">Set normal adjustment</button>
+            </div>
+          </section>
+
+          <section class="card">
+            <strong>What to look for</strong>
+            <p class="formula-note">
+              At normal adjustment, the real intermediate image formed by the objective lies at the <b>front focal plane of the eyepiece</b>. The rays leaving the eyepiece are therefore parallel.
+            </p>
+            <p class="formula-note">
+              Move the eyepiece away from this position and the outgoing rays converge or diverge, so the fixed eye lens no longer forms a sharp image exactly on the retina.
+            </p>
+          </section>
+        </aside>
+      </div>
+    </section>
   </section>
 
-  <section id="panel-polarisation" class="tab-panel card coming-soon" role="tabpanel" aria-labelledby="tab-polarisation" hidden>
-    <div class="coming-soon-inner">
-      <h2>Polarisation</h2>
-      <p class="muted">Ready for a future Malus's-law or polariser activity. The tab is already wired for usage statistics.</p>
-    </div>
+  <section id="panel-aberrations" class="tab-panel" role="tabpanel" aria-labelledby="tab-aberrations" hidden>
+    <section class="card">
+      <div class="row">
+        <div>
+          <strong>Lens aberrations</strong>
+          <div class="muted">Compare the ideal paraxial lens with simple models of spherical aberration, chromatic aberration, coma, astigmatism, and distortion.</div>
+        </div>
+        <div id="aberrStatusBadge" class="badge">Spherical aberration</div>
+      </div>
+
+      <div class="aberr-playground" style="margin-top:14px">
+        <div class="aberr-left-column">
+          <div class="micro-visual">
+            <canvas id="aberrCanvas" width="860" height="390" role="img" aria-label="Interactive lens aberration ray diagram."></canvas>
+          </div>
+
+          <section class="micro-equation-card">
+            <div class="micro-result-grid">
+              <div class="micro-result"><small id="aberrMetric1Label">Aperture D</small><strong id="aberrMetric1">60 mm</strong></div>
+              <div class="micro-result"><small id="aberrMetric2Label">Paraxial focus</small><strong id="aberrMetric2">80.0 mm</strong></div>
+              <div class="micro-result"><small id="aberrMetric3Label">Marginal focus</small><strong id="aberrMetric3">74.8 mm</strong></div>
+              <div class="micro-result"><small id="aberrMetric4Label">Longitudinal Δf</small><strong id="aberrMetric4">5.2 mm</strong></div>
+            </div>
+            <div id="aberrMetricNote" class="micro-sign-note">
+              Closing the aperture removes marginal rays, so the paraxial approximation becomes better.
+            </div>
+          </section>
+        </div>
+
+        <aside class="micro-controls">
+          <section class="card">
+            <strong>Aberration controls</strong>
+
+            <label>Mode</label>
+            <div class="aberr-button-grid">
+              <button id="aberrSphericalBtn" class="primary">Spherical</button>
+              <button id="aberrChromaticBtn">Chromatic</button>
+              <button id="aberrComaBtn">Coma</button>
+              <button id="aberrAstigBtn">Astigmatism</button>
+              <button id="aberrDistortionBtn">Distortion</button>
+            </div>
+
+            <label>Lens model</label>
+            <div class="aberr-button-grid">
+              <button id="aberrRealBtn" class="primary">Real lens</button>
+              <button id="aberrIdealBtn">Ideal thin lens</button>
+            </div>
+
+            <div id="aberrSphericalControls" class="aberr-control-group">
+              <label for="aberrAperture">Aperture diameter D: <span id="aberrApertureValue">60 mm</span></label>
+              <input id="aberrAperture" type="range" min="20" max="100" step="1" value="60">
+              <div class="aberr-compact-note">A larger aperture admits more marginal rays, where the paraxial approximation is weaker.</div>
+            </div>
+
+            <div id="aberrChromaticControls" class="aberr-control-group" hidden>
+              <label>Light</label>
+              <div class="aberr-button-grid">
+                <button id="aberrWhiteBtn" class="primary">White light</button>
+                <button id="aberrMonoBtn">Single λ</button>
+              </div>
+
+              <div id="aberrWavelengthWrap" hidden>
+                <label for="aberrWavelength">Wavelength λ: <span id="aberrWavelengthValue">550 nm</span></label>
+                <input id="aberrWavelength" type="range" min="450" max="650" step="1" value="550">
+              </div>
+              <div class="aberr-compact-note">The chromatic model uses a simple dispersive-glass relation: shorter wavelengths have a larger refractive index and therefore a shorter focal length.</div>
+            </div>
+
+            <div id="aberrComaControls" class="aberr-control-group" hidden>
+              <label for="aberrComaField">Field angle θ: <span id="aberrComaFieldValue">3.0°</span></label>
+              <input id="aberrComaField" type="range" min="0.0" max="6.0" step="0.1" value="3.0">
+              <div class="aberr-compact-note">Coma is an off-axis aberration: an off-axis point source produces an asymmetric comet-shaped blur.</div>
+            </div>
+
+            <div id="aberrAstigControls" class="aberr-control-group" hidden>
+              <label for="aberrAstigField">Field angle θ: <span id="aberrAstigFieldValue">3.0°</span></label>
+              <input id="aberrAstigField" type="range" min="0.0" max="6.0" step="0.1" value="3.0">
+
+              <label for="aberrAstigScreen">Screen position T → S: <span id="aberrAstigScreenValue">50%</span></label>
+              <input id="aberrAstigScreen" type="range" min="0" max="100" step="1" value="50">
+
+              <div class="aberr-compact-note">Move the screen from the tangential focus T to the sagittal focus S and watch the cross-section change continuously.</div>
+            </div>
+
+            <div id="aberrDistortionControls" class="aberr-control-group" hidden>
+              <label for="aberrDistField">Field angle θ: <span id="aberrDistFieldValue">4.5°</span></label>
+              <input id="aberrDistField" type="range" min="0.0" max="6.0" step="0.1" value="4.5">
+
+              <label for="aberrDistStrength">Distortion strength: <span id="aberrDistStrengthValue">+35%</span></label>
+              <input id="aberrDistStrength" type="range" min="-45" max="45" step="1" value="35">
+
+              <div class="aberr-compact-note">Negative values give barrel distortion; positive values give pincushion distortion. Distortion changes image position across the field but does not blur an individual point.</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <strong>What to look for</strong>
+            <p id="aberrExplanation" class="formula-note">
+              Marginal rays focus closer to the lens than paraxial rays. Reduce the aperture and the two focal positions approach one another.
+            </p>
+          </section>
+        </aside>
+      </div>
+    </section>
   </section>
 
   <footer>
@@ -778,7 +1380,6 @@
   const waveCtx = waveCanvas.getContext('2d');
   const slitWidthRange = q('#slitWidthRange');
   const screenDistanceRange = q('#screenDistanceRange');
-  const resolutionRange = q('#resolutionRange');
 
   let waveSimulationStartedTracked = false;
   let rayLimitTracked = false;
@@ -809,13 +1410,12 @@
     const aUm = +slitWidthRange.value;
     const a = aUm * 1e-6;
     const L = +screenDistanceRange.value;
-    const resolutionMm = +resolutionRange.value;
+    const resolutionMm = 0.20;
     const resolution = resolutionMm * 1e-3;
 
     q('#wavelengthValue').textContent = lambdaNm.toFixed(0) + ' nm';
     q('#slitWidthValue').textContent = aUm.toFixed(0) + ' μm';
     q('#screenDistanceValue').textContent = L.toFixed(2) + ' m';
-    q('#resolutionValue').textContent = resolutionMm.toFixed(2) + ' mm';
 
     // Update the schematic slit opening visually.
     const slitOpening = q('#schematicSlitOpening');
@@ -903,7 +1503,7 @@
     // Grid and vertical position ticks.
     ctx.strokeStyle = '#e4e7ec';
     ctx.lineWidth = 1;
-    ctx.font = '13px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
+    ctx.font = '13px "Source Sans 3", "Segoe UI", Arial, sans-serif';
     ctx.fillStyle = '#667085';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
@@ -921,7 +1521,7 @@
     ctx.strokeStyle = '#98a2b3';
     ctx.strokeRect(screenX, padT, plotW, plotH);
     ctx.fillStyle = '#344054';
-    ctx.font = '13px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
+    ctx.font = '13px "Source Sans 3", "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText('screen', screenX - 5, 8);
@@ -960,7 +1560,7 @@
 
     // Axis labels.
     ctx.fillStyle = '#172033';
-    ctx.font = '14px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
+    ctx.font = '14px "Source Sans 3", "Segoe UI", Arial, sans-serif';
     ctx.save();
     ctx.translate(18, H / 2);
     ctx.rotate(-Math.PI / 2);
@@ -979,16 +1579,16 @@
     ctx.fillStyle = '#344054';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    ctx.font = '12px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
+    ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
     ctx.fillText('single-slit intensity', screenX + 42, padT + 12);
 
     ctx.fillStyle = 'rgba(49,94,251,0.10)';
     ctx.fillRect(screenX + 10, padT + 27, 24, 10);
     ctx.fillStyle = '#344054';
-    ctx.fillText('one resolution bin Δx', screenX + 42, padT + 32);
+    ctx.fillText('fixed 0.20 mm resolution', screenX + 42, padT + 32);
   }
 
-  [slitWidthRange, screenDistanceRange, resolutionRange].forEach(el => {
+  [slitWidthRange, screenDistanceRange].forEach(el => {
     el.addEventListener('input', () => {
       markWaveSimulationStarted();
       updateWavePlayground();
@@ -999,7 +1599,6 @@
     markWaveSimulationStarted();
     slitWidthRange.value = 10;
     screenDistanceRange.value = 1.00;
-    resolutionRange.value = 0.20;
     updateWavePlayground();
   });
 
@@ -1007,7 +1606,6 @@
     markWaveSimulationStarted();
     slitWidthRange.value = 1200;
     screenDistanceRange.value = 1.00;
-    resolutionRange.value = 0.20;
     updateWavePlayground();
   });
 
@@ -1055,25 +1653,46 @@
     return kind === 'convex' ? amount : -amount;
   }
 
-  function drawArrow(ctx, x, yBase, height, color, label) {
+  function drawTree(ctx, x, yBase, height, label) {
+    const sign = height >= 0 ? 1 : -1;
+    const H = Math.abs(height);
     const yTip = yBase - height;
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(x, yBase);
-    ctx.lineTo(x, yTip);
-    ctx.stroke();
 
-    const dir = height >= 0 ? -1 : 1;
-    ctx.beginPath();
-    ctx.moveTo(x, yTip);
-    ctx.lineTo(x - 7, yTip - dir * 11);
-    ctx.lineTo(x + 7, yTip - dir * 11);
-    ctx.closePath();
-    ctx.fill();
+    ctx.save();
+    ctx.translate(x, yBase);
+    ctx.scale(1, sign);
 
-    ctx.font = '14px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
+    const trunkW = Math.max(6, H * 0.10);
+    const trunkH = H * 0.24;
+    const foliageW = H * 0.38;
+
+    // trunk
+    ctx.fillStyle = '#8b5a2b';
+    ctx.fillRect(-trunkW / 2, -trunkH, trunkW, trunkH);
+
+    // foliage: three stacked triangles
+    ctx.fillStyle = '#1f8f4c';
+    const levels = [
+      {top: H, width: foliageW * 0.78, baseY: H * 0.62},
+      {top: H * 0.78, width: foliageW * 0.95, baseY: H * 0.42},
+      {top: H * 0.58, width: foliageW * 1.12, baseY: H * 0.22},
+    ];
+    levels.forEach(level => {
+      ctx.beginPath();
+      ctx.moveTo(0, -level.top);
+      ctx.lineTo(-level.width / 2, -level.baseY);
+      ctx.lineTo(level.width / 2, -level.baseY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#14683a';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    });
+
+    ctx.restore();
+
+    ctx.fillStyle = '#172033';
+    ctx.font = '14px "Source Sans 3", "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = height >= 0 ? 'bottom' : 'top';
     ctx.fillText(label, x, yTip + (height >= 0 ? -8 : 8));
@@ -1171,6 +1790,17 @@
     ctx.stroke();
     ctx.restore();
 
+    // Thin-lens plane
+    ctx.save();
+    ctx.setLineDash([8, 7]);
+    ctx.strokeStyle = '#7b61ff';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(lensX, 0);
+    ctx.lineTo(lensX, H);
+    ctx.stroke();
+    ctx.restore();
+
     // Lens shape via quadratic Bézier side profiles.
     const leftBulge = surfaceBulge(leftKind, r1mag);
     const rightBulge = surfaceBulge(rightKind, r2mag);
@@ -1204,20 +1834,37 @@
     ctx.stroke();
 
     ctx.fillStyle = '#344054';
-    ctx.font = '14px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
+    ctx.font = '14px "Source Sans 3", "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillText(`n = ${n.toFixed(2)}`, lensX, yTop - 10);
+    ctx.fillStyle = '#7b61ff';
+    ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('thin-lens plane', lensX + 8, 10);
 
     // Coordinate scale for ray diagram, based on mm.
     const leftMargin = 70;
     const rightMargin = 65;
-    const pxPerMmLeft = (lensX - leftMargin) / 700;
-    const pxPerMmRight = (W - rightMargin - lensX) / 700;
-    const objectX = lensX - uMm * pxPerMmLeft;
+    const pxPerMm = Math.min(
+      (lensX - leftMargin) / 700,
+      (W - rightMargin - lensX) / 700
+    );
+    const pxPerMmLeft = pxPerMm;
+    const pxPerMmRight = pxPerMm;
+    const objectX = lensX - uMm * pxPerMm;
     const objectHeightPx = 88;
-    drawArrow(ctx, objectX, axisY, objectHeightPx, '#172033', 'object');
+    drawTree(ctx, objectX, axisY, objectHeightPx, 'object');
     const objectTipY = axisY - objectHeightPx;
+
+    // Calculate the image-tree geometry once so the centre ray and
+    // the drawn image use exactly the same target point.
+    const imageHeightPx = Number.isFinite(magnification) ? objectHeightPx * magnification : Infinity;
+    const imageXComputed = Number.isFinite(vMm)
+      ? (vMm > 0 ? lensX + vMm * pxPerMmRight : lensX - Math.abs(vMm) * pxPerMmLeft)
+      : Infinity;
+    const imageTipYComputed = Number.isFinite(imageHeightPx) ? axisY - imageHeightPx : Infinity;
 
     // Focal points.
     if (Number.isFinite(fMm) && Math.abs(fMm) <= 700) {
@@ -1229,7 +1876,7 @@
           ctx.beginPath();
           ctx.arc(x, axisY, 5, 0, Math.PI * 2);
           ctx.fill();
-          ctx.font = '13px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
+          ctx.font = '13px "Source Sans 3", "Segoe UI", Arial, sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'top';
           ctx.fillText(idx === 0 ? 'F' : "F′", x, axisY + 9);
@@ -1240,12 +1887,49 @@
     // Ray 1: parallel to axis -> through image-side focus for converging,
     // or diverges as if from object-side focus for diverging.
     const lensHitY = objectTipY;
-    lineSegment(ctx, objectX, objectTipY, lensX, lensHitY, '#d64545', false, 2.5);
+    lineSegment(ctx, objectX, objectTipY, lensX, lensHitY, '#8b5cf6', false, 2.5);
 
-    // Ray 2: through lens centre, undeviated.
-    const centerSlope = (axisY - objectTipY) / (lensX - objectX);
-    const yAtRight = axisY + centerSlope * (W - rightMargin - lensX);
-    lineSegment(ctx, objectX, objectTipY, W - rightMargin, yAtRight, '#117a55', false, 2.4);
+    // Ray 2: through the thin-lens centre, undeviated.
+    // For a finite image, explicitly draw it through the calculated
+    // image-tree tip so the ray and image construction coincide exactly.
+    lineSegment(ctx, objectX, objectTipY, lensX, axisY, '#117a55', false, 2.4);
+    if (Number.isFinite(imageXComputed) && Number.isFinite(imageTipYComputed)) {
+      if (vMm > 0) {
+        lineSegment(ctx, lensX, axisY, imageXComputed, imageTipYComputed, '#117a55', false, 2.4);
+        const centerSlopeOut = (imageTipYComputed - axisY) / (imageXComputed - lensX);
+        const yAtRight = axisY + centerSlopeOut * (W - rightMargin - lensX);
+        lineSegment(ctx, imageXComputed, imageTipYComputed, W - rightMargin, yAtRight, '#117a55', false, 2.4);
+      } else {
+        const centerSlopeOut = (axisY - objectTipY) / (lensX - objectX);
+        const yAtRight = axisY + centerSlopeOut * (W - rightMargin - lensX);
+        lineSegment(ctx, lensX, axisY, W - rightMargin, yAtRight, '#117a55', false, 2.4);
+        lineSegment(ctx, lensX, axisY, imageXComputed, imageTipYComputed, '#117a55', true, 1.5);
+      }
+    } else {
+      const centerSlopeOut = (axisY - objectTipY) / (lensX - objectX);
+      const yAtRight = axisY + centerSlopeOut * (W - rightMargin - lensX);
+      lineSegment(ctx, lensX, axisY, W - rightMargin, yAtRight, '#117a55', false, 2.4);
+    }
+
+    // Ray 3: through / toward a focal point, then emerges parallel to the axis.
+    let ray3LensY = objectTipY;
+    if (Number.isFinite(fMm)) {
+      if (fMm > 0) {
+        const fLeftX = lensX - fMm * pxPerMmLeft;
+        const slope3 = (axisY - objectTipY) / (fLeftX - objectX);
+        ray3LensY = objectTipY + slope3 * (lensX - objectX);
+        lineSegment(ctx, objectX, objectTipY, lensX, ray3LensY, '#111111', false, 2.1);
+        lineSegment(ctx, lensX, ray3LensY, W - rightMargin, ray3LensY, '#111111', false, 2.1);
+      } else {
+        const fRightX = lensX + Math.abs(fMm) * pxPerMmRight;
+        const slope3 = (axisY - objectTipY) / (fRightX - objectX);
+        ray3LensY = objectTipY + slope3 * (lensX - objectX);
+        lineSegment(ctx, objectX, objectTipY, lensX, ray3LensY, '#111111', false, 2.1);
+        lineSegment(ctx, lensX, ray3LensY, W - rightMargin, ray3LensY, '#111111', false, 2.1);
+        // show the intended target focal point on the far side
+        lineSegment(ctx, lensX, ray3LensY, fRightX, axisY, '#111111', true, 1.4);
+      }
+    }
 
     let ray1EndX = W - rightMargin;
     let ray1EndY = lensHitY;
@@ -1256,45 +1940,41 @@
         const dx = fRightX - lensX;
         const slope = Math.abs(dx) < 1e-9 ? 0 : (axisY - lensHitY) / dx;
         ray1EndY = lensHitY + slope * (ray1EndX - lensX);
-        lineSegment(ctx, lensX, lensHitY, ray1EndX, ray1EndY, '#d64545', false, 2.5);
+        lineSegment(ctx, lensX, lensHitY, ray1EndX, ray1EndY, '#8b5cf6', false, 2.5);
       } else {
         const fLeftX = lensX - Math.abs(fMm) * pxPerMmLeft;
         const slope = (lensHitY - axisY) / (lensX - fLeftX);
         ray1EndY = lensHitY + slope * (ray1EndX - lensX);
         lineSegment(ctx, lensX, lensHitY, ray1EndX, ray1EndY, '#d64545', false, 2.5);
         // dashed back extension
-        lineSegment(ctx, fLeftX, axisY, lensX, lensHitY, '#d64545', true, 1.6);
+        lineSegment(ctx, fLeftX, axisY, lensX, lensHitY, '#8b5cf6', true, 1.6);
       }
     } else {
-      lineSegment(ctx, lensX, lensHitY, ray1EndX, lensHitY, '#d64545', false, 2.5);
+      lineSegment(ctx, lensX, lensHitY, ray1EndX, lensHitY, '#8b5cf6', false, 2.5);
     }
 
-    // Draw image when it fits the canvas.
-    if (Number.isFinite(vMm) && Number.isFinite(magnification)) {
-      const imageHeight = objectHeightPx * magnification;
+    // Draw image when it fits the canvas, using the exact same geometry
+    // that was used for the centre ray above.
+    if (Number.isFinite(vMm) && Number.isFinite(imageHeightPx) && Number.isFinite(imageXComputed)) {
       if (vMm > 0) {
-        const imageX = lensX + vMm * pxPerMmRight;
-        if (imageX < W - 35) {
-          drawArrow(ctx, imageX, axisY, imageHeight, '#7b61ff', 'image');
+        if (imageXComputed < W - 35) {
+          drawTree(ctx, imageXComputed, axisY, imageHeightPx, 'image');
         }
       } else {
-        const imageX = lensX - Math.abs(vMm) * pxPerMmLeft;
-        if (imageX > 35) {
-          drawArrow(ctx, imageX, axisY, imageHeight, '#7b61ff', 'virtual image');
-          // Back-extend ray 1 and central ray toward virtual image.
-          const imageTipY = axisY - imageHeight;
-          lineSegment(ctx, lensX, lensHitY, imageX, imageTipY, '#d64545', true, 1.5);
-          lineSegment(ctx, lensX, axisY, imageX, imageTipY, '#117a55', true, 1.5);
+        if (imageXComputed > 35) {
+          drawTree(ctx, imageXComputed, axisY, imageHeightPx, 'virtual image');
+          // Back-extend the parallel ray toward the virtual image.
+          lineSegment(ctx, lensX, lensHitY, imageXComputed, imageTipYComputed, '#8b5cf6', true, 1.5);
         }
       }
     }
 
     // Caption.
     ctx.fillStyle = '#667085';
-    ctx.font = '13px Aptos, "Aptos Display", "Segoe UI", Arial, sans-serif';
+    ctx.font = '13px "Source Sans 3", "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'bottom';
-    ctx.fillText('Thin-lens approximation; surface shape is schematic.', 18, H - 12);
+    ctx.fillText('Thin-lens approximation; surface shape is schematic. Three principal rays are shown.', 18, H - 12);
   }
 
   [leftSurface, rightSurface, leftRadiusRange, rightRadiusRange, lensIndexRange, objectDistanceRange].forEach(el => {
@@ -1344,6 +2024,2038 @@
   });
 
   updateLensPlayground();
+
+  // ---------- Curved mirror / spherical-mirror ray diagram ----------
+  const mirrorCanvas = q('#mirrorCanvas');
+  const mirrorCtx = mirrorCanvas.getContext('2d');
+  const mirrorType = q('#mirrorType');
+  const mirrorRadiusRange = q('#mirrorRadiusRange');
+  const mirrorObjectDistanceRange = q('#mirrorObjectDistanceRange');
+
+  let mirrorSimulationStartedTracked = false;
+
+  function markMirrorSimulationStarted() {
+    if (mirrorSimulationStartedTracked) return;
+    mirrorSimulationStartedTracked = true;
+    track('simulation_started', { activity: 'mirror' });
+  }
+
+  function formatMirrorSigned(v) {
+    if (!Number.isFinite(v)) return '∞';
+    const sign = v > 0 ? '+' : v < 0 ? '−' : '';
+    return sign + Math.abs(v).toFixed(0) + ' mm';
+  }
+
+  function drawMirrorTree(ctx, x, yBase, height, label, opacity = 1) {
+    const sign = height >= 0 ? 1 : -1;
+    const H = Math.abs(height);
+    const yTip = yBase - height;
+
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.translate(x, yBase);
+    ctx.scale(1, sign);
+
+    const trunkW = Math.max(6, H * 0.10);
+    const trunkH = H * 0.24;
+    const foliageW = H * 0.38;
+
+    ctx.fillStyle = '#8b5a2b';
+    ctx.fillRect(-trunkW / 2, -trunkH, trunkW, trunkH);
+
+    ctx.fillStyle = '#1f8f4c';
+    const levels = [
+      {top: H * 0.98, width: foliageW * 0.78, baseY: H * 0.62},
+      {top: H * 0.78, width: foliageW * 0.95, baseY: H * 0.42},
+      {top: H * 0.58, width: foliageW * 1.12, baseY: H * 0.22},
+    ];
+    levels.forEach(level => {
+      ctx.beginPath();
+      ctx.moveTo(0, -level.top);
+      ctx.lineTo(-level.width / 2, -level.baseY);
+      ctx.lineTo(level.width / 2, -level.baseY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#14683a';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    });
+
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.fillStyle = '#172033';
+    ctx.font = '14px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = height >= 0 ? 'bottom' : 'top';
+    ctx.fillText(label, x, yTip + (height >= 0 ? -8 : 8));
+    ctx.restore();
+  }
+
+  function mirrorLine(ctx, x1, y1, x2, y2, color, dashed = false, width = 2.2, alpha = 1) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    if (dashed) ctx.setLineDash([7, 6]);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function mirrorDottedLine(ctx, x1, y1, x2, y2, color, width = 1.4, alpha = 0.75) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.setLineDash([1.5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function updateMirrorPlayground() {
+    const type = mirrorType.value;
+    const Rmag = +mirrorRadiusRange.value;
+    const s1 = +mirrorObjectDistanceRange.value;
+
+    const R = type === 'concave' ? Rmag : -Rmag;
+    const f = R / 2;
+    const denom = 1 / f - 1 / s1;
+    const s2 = Math.abs(denom) < 1e-10 ? Infinity : 1 / denom;
+    const m = Number.isFinite(s2) ? -s2 / s1 : Infinity;
+
+    q('#mirrorRadiusValue').textContent = Rmag.toFixed(0) + ' mm';
+    q('#mirrorObjectDistanceValue').textContent = s1.toFixed(0) + ' mm';
+    q('#mirrorRMetric').textContent = formatMirrorSigned(R);
+    q('#mirrorFMetric').textContent = formatMirrorSigned(f);
+    q('#mirrorImageMetric').textContent = formatMirrorSigned(s2);
+    q('#mirrorMagMetric').textContent = Number.isFinite(m) ? (m >= 0 ? '+' : '−') + Math.abs(m).toFixed(2) : '∞';
+
+    let badge = '';
+    let status = '';
+    if (type === 'concave') {
+      badge = 'Concave mirror';
+      if (Math.abs(s1 - f) < 1e-6) {
+        status = 'The object is at the focal point, so the reflected rays emerge parallel and the image is at infinity.';
+      } else if (s1 > f) {
+        status = `This concave mirror forms a <b>real, inverted</b> image at s₂ = ${formatMirrorSigned(s2)}.`;
+      } else {
+        status = `The object is inside the focal length, so the concave mirror forms a <b>virtual, upright, magnified</b> image behind the mirror.`;
+      }
+    } else {
+      badge = 'Convex mirror';
+      status = `A convex mirror forms a <b>virtual, upright, reduced</b> image behind the mirror for any real object position.`;
+    }
+    q('#mirrorTypeBadge').textContent = badge;
+    q('#mirrorStatus').innerHTML = status;
+
+    // ---- draw ----
+    const ctx = mirrorCtx;
+    const W = mirrorCanvas.width;
+    const H = mirrorCanvas.height;
+    const axisY = H / 2;
+    const mirrorX = W * 0.67;
+    const leftMargin = 70;
+    const rightMargin = 55;
+    const pxPerMm = Math.min(
+      (mirrorX - leftMargin) / 700,
+      (W - rightMargin - mirrorX) / 350
+    );
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    // optical axis
+    ctx.save();
+    ctx.setLineDash([7, 7]);
+    ctx.strokeStyle = '#98a2b3';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(28, axisY);
+    ctx.lineTo(W - 28, axisY);
+    ctx.stroke();
+    ctx.restore();
+
+    // Mirror plane / vertex.
+    ctx.save();
+    ctx.setLineDash([8, 7]);
+    ctx.strokeStyle = '#7b61ff';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(mirrorX, 0);
+    ctx.lineTo(mirrorX, H);
+    ctx.stroke();
+    ctx.restore();
+
+    // Curved mirror itself, facing the object on the left.
+    const mirrorHalfH = 120;
+    const yTop = axisY - mirrorHalfH;
+    const yBot = axisY + mirrorHalfH;
+    const bulge = 28;
+    const controlX = type === 'concave' ? mirrorX + bulge : mirrorX - bulge;
+
+    ctx.beginPath();
+    ctx.moveTo(mirrorX, yTop);
+    ctx.quadraticCurveTo(controlX, axisY, mirrorX, yBot);
+    ctx.strokeStyle = '#315efb';
+    ctx.lineWidth = 5;
+    ctx.stroke();
+
+    // Silver backing on the non-reflecting side.
+    ctx.beginPath();
+    const backingX = type === 'concave' ? controlX + 5 : controlX - 5;
+    ctx.moveTo(mirrorX + (type === 'concave' ? 5 : -5), yTop);
+    ctx.quadraticCurveTo(backingX, axisY, mirrorX + (type === 'concave' ? 5 : -5), yBot);
+    ctx.strokeStyle = '#98a2b3';
+    ctx.lineWidth = 2.2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#7b61ff';
+    ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('mirror vertex', mirrorX + 8, 10);
+
+    // Object.
+    const objectX = mirrorX - s1 * pxPerMm;
+    const objectHeight = 88;
+    const objectTipY = axisY - objectHeight;
+    drawMirrorTree(ctx, objectX, axisY, objectHeight, 'object');
+
+    // Focus and centre of curvature.
+    const fX = mirrorX - f * pxPerMm;  // sign makes convex focus appear behind mirror
+    const cX = mirrorX - R * pxPerMm;
+
+    if (fX > 30 && fX < W - 30) {
+      ctx.fillStyle = '#7b61ff';
+      ctx.beginPath();
+      ctx.arc(fX, axisY, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = '13px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('F', fX, axisY + 9);
+    }
+    if (cX > 30 && cX < W - 30) {
+      ctx.fillStyle = '#475467';
+      ctx.beginPath();
+      ctx.arc(cX, axisY, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = '13px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('C', cX, axisY + 9);
+    }
+
+    // Image tree.
+    if (Number.isFinite(s2) && Number.isFinite(m)) {
+      const imageX = mirrorX - s2 * pxPerMm; // positive s2 = real image on left
+      const imageH = objectHeight * m;
+      if (imageX > 25 && imageX < W - 25 && Math.abs(imageH) < H * 0.75) {
+        drawMirrorTree(ctx, imageX, axisY, imageH, s2 > 0 ? 'image' : 'virtual image', s2 > 0 ? 1 : 0.65);
+      }
+    }
+
+    const rayEndLeft = 35;
+
+    // Ray 1: parallel to the axis; reflects through F (or as if from virtual F).
+    const hitY1 = objectTipY;
+    mirrorLine(ctx, objectX, objectTipY, mirrorX, hitY1, '#8b5cf6', false, 2.5);
+    if (type === 'concave') {
+      const slope1 = (axisY - hitY1) / (fX - mirrorX);
+      const endY1 = hitY1 + slope1 * (rayEndLeft - mirrorX);
+      mirrorLine(ctx, mirrorX, hitY1, rayEndLeft, endY1, '#8b5cf6', false, 2.5);
+    } else {
+      const slope1 = (axisY - hitY1) / (fX - mirrorX);
+      const endY1 = hitY1 + slope1 * (rayEndLeft - mirrorX);
+      mirrorLine(ctx, mirrorX, hitY1, rayEndLeft, endY1, '#d64545', false, 2.5);
+      mirrorLine(ctx, mirrorX, hitY1, fX, axisY, '#8b5cf6', true, 1.5, 0.75);
+    }
+
+    // Ray 2: through/toward F; reflects parallel to the axis.
+    if (Number.isFinite(fX)) {
+      const slope2in = (axisY - objectTipY) / (fX - objectX);
+      const hitY2 = objectTipY + slope2in * (mirrorX - objectX);
+      mirrorLine(ctx, objectX, objectTipY, mirrorX, hitY2, '#117a55', false, 2.4);
+      mirrorLine(ctx, mirrorX, hitY2, rayEndLeft, hitY2, '#117a55', false, 2.4);
+
+      if (type === 'convex') {
+        // Dotted construction: the incoming ray is aimed toward the virtual focus F.
+        mirrorDottedLine(ctx, mirrorX, hitY2, fX, axisY, '#117a55', 1.4, 0.72);
+
+        // Dashed back-extrapolation of the reflected horizontal ray.
+        // In the paraxial construction this passes exactly through the
+        // top of the virtual image tree.
+        if (Number.isFinite(s2) && s2 < 0 && Number.isFinite(m)) {
+          const virtualImageX = mirrorX - s2 * pxPerMm;
+          const virtualImageTipY = axisY - objectHeight * m;
+          mirrorLine(
+            ctx,
+            mirrorX, hitY2,
+            virtualImageX, virtualImageTipY,
+            '#117a55',
+            true,
+            1.5,
+            0.78
+          );
+        }
+      }
+    }
+
+    // Ray 3: through/toward C; it retraces its path.
+    if (Number.isFinite(cX)) {
+      const slope3 = (axisY - objectTipY) / (cX - objectX);
+      const hitY3 = objectTipY + slope3 * (mirrorX - objectX);
+      mirrorLine(ctx, objectX, objectTipY, mirrorX, hitY3, '#111111', false, 2.0);
+      mirrorLine(ctx, mirrorX, hitY3, objectX, objectTipY, '#111111', false, 2.0);
+      if (type === 'convex') {
+        mirrorLine(ctx, mirrorX, hitY3, cX, axisY, '#111111', true, 1.3, 0.65);
+      }
+    }
+
+    // Virtual image construction: back-extend reflected rays behind mirror.
+    if (Number.isFinite(s2) && s2 < 0 && Number.isFinite(m)) {
+      const imageX = mirrorX - s2 * pxPerMm;
+      const imageTipY = axisY - objectHeight * m;
+      mirrorLine(ctx, mirrorX, hitY1, imageX, imageTipY, '#8b5cf6', true, 1.4, 0.7);
+    }
+
+    ctx.fillStyle = '#667085';
+    ctx.font = '13px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Paraxial spherical-mirror approximation. Three principal rays are shown.', 18, H - 12);
+  }
+
+  [mirrorType, mirrorRadiusRange, mirrorObjectDistanceRange].forEach(el => {
+    el.addEventListener('input', () => {
+      markMirrorSimulationStarted();
+      updateMirrorPlayground();
+    });
+    el.addEventListener('change', () => {
+      markMirrorSimulationStarted();
+      updateMirrorPlayground();
+    });
+  });
+
+  q('#concaveMirrorPreset').addEventListener('click', () => {
+    markMirrorSimulationStarted();
+    mirrorType.value = 'concave';
+    mirrorRadiusRange.value = 160;
+    mirrorObjectDistanceRange.value = 300;
+    updateMirrorPlayground();
+  });
+
+  q('#convexMirrorPreset').addEventListener('click', () => {
+    markMirrorSimulationStarted();
+    mirrorType.value = 'convex';
+    mirrorRadiusRange.value = 160;
+    mirrorObjectDistanceRange.value = 300;
+    updateMirrorPlayground();
+  });
+
+  updateMirrorPlayground();
+
+
+  // ---------- Compound microscope + fixed human eye ----------
+  const microscopeCanvas = q('#microscopeCanvas');
+  const microscopeCtx = microscopeCanvas.getContext('2d');
+
+  const microscopeState = {
+    objectiveMag: 10,
+    eyepieceMag: 5,
+    objectDistanceMm: 23.590664
+  };
+
+  const microscopePresets = {
+    objective: {
+      5:  { mag: 5,  f: 40 },
+      10: { mag: 10, f: 20 },
+      20: { mag: 20, f: 10 }
+    },
+    eyepiece: {
+      5:  { mag: 5,  f: 50 },
+      10: { mag: 10, f: 25 },
+      20: { mag: 20, f: 12.5 }
+    }
+  };
+
+  const microObjectivePlaneMm = 58.6;
+  const microEyepiecePlaneMm = 240;
+  const microEyeLensPlaneMm = 320;
+  const microRetinaPlaneMm = 337;
+  const microEyeLensFocalMm = 17;
+  const microAxisHeightMm = 22;
+  const microImageScalePx = 1.5;
+
+  let microscopeSimulationStartedTracked = false;
+
+  function markMicroscopeSimulationStarted() {
+    if (microscopeSimulationStartedTracked) return;
+    microscopeSimulationStartedTracked = true;
+    track('simulation_started', { activity: 'microscope' });
+  }
+
+  function setMicroscopeButtonStates() {
+    // Objective and eyepiece are fixed in this simplified version.
+  }
+
+  function formatSignedMm(v, digits = 1) {
+    if (!Number.isFinite(v)) return '∞';
+    const sign = v > 0 ? '' : v < 0 ? '−' : '';
+    return sign + Math.abs(v).toFixed(digits) + ' mm';
+  }
+
+  function solveCorrectObjectDistanceMm(fObj, fEye) {
+    const targetIntermediatePlane = microEyepiecePlaneMm - fEye;
+    const imageDistance = targetIntermediatePlane - microObjectivePlaneMm;
+    const denom = 1 / fObj - 1 / imageDistance;
+    return 1 / denom;
+  }
+
+  function updateMicroscopeSliderBounds(resetToCorrect = false) {
+    const fObj = microscopePresets.objective[microscopeState.objectiveMag].f;
+    const fEye = microscopePresets.eyepiece[microscopeState.eyepieceMag].f;
+    const correct = solveCorrectObjectDistanceMm(fObj, fEye);
+    const slider = q('#microObjectDistance');
+
+    const minVal = Math.max(fObj + 1.0, correct - 8.0);
+    const maxVal = correct + 14.0;
+    slider.min = minVal.toFixed(1);
+    slider.max = maxVal.toFixed(1);
+    slider.step = '0.1';
+
+    if (resetToCorrect || microscopeState.objectDistanceMm < minVal || microscopeState.objectDistanceMm > maxVal) {
+      microscopeState.objectDistanceMm = correct;
+      slider.value = correct.toFixed(1);
+    } else {
+      slider.value = microscopeState.objectDistanceMm.toFixed(1);
+    }
+
+    q('#microCorrectValue').textContent = correct.toFixed(1) + ' mm';
+    return correct;
+  }
+
+  function microPointToCanvas(xMm, yMm, W, H, xMin, xMax) {
+    const marginX = 35;
+    const marginY = 28;
+    const pxPerMm = (W - 2 * marginX) / (xMax - xMin);
+    const axisY = H / 2 + 12;
+    return {
+      x: marginX + (xMm - xMin) * pxPerMm,
+      y: axisY - yMm * microImageScalePx,
+      axisY,
+      pxPerMm
+    };
+  }
+
+  function microDrawPlane(ctx, xPx, H, color) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.35;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.moveTo(xPx, 0);
+    ctx.lineTo(xPx, H);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function microDrawPlaneSegment(ctx, xPx, y1, y2, color) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.moveTo(xPx, y1);
+    ctx.lineTo(xPx, y2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function microDrawLens(ctx, xPx, axisY, halfHeight, color) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(xPx, axisY - halfHeight);
+    ctx.quadraticCurveTo(xPx - 10, axisY, xPx, axisY + halfHeight);
+    ctx.quadraticCurveTo(xPx + 10, axisY, xPx, axisY - halfHeight);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(123,97,255,0.12)';
+    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function microDrawRetina(ctx, xPx, axisY, halfHeight) {
+    ctx.save();
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(xPx, axisY - halfHeight);
+    ctx.lineTo(xPx, axisY + halfHeight);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function microDrawFocalPoint(ctx, xPx, axisY, label, labelPosition = 'below') {
+    ctx.save();
+    ctx.fillStyle = '#7b61ff';
+    ctx.beginPath();
+    ctx.arc(xPx, axisY, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = '#7b61ff';
+    ctx.textAlign = 'center';
+    if (labelPosition === 'above') {
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(label, xPx, axisY - 8);
+    } else {
+      ctx.textBaseline = 'top';
+      ctx.fillText(label, xPx, axisY + 8);
+    }
+    ctx.restore();
+  }
+
+  function microTraceRay(y0, u0, xObject, xObj, fObj, xEyePiece, fEye, xEyeLens, fHuman, xRetina, xEnd) {
+    let x = xObject;
+    let y = y0;
+    let u = u0;
+    const pts = [{x, y}];
+
+    function propagate(toX) {
+      y = y + u * (toX - x);
+      x = toX;
+      pts.push({x, y});
+    }
+
+    propagate(xObj);
+    u = u - y / fObj;  // objective
+
+    propagate(xEyePiece);
+    u = u - y / fEye;  // eyepiece
+
+    propagate(xEyeLens);
+    u = u - y / fHuman; // eye lens
+
+    propagate(xRetina);
+    if (xEnd > xRetina) propagate(xEnd);
+
+    return { points: pts, yRetina: pts.find(p => Math.abs(p.x - xRetina) < 1e-9)?.y ?? y };
+  }
+
+  function updateMicroscopePlayground() {
+    const objective = microscopePresets.objective[microscopeState.objectiveMag];
+    const eyepiece = microscopePresets.eyepiece[microscopeState.eyepieceMag];
+    const fObj = objective.f;
+    const fEye = eyepiece.f;
+
+    const correctObjectDistance = updateMicroscopeSliderBounds(false);
+    microscopeState.objectDistanceMm = +q('#microObjectDistance').value;
+    const sObj = microscopeState.objectDistanceMm;
+    const xObj = microObjectivePlaneMm;
+    const xObject = xObj - sObj;
+
+    const sObjPrime = 1 / (1 / fObj - 1 / sObj);
+    const xIntermediate = xObj + sObjPrime;
+    const mObj = -sObjPrime / sObj;
+
+    const xEyepieceFocalPlane = microEyepiecePlaneMm - fEye;
+    const offsetMm = xIntermediate - xEyepieceFocalPlane;
+
+    const sEyePieceObject = microEyepiecePlaneMm - xIntermediate;
+    const denomEyePiece = (Math.abs(sEyePieceObject) < 1e-9) ? Infinity : (1 / fEye - 1 / sEyePieceObject);
+    const sEyePieceImage = (!Number.isFinite(denomEyePiece) || Math.abs(denomEyePiece) < 1e-9) ? Infinity : 1 / denomEyePiece;
+    const xEyepieceImage = !Number.isFinite(sEyePieceImage) ? Infinity : (microEyepiecePlaneMm + sEyePieceImage);
+
+    let sHumanObject;
+    if (!Number.isFinite(xEyepieceImage)) {
+      sHumanObject = Infinity;
+    } else {
+      sHumanObject = microEyeLensPlaneMm - xEyepieceImage;
+    }
+
+    let sHumanImage;
+    if (!Number.isFinite(sHumanObject)) {
+      sHumanImage = microEyeLensFocalMm;
+    } else {
+      const denomHuman = 1 / microEyeLensFocalMm - 1 / sHumanObject;
+      sHumanImage = Math.abs(denomHuman) < 1e-9 ? Infinity : 1 / denomHuman;
+    }
+
+    const retinaFocusError = Number.isFinite(sHumanImage) ? sHumanImage - (microRetinaPlaneMm - microEyeLensPlaneMm) : Infinity;
+    const totalNominalMag = objective.mag * eyepiece.mag;
+
+    q('#microObjectDistanceValue').textContent = sObj.toFixed(1) + ' mm';
+    q('#microObjMetric').textContent = `${objective.mag}× (f = ${fObj} mm)`;
+    q('#microEyeMetric').textContent = `${eyepiece.mag}× (f = ${fEye} mm)`;
+    q('#microOffsetMetric').textContent = formatSignedMm(offsetMm, 1);
+    q('#microRetinaMetric').textContent = formatSignedMm(retinaFocusError, 1);
+
+    let badge = 'Not focused';
+    let statusHtml = '';
+    if (Math.abs(offsetMm) < 0.6 && Math.abs(retinaFocusError) < 0.6) {
+      badge = 'Focused on retina';
+      statusHtml = `The objective image lies at the eyepiece focal plane (offset ${offsetMm.toFixed(1)} mm), so the eyepiece sends out nearly <b>parallel rays</b> and the fixed eye lens focuses them onto the retina.`;
+    } else if (Math.abs(offsetMm) >= 0.6) {
+      statusHtml = `The object is not at the correct distance: the intermediate image is <b>${offsetMm > 0 ? 'to the right of' : 'to the left of'}</b> the eyepiece focal plane by ${Math.abs(offsetMm).toFixed(1)} mm, so the retina is not sharply focused.`;
+    } else {
+      statusHtml = `The eyepiece output is not perfectly matched to the fixed human-eye lens, so the focus misses the retina by ${Math.abs(retinaFocusError).toFixed(1)} mm.`;
+    }
+    q('#microscopeStatusBadge').textContent = badge;
+    const microscopeStatusEl = q('#microscopeStatus');
+    if (microscopeStatusEl) microscopeStatusEl.innerHTML = statusHtml;
+
+    // --- draw ---
+    const ctx = microscopeCtx;
+    const W = microscopeCanvas.width;
+    const H = microscopeCanvas.height;
+    const xMin = 20;
+    const xMax = 355;
+    const axisY = H / 2 + 12;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    // axis
+    ctx.save();
+    ctx.setLineDash([7, 7]);
+    ctx.strokeStyle = '#98a2b3';
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.moveTo(18, axisY);
+    ctx.lineTo(W - 18, axisY);
+    ctx.stroke();
+    ctx.restore();
+
+    const objectPlanePt = microPointToCanvas(xObject, 0, W, H, xMin, xMax);
+    const objectivePlanePt = microPointToCanvas(microObjectivePlaneMm, 0, W, H, xMin, xMax);
+    const interPlanePt = microPointToCanvas(xIntermediate, 0, W, H, xMin, xMax);
+    const eyeFocalPt = microPointToCanvas(xEyepieceFocalPlane, 0, W, H, xMin, xMax);
+    const eyepiecePt = microPointToCanvas(microEyepiecePlaneMm, 0, W, H, xMin, xMax);
+    const eyeLensPt = microPointToCanvas(microEyeLensPlaneMm, 0, W, H, xMin, xMax);
+    const retinaPt = microPointToCanvas(microRetinaPlaneMm, 0, W, H, xMin, xMax);
+    const endPt = microPointToCanvas(xMax, 0, W, H, xMin, xMax);
+
+    // Dotted optical planes: keep only the main fixed optical-element planes,
+    // plus the retina plane. The object plane and eyepiece focal-plane guide
+    // line are intentionally omitted to reduce clutter.
+    microDrawPlane(ctx, objectivePlanePt.x, H, '#7b61ff');
+    microDrawPlane(ctx, eyepiecePt.x, H, '#7b61ff');
+    microDrawPlane(ctx, eyeLensPt.x, H, '#475467');
+    microDrawPlane(ctx, retinaPt.x, H, '#ef4444');
+
+    // lenses and retina
+    microDrawLens(ctx, objectivePlanePt.x, axisY, 72, '#315efb');
+    microDrawLens(ctx, eyepiecePt.x, axisY, 72, '#315efb');
+    microDrawLens(ctx, eyeLensPt.x, axisY, 58, '#111827');
+    microDrawRetina(ctx, retinaPt.x, axisY, 78);
+
+    ctx.fillStyle = '#172033';
+    ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('objective', objectivePlanePt.x, axisY - 78);
+    ctx.fillText('eyepiece', eyepiecePt.x, axisY - 78);
+    ctx.fillText('eye', eyeLensPt.x, axisY - 64);
+    ctx.fillStyle = '#ef4444';
+    ctx.textAlign = 'left';
+    ctx.fillText('retina', retinaPt.x + 6, axisY - 84);
+
+    // Focal points, marked like in the lens tab.
+    const objectiveFLeftPt = microPointToCanvas(microObjectivePlaneMm - fObj, 0, W, H, xMin, xMax);
+    const objectiveFRightPt = microPointToCanvas(microObjectivePlaneMm + fObj, 0, W, H, xMin, xMax);
+    const eyepieceFLeftPt = microPointToCanvas(microEyepiecePlaneMm - fEye, 0, W, H, xMin, xMax);
+    const eyepieceFRightPt = microPointToCanvas(microEyepiecePlaneMm + fEye, 0, W, H, xMin, xMax);
+    const eyeLensFLeftPt = microPointToCanvas(microEyeLensPlaneMm - microEyeLensFocalMm, 0, W, H, xMin, xMax);
+    const eyeLensFRightPt = microPointToCanvas(microEyeLensPlaneMm + microEyeLensFocalMm, 0, W, H, xMin, xMax);
+
+    microDrawFocalPoint(ctx, objectiveFLeftPt.x, axisY, 'F', 'below');
+    microDrawFocalPoint(ctx, objectiveFRightPt.x, axisY, "F′", 'below');
+    microDrawFocalPoint(ctx, eyepieceFLeftPt.x, axisY, 'F', 'above');
+    microDrawFocalPoint(ctx, eyepieceFRightPt.x, axisY, "F′", 'above');
+    microDrawFocalPoint(ctx, eyeLensFLeftPt.x, axisY, 'F', 'below');
+    microDrawFocalPoint(ctx, eyeLensFRightPt.x, axisY, "F′", 'above');
+
+    // Small object tree and a compact intermediate image.
+    const objectHeight = 12;
+    drawTree(ctx, objectPlanePt.x, axisY, objectHeight * microImageScalePx, '');
+
+    if (Number.isFinite(xIntermediate) && xIntermediate < microEyepiecePlaneMm - 1 && xIntermediate > microObjectivePlaneMm + 2) {
+      const interHeightRaw = objectHeight * mObj * microImageScalePx;
+      const interHeight = Math.sign(interHeightRaw || -1) * Math.min(Math.abs(interHeightRaw), 115);
+      const interExtent = Math.max(44, Math.abs(interHeight) + 18);
+      microDrawPlaneSegment(ctx, interPlanePt.x, axisY - interExtent, axisY + interExtent, '#16a34a');
+      drawTree(ctx, interPlanePt.x, axisY, interHeight, '');
+    }
+
+    // trace two representative rays from the object top
+    const y0 = objectHeight;
+    const uParallel = 0;
+    const uCenter = -y0 / (xObj - xObject);
+
+    const rayA = microTraceRay(y0, uParallel, xObject, xObj, fObj, microEyepiecePlaneMm, fEye, microEyeLensPlaneMm, microEyeLensFocalMm, microRetinaPlaneMm, xMax);
+    const rayB = microTraceRay(y0, uCenter, xObject, xObj, fObj, microEyepiecePlaneMm, fEye, microEyeLensPlaneMm, microEyeLensFocalMm, microRetinaPlaneMm, xMax);
+
+    function drawMicroRay(ray, color) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ray.points.forEach((p, idx) => {
+        const cp = microPointToCanvas(p.x, p.y, W, H, xMin, xMax);
+        if (idx === 0) ctx.moveTo(cp.x, cp.y);
+        else ctx.lineTo(cp.x, cp.y);
+      });
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    drawMicroRay(rayA, '#8b5cf6');
+    drawMicroRay(rayB, '#117a55');
+
+    // Retinal image. The tree is sharp when the representative rays
+    // meet on the retina and blurred when they arrive at different heights.
+    const yRetA = rayA.yRetina;
+    const yRetB = rayB.yRetina;
+    const yRetMid = 0.5 * (yRetA + yRetB);
+    const retinaSpreadPx = Math.abs(yRetA - yRetB) * microImageScalePx;
+    const retinalHeightRaw = yRetMid * microImageScalePx;
+    const retinalHeight = Math.sign(retinalHeightRaw || 1) * Math.min(Math.abs(retinalHeightRaw), 78);
+
+    ctx.save();
+    if (retinaSpreadPx > 1.2) {
+      ctx.globalAlpha = 0.62;
+      ctx.filter = `blur(${Math.min(4.5, retinaSpreadPx * 0.35).toFixed(1)}px)`;
+    } else {
+      ctx.globalAlpha = 0.9;
+    }
+    drawTree(ctx, retinaPt.x, axisY, retinalHeight, '');
+    ctx.restore();
+
+    // Small marker showing where the object should be for correct focus.
+    const correctObjectX = microObjectivePlaneMm - correctObjectDistance;
+    const correctPt = microPointToCanvas(correctObjectX, 0, W, H, xMin, xMax);
+    ctx.save();
+    ctx.strokeStyle = '#0f766e';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(correctPt.x, H - 20);
+    ctx.lineTo(correctPt.x, H);
+    ctx.stroke();
+    ctx.fillStyle = '#0f766e';
+    ctx.font = '11px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('correct object position', correctPt.x, H - 22);
+    ctx.restore();
+
+    // Keep the canvas itself uncluttered; numerical values are shown below it.
+  }
+
+  function resetMicroscopeToDefaults() {
+    microscopeState.objectiveMag = 10;
+    microscopeState.eyepieceMag = 5;
+    setMicroscopeButtonStates();
+    updateMicroscopeSliderBounds(true);
+    updateMicroscopePlayground();
+  }
+
+  q('#microObjectDistance').addEventListener('input', () => {
+    markMicroscopeSimulationStarted();
+    microscopeState.objectDistanceMm = +q('#microObjectDistance').value;
+    updateMicroscopePlayground();
+  });
+
+  q('#microFocusBtn').addEventListener('click', () => {
+    markMicroscopeSimulationStarted();
+    updateMicroscopeSliderBounds(true);
+    updateMicroscopePlayground();
+  });
+
+  setMicroscopeButtonStates();
+  updateMicroscopeSliderBounds(true);
+  updateMicroscopePlayground();
+
+
+
+  // ---------- Keplerian telescope + fixed human eye ----------
+  const telescopeCanvas = q('#telescopeCanvas');
+  const telescopeCtx = telescopeCanvas.getContext('2d');
+
+  const telescopeState = {
+    separationMm: 144.0
+  };
+
+  const telObjectiveX = 150;
+  const telObjectiveFocalMm = 120;
+  const telEyepieceFocalMm = 24;
+  const telEyeLensX = 345;
+  const telEyeLensFocalMm = 17;
+  const telRetinaX = 362;
+  const telNormalSeparationMm = telObjectiveFocalMm + telEyepieceFocalMm;
+  const telFieldAngleRad = -2 * Math.PI / 180;
+  const telYScalePx = 4.8;
+  const telTreeScalePx = 9.0;
+
+  let telescopeSimulationStartedTracked = false;
+
+  function markTelescopeSimulationStarted() {
+    if (telescopeSimulationStartedTracked) return;
+    telescopeSimulationStartedTracked = true;
+    track('simulation_started', { activity: 'telescope' });
+  }
+
+  function telescopePointToCanvas(xMm, yMm, W, H, xMin, xMax) {
+    const marginX = 35;
+    const pxPerMm = (W - 2 * marginX) / (xMax - xMin);
+    const axisY = H / 2 + 14;
+    return {
+      x: marginX + (xMm - xMin) * pxPerMm,
+      y: axisY - yMm * telYScalePx,
+      axisY,
+      pxPerMm
+    };
+  }
+
+  function telescopeTraceRay(yAtObjective, separationMm) {
+    const xMin = 20;
+    const xEyepiece = telObjectiveX + separationMm;
+    let x = xMin;
+    let u = telFieldAngleRad;
+    let y = yAtObjective - u * (telObjectiveX - xMin);
+    const pts = [{x, y}];
+
+    function propagate(toX) {
+      y += u * (toX - x);
+      x = toX;
+      pts.push({x, y});
+    }
+
+    propagate(telObjectiveX);
+    u -= y / telObjectiveFocalMm;
+
+    propagate(xEyepiece);
+    u -= y / telEyepieceFocalMm;
+
+    propagate(telEyeLensX);
+    u -= y / telEyeLensFocalMm;
+
+    propagate(telRetinaX);
+
+    return { points: pts, yRetina: y };
+  }
+
+  function drawTelescopeRay(ray, color) {
+    const ctx = telescopeCtx;
+    const W = telescopeCanvas.width;
+    const H = telescopeCanvas.height;
+    const xMin = 20;
+    const xMax = 380;
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ray.points.forEach((p, idx) => {
+      const cp = telescopePointToCanvas(p.x, p.y, W, H, xMin, xMax);
+      if (idx === 0) ctx.moveTo(cp.x, cp.y);
+      else ctx.lineTo(cp.x, cp.y);
+    });
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function updateTelescopePlayground() {
+    telescopeState.separationMm = +q('#telescopeSeparation').value;
+
+    const L = telescopeState.separationMm;
+    const xEyepiece = telObjectiveX + L;
+    const xIntermediate = telObjectiveX + telObjectiveFocalMm;
+    const xEyepieceFrontF = xEyepiece - telEyepieceFocalMm;
+    const normalOffset = xEyepieceFrontF - xIntermediate;
+    const angularMagnification = -telObjectiveFocalMm / telEyepieceFocalMm;
+
+    q('#telescopeSeparationValue').textContent = L.toFixed(1) + ' mm';
+    q('#telescopeCorrectValue').textContent = telNormalSeparationMm.toFixed(1) + ' mm';
+    q('#telObjMetric').textContent = telObjectiveFocalMm.toFixed(0) + ' mm';
+    q('#telEyeMetric').textContent = telEyepieceFocalMm.toFixed(0) + ' mm';
+    q('#telSepMetric').textContent = L.toFixed(1) + ' mm';
+    q('#telMagMetric').textContent = `−${Math.abs(angularMagnification).toFixed(1)}×`;
+
+    const rayA = telescopeTraceRay(18, L);
+    const rayB = telescopeTraceRay(-18, L);
+    const retinaSpreadMm = Math.abs(rayA.yRetina - rayB.yRetina);
+
+    const isNormal = Math.abs(normalOffset) < 0.15 && retinaSpreadMm < 0.05;
+    q('#telescopeStatusBadge').textContent = isNormal ? 'Normal adjustment' : 'Out of focus';
+
+    const ctx = telescopeCtx;
+    const W = telescopeCanvas.width;
+    const H = telescopeCanvas.height;
+    const xMin = 20;
+    const xMax = 380;
+    const axisY = H / 2 + 14;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    // Optical axis.
+    ctx.save();
+    ctx.setLineDash([7, 7]);
+    ctx.strokeStyle = '#98a2b3';
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.moveTo(18, axisY);
+    ctx.lineTo(W - 18, axisY);
+    ctx.stroke();
+    ctx.restore();
+
+    const objectivePt = telescopePointToCanvas(telObjectiveX, 0, W, H, xMin, xMax);
+    const intermediatePt = telescopePointToCanvas(xIntermediate, 0, W, H, xMin, xMax);
+    const eyepiecePt = telescopePointToCanvas(xEyepiece, 0, W, H, xMin, xMax);
+    const eyeLensPt = telescopePointToCanvas(telEyeLensX, 0, W, H, xMin, xMax);
+    const retinaPt = telescopePointToCanvas(telRetinaX, 0, W, H, xMin, xMax);
+
+    // Main optical planes, in the same style as the Microscope tab.
+    microDrawPlane(ctx, objectivePt.x, H, '#7b61ff');
+    microDrawPlane(ctx, eyepiecePt.x, H, '#7b61ff');
+    microDrawPlane(ctx, eyeLensPt.x, H, '#475467');
+    microDrawPlane(ctx, retinaPt.x, H, '#ef4444');
+
+    // Lenses and retina.
+    microDrawLens(ctx, objectivePt.x, axisY, 72, '#315efb');
+    microDrawLens(ctx, eyepiecePt.x, axisY, 72, '#315efb');
+    microDrawLens(ctx, eyeLensPt.x, axisY, 58, '#111827');
+    microDrawRetina(ctx, retinaPt.x, axisY, 78);
+
+    // Compact component labels.
+    ctx.fillStyle = '#172033';
+    ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('objective', objectivePt.x, axisY - 78);
+    ctx.fillText('eyepiece', eyepiecePt.x, axisY - 78);
+    ctx.fillText('eye', eyeLensPt.x, axisY - 64);
+    ctx.fillStyle = '#ef4444';
+    ctx.textAlign = 'left';
+    ctx.fillText('retina', retinaPt.x + 6, axisY - 84);
+
+    ctx.fillStyle = '#667085';
+    ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('distant object (∞): incoming rays are parallel', 18, 14);
+
+    // Focal points.
+    const objFLeft = telescopePointToCanvas(telObjectiveX - telObjectiveFocalMm, 0, W, H, xMin, xMax);
+    const objFRight = telescopePointToCanvas(telObjectiveX + telObjectiveFocalMm, 0, W, H, xMin, xMax);
+    const eyeFLeft = telescopePointToCanvas(xEyepiece - telEyepieceFocalMm, 0, W, H, xMin, xMax);
+    const eyeFRight = telescopePointToCanvas(xEyepiece + telEyepieceFocalMm, 0, W, H, xMin, xMax);
+    const humanFLeft = telescopePointToCanvas(telEyeLensX - telEyeLensFocalMm, 0, W, H, xMin, xMax);
+    const humanFRight = telescopePointToCanvas(telEyeLensX + telEyeLensFocalMm, 0, W, H, xMin, xMax);
+
+    microDrawFocalPoint(ctx, objFLeft.x, axisY, 'F', 'below');
+
+    if (Math.abs((telObjectiveX + telObjectiveFocalMm) - (xEyepiece - telEyepieceFocalMm)) < 0.15) {
+      microDrawFocalPoint(ctx, objFRight.x, axisY, "F′obj = Feye", 'above');
+    } else {
+      microDrawFocalPoint(ctx, objFRight.x, axisY, "F′", 'below');
+      microDrawFocalPoint(ctx, eyeFLeft.x, axisY, 'F', 'above');
+    }
+
+    microDrawFocalPoint(ctx, eyeFRight.x, axisY, "F′", 'above');
+    microDrawFocalPoint(ctx, humanFLeft.x, axisY, 'F', 'below');
+    microDrawFocalPoint(ctx, humanFRight.x, axisY, "F′", 'above');
+
+    // Objective's real intermediate image of the distant tree.
+    const intermediateImageHeightMm = telObjectiveFocalMm * telFieldAngleRad;
+    const intermediateTreeHeightPx = intermediateImageHeightMm * telTreeScalePx;
+    const interExtent = Math.max(42, Math.abs(intermediateTreeHeightPx) + 16);
+    microDrawPlaneSegment(ctx, intermediatePt.x, axisY - interExtent, axisY + interExtent, '#16a34a');
+    drawTree(ctx, intermediatePt.x, axisY, intermediateTreeHeightPx, '');
+
+    // Two representative parallel rays from the distant object.
+    drawTelescopeRay(rayA, '#8b5cf6');
+    drawTelescopeRay(rayB, '#117a55');
+
+    // Retinal image / blur indication.
+    const yRetMid = 0.5 * (rayA.yRetina + rayB.yRetina);
+    const retinaSpreadPx = retinaSpreadMm * telYScalePx;
+    const retinalHeightPx = yRetMid * telTreeScalePx;
+
+    ctx.save();
+    if (retinaSpreadPx > 0.9) {
+      ctx.globalAlpha = 0.58;
+      ctx.filter = `blur(${Math.min(4.5, retinaSpreadPx * 0.45).toFixed(1)}px)`;
+    } else {
+      ctx.globalAlpha = 0.92;
+    }
+    drawTree(
+      ctx,
+      retinaPt.x,
+      axisY,
+      Math.sign(retinalHeightPx || 1) * Math.min(Math.abs(retinalHeightPx), 74),
+      ''
+    );
+    ctx.restore();
+
+    // Small focus relation marker beneath the intermediate image.
+    ctx.save();
+    ctx.fillStyle = isNormal ? '#117a55' : '#b54708';
+    ctx.font = '11px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(
+      isNormal ? 'shared focal / image plane' : `focal-plane offset ${normalOffset > 0 ? '+' : '−'}${Math.abs(normalOffset).toFixed(1)} mm`,
+      intermediatePt.x,
+      H - 14
+    );
+    ctx.restore();
+  }
+
+  q('#telescopeSeparation').addEventListener('input', () => {
+    markTelescopeSimulationStarted();
+    telescopeState.separationMm = +q('#telescopeSeparation').value;
+    updateTelescopePlayground();
+  });
+
+  q('#telescopeFocusBtn').addEventListener('click', () => {
+    markTelescopeSimulationStarted();
+    telescopeState.separationMm = telNormalSeparationMm;
+    q('#telescopeSeparation').value = telNormalSeparationMm.toFixed(1);
+    updateTelescopePlayground();
+    track('preset_used', { activity: 'telescope', preset: 'normal_adjustment' });
+  });
+
+  updateTelescopePlayground();
+
+
+
+
+  // ---------- Aberrations: spherical + chromatic + coma + astigmatism + distortion ----------
+  const aberrCanvas = q('#aberrCanvas');
+  const aberrCtx = aberrCanvas.getContext('2d');
+
+  const aberrState = {
+    mode: 'spherical',
+    model: 'real',
+    apertureMm: 60,
+    lightMode: 'white',
+    wavelengthNm: 550,
+    fieldAngleDeg: 3.0,
+    astigScreenFraction: 0.5,
+    distortionFieldAngleDeg: 4.5,
+    distortionStrengthPct: 35
+  };
+
+  const aberrLensXmm = 60;
+  const aberrParaxialFmm = 80;
+  const aberrMaxApertureMm = 100;
+  const aberrLensRadiusMm = 99.2; // thin symmetric biconvex model for chromatic mode
+
+  // F2-like refractive-index anchors used only as a simple teaching model.
+  const aberrDispersion = [
+    {lambda: 450, n: 1.6370},
+    {lambda: 550, n: 1.6200},
+    {lambda: 650, n: 1.6120}
+  ];
+
+  let aberrSimulationStartedTracked = false;
+
+  function markAberrSimulationStarted() {
+    if (aberrSimulationStartedTracked) return;
+    aberrSimulationStartedTracked = true;
+    track('simulation_started', { activity: 'aberrations' });
+  }
+
+  function aberrPointToCanvas(xMm, yMm, W, H) {
+    const xMin = 0;
+    const xMax = 220;
+    const marginX = 38;
+    const pxPerMmX = (W - 2 * marginX) / (xMax - xMin);
+    const axisY = H / 2 + 10;
+    const pxPerMmY = 2.05;
+    return {
+      x: marginX + (xMm - xMin) * pxPerMmX,
+      y: axisY - yMm * pxPerMmY,
+      axisY,
+      pxPerMmX,
+      pxPerMmY
+    };
+  }
+
+  function aberrN(lambdaNm) {
+    const pts = aberrDispersion;
+    if (lambdaNm <= pts[0].lambda) return pts[0].n;
+    if (lambdaNm >= pts[pts.length - 1].lambda) return pts[pts.length - 1].n;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i], b = pts[i + 1];
+      if (lambdaNm >= a.lambda && lambdaNm <= b.lambda) {
+        const t = (lambdaNm - a.lambda) / (b.lambda - a.lambda);
+        return a.n + t * (b.n - a.n);
+      }
+    }
+    return 1.62;
+  }
+
+  function aberrChromaticF(lambdaNm) {
+    if (aberrState.model === 'ideal') return aberrParaxialFmm;
+    const n = aberrN(lambdaNm);
+    return aberrLensRadiusMm / (2 * (n - 1));
+  }
+
+  function aberrSphericalF(yMm) {
+    if (aberrState.model === 'ideal') return aberrParaxialFmm;
+    const normalized = Math.min(1, Math.abs(yMm) / (aberrMaxApertureMm / 2));
+    return aberrParaxialFmm * (1 - 0.18 * normalized * normalized);
+  }
+
+  function wavelengthCss(lambdaNm) {
+    const l = Math.max(380, Math.min(700, lambdaNm));
+    let r = 0, g = 0, b = 0;
+    if (l < 440) {
+      r = -(l - 440) / 60; b = 1;
+    } else if (l < 490) {
+      g = (l - 440) / 50; b = 1;
+    } else if (l < 510) {
+      g = 1; b = -(l - 510) / 20;
+    } else if (l < 580) {
+      r = (l - 510) / 70; g = 1;
+    } else if (l < 645) {
+      r = 1; g = -(l - 645) / 65;
+    } else {
+      r = 1;
+    }
+    let factor = 1;
+    if (l < 420) factor = 0.3 + 0.7 * (l - 380) / 40;
+    if (l > 645) factor = 0.3 + 0.7 * (700 - l) / 55;
+    const gamma = 0.8;
+    const conv = c => Math.round(255 * Math.pow(Math.max(0, c * factor), gamma));
+    return `rgb(${conv(r)},${conv(g)},${conv(b)})`;
+  }
+
+  function drawAberrLens(ctx, xPx, axisY) {
+    microDrawLens(ctx, xPx, axisY, 82, '#315efb');
+  }
+
+  function drawAberrRay(ctx, x1, y1, x2, y2, color, width = 2.0, alpha = 0.9, dashed = false) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.globalAlpha = alpha;
+    if (dashed) ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawSpotInset(ctx, W, title, entries) {
+    const boxW = 168;
+    const boxH = 118;
+    const x = W - boxW - 18;
+    const y = 16;
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.94)';
+    ctx.strokeStyle = '#d9dee8';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(x, y, boxW, boxH, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#667085';
+    ctx.font = '11px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(title, x + boxW / 2, y + 8);
+
+    const cx = x + boxW / 2;
+    const cy = y + 68;
+
+    entries.forEach(entry => {
+      ctx.save();
+      ctx.globalAlpha = entry.alpha ?? 0.75;
+      ctx.strokeStyle = entry.color;
+      ctx.fillStyle = entry.color;
+      ctx.lineWidth = entry.lineWidth ?? 2;
+      const dx = entry.dx || 0;
+      const dy = entry.dy || 0;
+
+      if ((entry.type || 'circle') === 'circle') {
+        ctx.beginPath();
+        ctx.arc(cx + dx, cy + dy, entry.r, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (entry.type === 'ellipse') {
+        ctx.beginPath();
+        ctx.ellipse(cx + dx, cy + dy, entry.rx, entry.ry, entry.rot || 0, 0, Math.PI * 2);
+        if (entry.fill === false) ctx.stroke();
+        else ctx.fill();
+      } else if (entry.type === 'line') {
+        ctx.beginPath();
+        ctx.moveTo(cx + entry.x1, cy + entry.y1);
+        ctx.lineTo(cx + entry.x2, cy + entry.y2);
+        ctx.stroke();
+      } else if (entry.type === 'label') {
+        ctx.font = entry.font || '10px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+        ctx.textAlign = entry.align || 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(entry.text, cx + dx, cy + dy);
+      }
+      ctx.restore();
+    });
+
+    ctx.restore();
+  }
+
+
+  function drawAstigInset(ctx, W, screenFraction, astigIntervalMm, isIdeal) {
+    const boxW = 230;
+    const boxH = 150;
+    const x = W - boxW - 18;
+    const y = 16;
+    const t = Math.max(0, Math.min(1, screenFraction));
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.96)';
+    ctx.strokeStyle = '#d9dee8';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(x, y, boxW, boxH, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#667085';
+    ctx.font = '11px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('screen cross-section', x + boxW / 2, y + 8);
+
+    const cx = x + boxW / 2;
+    const cy = y + 70;
+
+    // Circular screen and crosshair.
+    ctx.fillStyle = '#fbfcfe';
+    ctx.strokeStyle = '#e1e6ef';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 36, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.strokeStyle = '#e8ecf3';
+    ctx.beginPath();
+    ctx.moveTo(cx - 27, cy); ctx.lineTo(cx + 27, cy);
+    ctx.moveTo(cx, cy - 27); ctx.lineTo(cx, cy + 27);
+    ctx.stroke();
+
+    if (isIdeal || astigIntervalMm < 0.02) {
+      ctx.fillStyle = '#8b5cf6';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      // Pedagogical astigmatic bundle:
+      // vertical line at T -> circular blur -> horizontal line at S.
+      const extent = Math.min(27, 11 + astigIntervalMm * 3.1);
+      const minWidth = 1.6;
+      const rx = minWidth + extent * t;
+      const ry = minWidth + extent * (1 - t);
+
+      ctx.fillStyle = 'rgba(139,92,246,0.30)';
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(17,122,85,0.20)';
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#667085';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    let shapeLabel = 'elliptical blur';
+    if (isIdeal || astigIntervalMm < 0.02) shapeLabel = 'point image';
+    else if (t <= 0.03) shapeLabel = 'line image at T';
+    else if (t >= 0.97) shapeLabel = 'line image at S';
+    else if (Math.abs(t - 0.5) <= 0.04) shapeLabel = 'circle of least confusion';
+
+    ctx.fillStyle = '#475467';
+    ctx.font = '10.5px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(shapeLabel, cx, y + 108);
+
+    // T -> S track with live marker.
+    const trackX1 = x + 30;
+    const trackX2 = x + boxW - 30;
+    const trackY = y + 134;
+
+    ctx.strokeStyle = '#c8cfda';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(trackX1, trackY);
+    ctx.lineTo(trackX2, trackY);
+    ctx.stroke();
+
+    const markerX = trackX1 + (trackX2 - trackX1) * t;
+    ctx.fillStyle = '#b54708';
+    ctx.beginPath();
+    ctx.arc(markerX, trackY, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.font = '10px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillStyle = '#8b5cf6';
+    ctx.fillText('T', trackX1, trackY - 7);
+    ctx.fillStyle = '#667085';
+    ctx.fillText('least confusion', (trackX1 + trackX2) / 2, trackY - 7);
+    ctx.fillStyle = '#117a55';
+    ctx.fillText('S', trackX2, trackY - 7);
+
+    ctx.restore();
+  }
+
+
+
+  function drawDistortionInset(ctx, W, strengthPct, isIdeal) {
+    const boxW = 230;
+    const boxH = 160;
+    const x = W - boxW - 18;
+    const y = 16;
+    const k = isIdeal ? 0 : strengthPct / 100;
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.96)';
+    ctx.strokeStyle = '#d9dee8';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(x, y, boxW, boxH, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#667085';
+    ctx.font = '11px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('image of a square grid', x + boxW / 2, y + 8);
+
+    const cx = x + boxW / 2;
+    const cy = y + 84;
+    const half = 48;
+
+    // Ideal image boundary for reference.
+    ctx.save();
+    ctx.strokeStyle = '#c8cfda';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 4]);
+    ctx.strokeRect(cx - half, cy - half, 2 * half, 2 * half);
+    ctx.restore();
+
+    // Radial mapping r' = r(1 + k r^2), normalized so grid corners have r=1.
+    function mapPoint(nx, ny) {
+      const r2 = (nx * nx + ny * ny) / 2;
+      const factor = 1 + k * r2;
+      return {
+        x: cx + nx * half * factor,
+        y: cy + ny * half * factor
+      };
+    }
+
+    ctx.save();
+    ctx.strokeStyle = '#8b5cf6';
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.9;
+
+    const gridVals = [-1, -0.5, 0, 0.5, 1];
+    const steps = 30;
+
+    // Vertical grid lines.
+    gridVals.forEach(nx => {
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const ny = -1 + 2 * i / steps;
+        const p = mapPoint(nx, ny);
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+    });
+
+    // Horizontal grid lines.
+    gridVals.forEach(ny => {
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const nx = -1 + 2 * i / steps;
+        const p = mapPoint(nx, ny);
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    let label = 'ideal: no distortion';
+    if (!isIdeal && strengthPct < -0.5) label = 'barrel distortion';
+    if (!isIdeal && strengthPct > 0.5) label = 'pincushion distortion';
+
+    ctx.fillStyle = '#475467';
+    ctx.font = '10.5px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(label, cx, y + boxH - 8);
+
+    ctx.restore();
+  }
+
+
+  function setAberrButtonStates() {
+    q('#aberrSphericalBtn').classList.toggle('primary', aberrState.mode === 'spherical');
+    q('#aberrChromaticBtn').classList.toggle('primary', aberrState.mode === 'chromatic');
+    q('#aberrComaBtn').classList.toggle('primary', aberrState.mode === 'coma');
+    q('#aberrAstigBtn').classList.toggle('primary', aberrState.mode === 'astigmatism');
+    q('#aberrDistortionBtn').classList.toggle('primary', aberrState.mode === 'distortion');
+    q('#aberrRealBtn').classList.toggle('primary', aberrState.model === 'real');
+    q('#aberrIdealBtn').classList.toggle('primary', aberrState.model === 'ideal');
+    q('#aberrWhiteBtn').classList.toggle('primary', aberrState.lightMode === 'white');
+    q('#aberrMonoBtn').classList.toggle('primary', aberrState.lightMode === 'mono');
+
+    q('#aberrSphericalControls').hidden = aberrState.mode !== 'spherical';
+    q('#aberrChromaticControls').hidden = aberrState.mode !== 'chromatic';
+    q('#aberrComaControls').hidden = aberrState.mode !== 'coma';
+    q('#aberrAstigControls').hidden = aberrState.mode !== 'astigmatism';
+    q('#aberrDistortionControls').hidden = aberrState.mode !== 'distortion';
+    q('#aberrWavelengthWrap').hidden = !(aberrState.mode === 'chromatic' && aberrState.lightMode === 'mono');
+  }
+
+  function updateAberrationsPlayground() {
+    setAberrButtonStates();
+
+    const ctx = aberrCtx;
+    const W = aberrCanvas.width;
+    const H = aberrCanvas.height;
+    const lensPt = aberrPointToCanvas(aberrLensXmm, 0, W, H);
+    const axisY = lensPt.axisY;
+    const rightXmm = 210;
+    const idealFocusXmm = aberrLensXmm + aberrParaxialFmm;
+    const idealFocusPt = aberrPointToCanvas(idealFocusXmm, 0, W, H);
+
+    q('#aberrComaFieldValue').textContent = aberrState.fieldAngleDeg.toFixed(1) + '°';
+    q('#aberrAstigFieldValue').textContent = aberrState.fieldAngleDeg.toFixed(1) + '°';
+    q('#aberrAstigScreenValue').textContent = Math.round(aberrState.astigScreenFraction * 100) + '%';
+    q('#aberrComaField').value = aberrState.fieldAngleDeg.toFixed(1);
+    q('#aberrAstigField').value = aberrState.fieldAngleDeg.toFixed(1);
+    q('#aberrAstigScreen').value = Math.round(aberrState.astigScreenFraction * 100);
+    q('#aberrDistFieldValue').textContent = aberrState.distortionFieldAngleDeg.toFixed(1) + '°';
+    q('#aberrDistStrengthValue').textContent = `${aberrState.distortionStrengthPct >= 0 ? '+' : ''}${aberrState.distortionStrengthPct.toFixed(0)}%`;
+    q('#aberrDistField').value = aberrState.distortionFieldAngleDeg.toFixed(1);
+    q('#aberrDistStrength').value = aberrState.distortionStrengthPct.toFixed(0);
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+
+    // Optical axis.
+    ctx.save();
+    ctx.strokeStyle = '#98a2b3';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([7, 7]);
+    ctx.beginPath();
+    ctx.moveTo(18, axisY);
+    ctx.lineTo(W - 18, axisY);
+    ctx.stroke();
+    ctx.restore();
+
+    // Thin-lens plane + lens.
+    microDrawPlane(ctx, lensPt.x, H, '#7b61ff');
+    drawAberrLens(ctx, lensPt.x, axisY);
+    ctx.fillStyle = '#172033';
+    ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('lens', lensPt.x, axisY - 90);
+
+    if (aberrState.mode === 'spherical') {
+      const D = aberrState.apertureMm;
+      const radius = D / 2;
+      const heights = [-1, -0.75, -0.5, -0.25, 0.25, 0.5, 0.75, 1].map(v => v * radius);
+      const paraxialFocus = aberrParaxialFmm;
+      const marginalFocus = aberrSphericalF(radius);
+      const deltaF = paraxialFocus - marginalFocus;
+
+      q('#aberrStatusBadge').textContent = 'Spherical aberration';
+      q('#aberrApertureValue').textContent = D.toFixed(0) + ' mm';
+      q('#aberrMetric1Label').textContent = 'Aperture D';
+      q('#aberrMetric2Label').textContent = 'Paraxial focus';
+      q('#aberrMetric3Label').textContent = 'Marginal focus';
+      q('#aberrMetric4Label').textContent = 'Longitudinal Δf';
+      q('#aberrMetric1').textContent = D.toFixed(0) + ' mm';
+      q('#aberrMetric2').textContent = paraxialFocus.toFixed(1) + ' mm';
+      q('#aberrMetric3').textContent = marginalFocus.toFixed(1) + ' mm';
+      q('#aberrMetric4').textContent = deltaF.toFixed(1) + ' mm';
+      q('#aberrMetricNote').textContent = aberrState.model === 'ideal'
+        ? 'Ideal thin lens: every parallel ray is forced to the same paraxial focus.'
+        : 'Closing the aperture removes marginal rays, so the paraxial approximation becomes better.';
+      q('#aberrExplanation').innerHTML = aberrState.model === 'ideal'
+        ? 'In the ideal thin-lens model, all parallel rays are forced to the same focal point.'
+        : 'Marginal rays focus <b>closer to the lens</b> than paraxial rays. Reduce the aperture and the spread of focal positions becomes smaller.';
+
+      const stopTop = aberrPointToCanvas(aberrLensXmm - 5, radius, W, H);
+      const stopBottom = aberrPointToCanvas(aberrLensXmm - 5, -radius, W, H);
+      ctx.save();
+      ctx.strokeStyle = '#475467';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(stopTop.x, 38);
+      ctx.lineTo(stopTop.x, stopTop.y);
+      ctx.moveTo(stopBottom.x, stopBottom.y);
+      ctx.lineTo(stopBottom.x, H - 38);
+      ctx.stroke();
+      ctx.restore();
+
+      heights.forEach((yMm, idx) => {
+        const fEff = aberrSphericalF(yMm);
+        const start = aberrPointToCanvas(4, yMm, W, H);
+        const hit = aberrPointToCanvas(aberrLensXmm, yMm, W, H);
+        const endYmm = yMm * (1 - (rightXmm - aberrLensXmm) / fEff);
+        const end = aberrPointToCanvas(rightXmm, endYmm, W, H);
+
+        const marginal = idx === 0 || idx === heights.length - 1;
+        const color = marginal ? '#f59e0b' : '#8b5cf6';
+        drawAberrRay(ctx, start.x, start.y, hit.x, hit.y, color, marginal ? 2.4 : 1.8, marginal ? 0.95 : 0.72);
+        drawAberrRay(ctx, hit.x, hit.y, end.x, end.y, color, marginal ? 2.4 : 1.8, marginal ? 0.95 : 0.72);
+      });
+
+      microDrawFocalPoint(ctx, idealFocusPt.x, axisY, 'Fₚ', 'below');
+      if (aberrState.model === 'real') {
+        const marginalPt = aberrPointToCanvas(aberrLensXmm + marginalFocus, 0, W, H);
+        ctx.save();
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.arc(marginalPt.x, axisY, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText('Fₘ', marginalPt.x, axisY + 8);
+        ctx.restore();
+      }
+
+      const yBlurMm = Math.abs(radius * (1 - paraxialFocus / marginalFocus));
+      const blurDiameterMm = 2 * yBlurMm;
+      const blurRadiusPx = Math.max(1.5, Math.min(28, blurDiameterMm * 2.2));
+      drawSpotInset(
+        ctx,
+        W,
+        'spot at paraxial plane',
+        [{color:'#8b5cf6', r: aberrState.model === 'ideal' ? 2.2 : blurRadiusPx, alpha:0.65}]
+      );
+
+      microDrawPlaneSegment(ctx, idealFocusPt.x, axisY - 78, axisY + 78, '#98a2b3');
+
+    } else if (aberrState.mode === 'chromatic') {
+      q('#aberrStatusBadge').textContent = 'Chromatic aberration';
+      const fB = aberrChromaticF(450);
+      const fG = aberrChromaticF(550);
+      const fR = aberrChromaticF(650);
+      const spread = Math.max(fB, fG, fR) - Math.min(fB, fG, fR);
+
+      q('#aberrMetricNote').textContent = aberrState.model === 'ideal'
+        ? 'Ideal thin lens: focal length is independent of wavelength.'
+        : 'Normal dispersion: blue light has the shortest focal length and red light the longest. At the red focal plane, red is sharpest, green is broader, and blue is broadest; inset blur sizes are visually magnified for clarity.';
+
+      if (aberrState.lightMode === 'white') {
+        q('#aberrMetric1Label').textContent = 'Blue focus';
+        q('#aberrMetric2Label').textContent = 'Green focus';
+        q('#aberrMetric3Label').textContent = 'Red focus';
+        q('#aberrMetric4Label').textContent = 'Chromatic Δf';
+        q('#aberrMetric1').textContent = fB.toFixed(1) + ' mm';
+        q('#aberrMetric2').textContent = fG.toFixed(1) + ' mm';
+        q('#aberrMetric3').textContent = fR.toFixed(1) + ' mm';
+        q('#aberrMetric4').textContent = spread.toFixed(1) + ' mm';
+        q('#aberrExplanation').innerHTML = aberrState.model === 'ideal'
+          ? 'In the ideal model, red, green, and blue rays share the same focal point.'
+          : 'Because <b>n(λ)</b> is larger for shorter wavelengths, blue light focuses closest to the lens and red light furthest away. If the screen is placed at the <b>red focus</b>, red forms a sharp spot while green and especially blue are defocused.';
+
+        const bundles = [
+          {lambda:450, color:'#2563eb', y:24},
+          {lambda:550, color:'#16a34a', y:0},
+          {lambda:650, color:'#dc2626', y:-24}
+        ];
+
+        bundles.forEach(bundle => {
+          const f = aberrChromaticF(bundle.lambda);
+          const start = aberrPointToCanvas(4, bundle.y, W, H);
+          const hit = aberrPointToCanvas(aberrLensXmm, bundle.y, W, H);
+          const endY = bundle.y * (1 - (rightXmm - aberrLensXmm) / f);
+          const end = aberrPointToCanvas(rightXmm, endY, W, H);
+          drawAberrRay(ctx, start.x, start.y, hit.x, hit.y, bundle.color, 2.4, 0.9);
+          drawAberrRay(ctx, hit.x, hit.y, end.x, end.y, bundle.color, 2.4, 0.9);
+
+          const fp = aberrPointToCanvas(aberrLensXmm + f, 0, W, H);
+          ctx.save();
+          ctx.fillStyle = bundle.color;
+          ctx.beginPath();
+          ctx.arc(fp.x, axisY, 4.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+
+        const blueDefocusAtRed = Math.abs(24 * (1 - fR / fB));
+        const greenDefocusAtRed = Math.abs(24 * (1 - fR / fG));
+
+        // Magnify the transverse blur in the inset so the colour ordering is
+        // unmistakable to students. Ray paths and focal-length values remain physical.
+        const chromaticSpotScale = 7.5;
+        const blueSpotR = Math.max(27, Math.min(34, blueDefocusAtRed * chromaticSpotScale));
+        const greenSpotR = Math.max(14, Math.min(20, greenDefocusAtRed * chromaticSpotScale));
+        const redSpotR = 3.2;
+
+        drawSpotInset(ctx, W, 'spot at red plane', [
+          {color:'#2563eb', r: blueSpotR, alpha:0.30},
+          {color:'#16a34a', r: greenSpotR, alpha:0.48},
+          {color:'#dc2626', r: redSpotR, alpha:0.98},
+          {type:'label', color:'#2563eb', text:'blue', dx:0, dy:-39, font:'10px "Source Sans 3", "Segoe UI", Arial, sans-serif'},
+          {type:'label', color:'#16a34a', text:'green', dx:0, dy:27, font:'10px "Source Sans 3", "Segoe UI", Arial, sans-serif'},
+          {type:'label', color:'#dc2626', text:'red', dx:0, dy:7, font:'10px "Source Sans 3", "Segoe UI", Arial, sans-serif'}
+        ]);
+
+        const redPlane = aberrPointToCanvas(aberrLensXmm + fR, 0, W, H);
+        microDrawPlaneSegment(ctx, redPlane.x, axisY - 78, axisY + 78, '#98a2b3');
+
+      } else {
+        const lambda = aberrState.wavelengthNm;
+        const n = aberrN(lambda);
+        const f = aberrChromaticF(lambda);
+        const color = wavelengthCss(lambda);
+
+        q('#aberrWavelengthValue').textContent = lambda.toFixed(0) + ' nm';
+        q('#aberrMetric1Label').textContent = 'Wavelength λ';
+        q('#aberrMetric2Label').textContent = 'Refractive index n';
+        q('#aberrMetric3Label').textContent = 'Focal length f';
+        q('#aberrMetric4Label').textContent = 'RGB focal spread';
+        q('#aberrMetric1').textContent = lambda.toFixed(0) + ' nm';
+        q('#aberrMetric2').textContent = n.toFixed(4);
+        q('#aberrMetric3').textContent = f.toFixed(1) + ' mm';
+        q('#aberrMetric4').textContent = spread.toFixed(1) + ' mm';
+        q('#aberrExplanation').innerHTML = aberrState.model === 'ideal'
+          ? 'The ideal thin-lens model ignores dispersion, so changing wavelength does not move the focus.'
+          : 'Move the wavelength slider and watch the focal point shift because the glass refractive index changes with wavelength.';
+
+        const rayHeights = [-30, 0, 30];
+        rayHeights.forEach(yMm => {
+          const start = aberrPointToCanvas(4, yMm, W, H);
+          const hit = aberrPointToCanvas(aberrLensXmm, yMm, W, H);
+          const endY = yMm * (1 - (rightXmm - aberrLensXmm) / f);
+          const end = aberrPointToCanvas(rightXmm, endY, W, H);
+          drawAberrRay(ctx, start.x, start.y, hit.x, hit.y, color, 2.3, 0.85);
+          drawAberrRay(ctx, hit.x, hit.y, end.x, end.y, color, 2.3, 0.85);
+        });
+
+        const fp = aberrPointToCanvas(aberrLensXmm + f, 0, W, H);
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(fp.x, axisY, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        drawSpotInset(ctx, W, 'selected wavelength', [{color, r:2.8, alpha:0.9}]);
+        microDrawPlaneSegment(ctx, fp.x, axisY - 78, axisY + 78, '#98a2b3');
+      }
+
+    } else if (aberrState.mode === 'coma') {
+      const thetaDeg = aberrState.fieldAngleDeg;
+      const thetaRad = thetaDeg * Math.PI / 180;
+      const imageX = idealFocusXmm;
+      const imageY = -aberrParaxialFmm * Math.tan(thetaRad);
+      const rayHeights = [-28, -18, -8, 6, 18, 28];
+      const spotOffsets = [];
+
+      q('#aberrStatusBadge').textContent = 'Coma';
+      q('#aberrMetric1Label').textContent = 'Field angle θ';
+      q('#aberrMetric2Label').textContent = 'Paraxial image height';
+      q('#aberrMetric3Label').textContent = 'Spot width';
+      q('#aberrMetric4Label').textContent = 'Spot asymmetry';
+      q('#aberrMetric1').textContent = thetaDeg.toFixed(1) + '°';
+      q('#aberrMetric2').textContent = Math.abs(imageY).toFixed(1) + ' mm';
+      q('#aberrMetricNote').textContent = aberrState.model === 'ideal'
+        ? 'Ideal thin lens: an off-axis point still forms a point image at the paraxial image plane.'
+        : 'Coma is an off-axis aberration: different zones of the lens send the point to slightly different image heights.';
+      q('#aberrExplanation').innerHTML = aberrState.model === 'ideal'
+        ? 'In the ideal model, all rays from the off-axis point meet at one image point.'
+        : 'Coma turns an off-axis point into an <b>asymmetric comet-shaped blur</b>. The effect grows with field angle.';
+
+      ctx.fillStyle = '#667085';
+      ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText('off-axis point at ∞', 18, 14);
+
+      rayHeights.forEach((yMm, idx) => {
+        const startYmm = yMm - thetaRad * (aberrLensXmm - 4);
+        const start = aberrPointToCanvas(4, startYmm, W, H);
+        const hit = aberrPointToCanvas(aberrLensXmm, yMm, W, H);
+        const uIdeal = (imageY - yMm) / aberrParaxialFmm;
+        const p = yMm / 28;
+        const deltaU = aberrState.model === 'ideal' ? 0 : (-Math.sign(thetaRad || 1) * 0.013 * thetaDeg * (0.65 * p * p + 0.35 * p * p * p));
+        const endY = yMm + (uIdeal + deltaU) * (rightXmm - aberrLensXmm);
+        const end = aberrPointToCanvas(rightXmm, endY, W, H);
+        drawAberrRay(ctx, start.x, start.y, hit.x, hit.y, '#8b5cf6', idx === 0 || idx === rayHeights.length - 1 ? 2.3 : 1.8, 0.88);
+        drawAberrRay(ctx, hit.x, hit.y, end.x, end.y, '#8b5cf6', idx === 0 || idx === rayHeights.length - 1 ? 2.3 : 1.8, 0.88);
+
+        const yAtImagePlane = yMm + (uIdeal + deltaU) * aberrParaxialFmm;
+        spotOffsets.push(yAtImagePlane - imageY);
+      });
+
+      microDrawPlaneSegment(ctx, idealFocusPt.x, axisY - 88, axisY + 88, '#98a2b3');
+      const imagePt = aberrPointToCanvas(imageX, imageY, W, H);
+      microDrawFocalPoint(ctx, idealFocusPt.x, axisY, 'paraxial plane', 'below');
+
+      ctx.save();
+      ctx.fillStyle = '#16a34a';
+      ctx.beginPath();
+      ctx.arc(imagePt.x, imagePt.y, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      const minOff = Math.min(...spotOffsets);
+      const maxOff = Math.max(...spotOffsets);
+      const meanOff = spotOffsets.reduce((a,b)=>a+b,0)/spotOffsets.length;
+      const spotWidth = maxOff - minOff;
+      const asym = meanOff - 0.5 * (minOff + maxOff);
+      q('#aberrMetric3').textContent = Math.abs(spotWidth).toFixed(1) + ' mm';
+      q('#aberrMetric4').textContent = Math.abs(asym).toFixed(1) + ' mm';
+
+      const spotEntries = spotOffsets.map((off, i) => ({
+        color: '#8b5cf6',
+        r: i === spotOffsets.length - 1 ? 6 : 4.5,
+        dx: off * 7,
+        dy: 0,
+        alpha: 0.38 + 0.08 * i
+      }));
+      spotEntries.push({type:'label', color:'#667085', text:'tail  →', dx: 35, dy: 20, font:'10px "Source Sans 3", "Segoe UI", Arial, sans-serif'});
+      drawSpotInset(ctx, W, 'spot at paraxial plane', spotEntries);
+
+    } else if (aberrState.mode === 'astigmatism') {
+      const thetaDeg = aberrState.fieldAngleDeg;
+      const thetaRad = thetaDeg * Math.PI / 180;
+      const delta = aberrState.model === 'ideal' ? 0 : 0.18 * thetaDeg * thetaDeg;
+      const fT = aberrParaxialFmm - delta;
+      const fS = aberrParaxialFmm + delta;
+      const xT = aberrLensXmm + fT;
+      const xS = aberrLensXmm + fS;
+      const imageYT = -fT * Math.tan(thetaRad);
+      const imageYS = -fS * Math.tan(thetaRad);
+      const screenT = aberrState.astigScreenFraction;
+      const xScreen = xT + (xS - xT) * screenT;
+
+      q('#aberrStatusBadge').textContent = 'Astigmatism';
+      q('#aberrMetric1Label').textContent = 'Field angle θ';
+      q('#aberrMetric2Label').textContent = 'Tangential focus';
+      q('#aberrMetric3Label').textContent = 'Sagittal focus';
+      q('#aberrMetric4Label').textContent = 'Astigmatic interval';
+      q('#aberrMetric1').textContent = thetaDeg.toFixed(1) + '°';
+      q('#aberrMetric2').textContent = fT.toFixed(1) + ' mm';
+      q('#aberrMetric3').textContent = fS.toFixed(1) + ' mm';
+      q('#aberrMetric4').textContent = Math.abs(fS - fT).toFixed(1) + ' mm';
+      q('#aberrMetricNote').textContent = aberrState.model === 'ideal'
+        ? 'Ideal thin lens: tangential and sagittal image planes coincide.'
+        : 'Astigmatism splits the off-axis image into a tangential focus and a sagittal focus.';
+      q('#aberrExplanation').innerHTML = aberrState.model === 'ideal'
+        ? 'In the ideal model, the tangential and sagittal image planes coincide, so the screen sees a point image.'
+        : 'Move the <b>screen-position slider</b>. The cross-section changes continuously from a line at <b>T</b>, through the <b>circle of least confusion</b>, to a perpendicular line at <b>S</b>.';
+
+      ctx.fillStyle = '#667085';
+      ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText('off-axis point at ∞', 18, 14);
+
+      // Tangential rays (purple).
+      [-20, 0, 20].forEach((yMm, idx) => {
+        const startYmm = yMm - thetaRad * (aberrLensXmm - 4);
+        const start = aberrPointToCanvas(4, startYmm, W, H);
+        const hit = aberrPointToCanvas(aberrLensXmm, yMm, W, H);
+        const endY = yMm + ((imageYT - yMm) / fT) * (rightXmm - aberrLensXmm);
+        const end = aberrPointToCanvas(rightXmm, endY, W, H);
+        drawAberrRay(ctx, start.x, start.y, hit.x, hit.y, '#8b5cf6', idx === 1 ? 2.4 : 1.9, 0.9);
+        drawAberrRay(ctx, hit.x, hit.y, end.x, end.y, '#8b5cf6', idx === 1 ? 2.4 : 1.9, 0.9);
+      });
+
+      // Sagittal rays (green).
+      [-24, -8, 8, 24].forEach((yMm, idx) => {
+        const startYmm = yMm - thetaRad * (aberrLensXmm - 4);
+        const start = aberrPointToCanvas(4, startYmm, W, H);
+        const hit = aberrPointToCanvas(aberrLensXmm, yMm, W, H);
+        const endY = yMm + ((imageYS - yMm) / fS) * (rightXmm - aberrLensXmm);
+        const end = aberrPointToCanvas(rightXmm, endY, W, H);
+        drawAberrRay(ctx, start.x, start.y, hit.x, hit.y, '#117a55', idx === 1 || idx === 2 ? 2.0 : 1.7, 0.78);
+        drawAberrRay(ctx, hit.x, hit.y, end.x, end.y, '#117a55', idx === 1 || idx === 2 ? 2.0 : 1.7, 0.78);
+      });
+
+      const tPt = aberrPointToCanvas(xT, 0, W, H);
+      const sPt = aberrPointToCanvas(xS, 0, W, H);
+      const screenPt = aberrPointToCanvas(xScreen, 0, W, H);
+      microDrawPlaneSegment(ctx, tPt.x, axisY - 88, axisY + 88, '#8b5cf6');
+      microDrawPlaneSegment(ctx, sPt.x, axisY - 88, axisY + 88, '#117a55');
+      microDrawFocalPoint(ctx, tPt.x, axisY, 'T', 'below');
+      microDrawFocalPoint(ctx, sPt.x, axisY, 'S', 'above');
+
+      // Movable observation screen.
+      microDrawPlaneSegment(ctx, screenPt.x, axisY - 104, axisY + 104, '#b54708');
+      ctx.save();
+      ctx.fillStyle = '#b54708';
+      ctx.font = '11px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('screen', screenPt.x, axisY - 108);
+      ctx.restore();
+
+      const tImg = aberrPointToCanvas(xT, imageYT, W, H);
+      const sImg = aberrPointToCanvas(xS, imageYS, W, H);
+      ctx.save();
+      ctx.fillStyle = '#8b5cf6';
+      ctx.beginPath();
+      ctx.arc(tImg.x, tImg.y, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#117a55';
+      ctx.beginPath();
+      ctx.arc(sImg.x, sImg.y, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      drawAstigInset(
+        ctx,
+        W,
+        screenT,
+        Math.abs(fS - fT),
+        aberrState.model === 'ideal'
+      );
+
+    } else if (aberrState.mode === 'distortion') {
+      const thetaDeg = aberrState.distortionFieldAngleDeg;
+      const thetaRad = thetaDeg * Math.PI / 180;
+      const rho = Math.min(1, thetaDeg / 6.0);
+      const k = aberrState.model === 'ideal' ? 0 : aberrState.distortionStrengthPct / 100;
+
+      const imagePlaneX = aberrLensXmm + aberrParaxialFmm;
+      const idealImageY = -aberrParaxialFmm * Math.tan(thetaRad);
+      const distortionFraction = k * rho * rho;
+      const actualImageY = idealImageY * (1 + distortionFraction);
+      const distortionPct = distortionFraction * 100;
+
+      let distortionName = 'No distortion';
+      if (distortionPct < -0.05) distortionName = 'Barrel distortion';
+      if (distortionPct > 0.05) distortionName = 'Pincushion distortion';
+
+      q('#aberrStatusBadge').textContent = aberrState.model === 'ideal' ? 'Ideal mapping' : distortionName;
+      q('#aberrMetric1Label').textContent = 'Field angle θ';
+      q('#aberrMetric2Label').textContent = 'Ideal image height';
+      q('#aberrMetric3Label').textContent = 'Actual image height';
+      q('#aberrMetric4Label').textContent = 'Distortion δ';
+      q('#aberrMetric1').textContent = thetaDeg.toFixed(1) + '°';
+      q('#aberrMetric2').textContent = Math.abs(idealImageY).toFixed(1) + ' mm';
+      q('#aberrMetric3').textContent = Math.abs(actualImageY).toFixed(1) + ' mm';
+      q('#aberrMetric4').textContent = `${distortionPct >= 0 ? '+' : ''}${distortionPct.toFixed(1)}%`;
+
+      q('#aberrMetricNote').textContent = aberrState.model === 'ideal'
+        ? 'Ideal thin lens: image height follows the paraxial mapping with no field-dependent distortion.'
+        : 'Distortion changes image height across the field. Unlike coma or astigmatism, a point can remain sharply focused but appear in the wrong position.';
+
+      if (aberrState.model === 'ideal' || Math.abs(aberrState.distortionStrengthPct) < 0.5) {
+        q('#aberrExplanation').innerHTML = 'With no distortion, the square grid remains square and the off-axis point appears at the paraxial image height.';
+      } else if (aberrState.distortionStrengthPct < 0) {
+        q('#aberrExplanation').innerHTML = '<b>Barrel distortion:</b> magnification decreases toward the edge of the field, so image points are pulled inward and straight grid lines bow outward.';
+      } else {
+        q('#aberrExplanation').innerHTML = '<b>Pincushion distortion:</b> magnification increases toward the edge of the field, so image points are pushed outward and straight grid lines bow inward.';
+      }
+
+      ctx.fillStyle = '#667085';
+      ctx.font = '12px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText('off-axis point at ∞', 18, 14);
+
+      // A small bundle of parallel incoming rays from one off-axis field point.
+      const hitHeights = [-22, 0, 22];
+      hitHeights.forEach((yMm, idx) => {
+        const startYmm = yMm - thetaRad * (aberrLensXmm - 4);
+        const start = aberrPointToCanvas(4, startYmm, W, H);
+        const hit = aberrPointToCanvas(aberrLensXmm, yMm, W, H);
+        const end = aberrPointToCanvas(imagePlaneX, actualImageY, W, H);
+
+        drawAberrRay(ctx, start.x, start.y, hit.x, hit.y, '#8b5cf6', idx === 1 ? 2.4 : 1.9, 0.88);
+        drawAberrRay(ctx, hit.x, hit.y, end.x, end.y, '#8b5cf6', idx === 1 ? 2.4 : 1.9, 0.88);
+      });
+
+      const planePt = aberrPointToCanvas(imagePlaneX, 0, W, H);
+      microDrawPlaneSegment(ctx, planePt.x, axisY - 100, axisY + 100, '#98a2b3');
+
+      // Ideal position versus actual distorted position.
+      const idealPt = aberrPointToCanvas(imagePlaneX, idealImageY, W, H);
+      const actualPt = aberrPointToCanvas(imagePlaneX, actualImageY, W, H);
+
+      ctx.save();
+      ctx.strokeStyle = '#98a2b3';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(idealPt.x, idealPt.y, 5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.fillStyle = '#8b5cf6';
+      ctx.beginPath();
+      ctx.arc(actualPt.x, actualPt.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.font = '10.5px "Source Sans 3", "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#98a2b3';
+      ctx.fillText('ideal', idealPt.x + 8, idealPt.y);
+      ctx.fillStyle = '#8b5cf6';
+      ctx.fillText('actual', actualPt.x + 8, actualPt.y);
+      ctx.restore();
+
+      drawDistortionInset(
+        ctx,
+        W,
+        aberrState.distortionStrengthPct,
+        aberrState.model === 'ideal'
+      );
+    }
+  }
+
+  q('#aberrSphericalBtn').addEventListener('click', () => {
+    markAberrSimulationStarted();
+    aberrState.mode = 'spherical';
+    updateAberrationsPlayground();
+    track('preset_used', { activity: 'aberrations', preset: 'spherical' });
+  });
+
+  q('#aberrChromaticBtn').addEventListener('click', () => {
+    markAberrSimulationStarted();
+    aberrState.mode = 'chromatic';
+    updateAberrationsPlayground();
+    track('preset_used', { activity: 'aberrations', preset: 'chromatic' });
+  });
+
+  q('#aberrComaBtn').addEventListener('click', () => {
+    markAberrSimulationStarted();
+    aberrState.mode = 'coma';
+    updateAberrationsPlayground();
+    track('preset_used', { activity: 'aberrations', preset: 'coma' });
+  });
+
+  q('#aberrAstigBtn').addEventListener('click', () => {
+    markAberrSimulationStarted();
+    aberrState.mode = 'astigmatism';
+    updateAberrationsPlayground();
+    track('preset_used', { activity: 'aberrations', preset: 'astigmatism' });
+  });
+
+  q('#aberrDistortionBtn').addEventListener('click', () => {
+    markAberrSimulationStarted();
+    aberrState.mode = 'distortion';
+    updateAberrationsPlayground();
+    track('preset_used', { activity: 'aberrations', preset: 'distortion' });
+  });
+
+  q('#aberrRealBtn').addEventListener('click', () => {
+    markAberrSimulationStarted();
+    aberrState.model = 'real';
+    updateAberrationsPlayground();
+    track('preset_used', { activity: 'aberrations', preset: 'real_lens' });
+  });
+
+  q('#aberrIdealBtn').addEventListener('click', () => {
+    markAberrSimulationStarted();
+    aberrState.model = 'ideal';
+    updateAberrationsPlayground();
+    track('preset_used', { activity: 'aberrations', preset: 'ideal_lens' });
+  });
+
+  q('#aberrWhiteBtn').addEventListener('click', () => {
+    markAberrSimulationStarted();
+    aberrState.lightMode = 'white';
+    updateAberrationsPlayground();
+  });
+
+  q('#aberrMonoBtn').addEventListener('click', () => {
+    markAberrSimulationStarted();
+    aberrState.lightMode = 'mono';
+    updateAberrationsPlayground();
+  });
+
+  q('#aberrAperture').addEventListener('input', () => {
+    markAberrSimulationStarted();
+    aberrState.apertureMm = +q('#aberrAperture').value;
+    updateAberrationsPlayground();
+  });
+
+  q('#aberrWavelength').addEventListener('input', () => {
+    markAberrSimulationStarted();
+    aberrState.wavelengthNm = +q('#aberrWavelength').value;
+    updateAberrationsPlayground();
+  });
+
+  q('#aberrComaField').addEventListener('input', () => {
+    markAberrSimulationStarted();
+    aberrState.fieldAngleDeg = +q('#aberrComaField').value;
+    updateAberrationsPlayground();
+  });
+
+  q('#aberrAstigField').addEventListener('input', () => {
+    markAberrSimulationStarted();
+    aberrState.fieldAngleDeg = +q('#aberrAstigField').value;
+    updateAberrationsPlayground();
+  });
+
+  q('#aberrAstigScreen').addEventListener('input', () => {
+    markAberrSimulationStarted();
+    aberrState.astigScreenFraction = +q('#aberrAstigScreen').value / 100;
+    updateAberrationsPlayground();
+  });
+
+  q('#aberrDistField').addEventListener('input', () => {
+    markAberrSimulationStarted();
+    aberrState.distortionFieldAngleDeg = +q('#aberrDistField').value;
+    updateAberrationsPlayground();
+  });
+
+  q('#aberrDistStrength').addEventListener('input', () => {
+    markAberrSimulationStarted();
+    aberrState.distortionStrengthPct = +q('#aberrDistStrength').value;
+    updateAberrationsPlayground();
+  });
+
+  updateAberrationsPlayground();
+
+
 
   // ---------- Refraction simulation ----------
   const n1Range=q('#n1Range'), n2Range=q('#n2Range'), angleRange=q('#angleRange');
@@ -1506,6 +4218,18 @@
 
   update();
 })();
+
+  // Redraw canvas-based activities once Source Sans 3 has loaded.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      if (typeof updateWavePlayground === 'function') updateWavePlayground();
+      if (typeof updateLensPlayground === 'function') updateLensPlayground();
+      if (typeof updateMirrorPlayground === 'function') updateMirrorPlayground();
+      if (typeof updateMicroscopePlayground === 'function') updateMicroscopePlayground();
+      if (typeof updateTelescopePlayground === 'function') updateTelescopePlayground();
+      if (typeof updateAberrationsPlayground === 'function') updateAberrationsPlayground();
+    });
+  }
 </script>
 </body>
 </html>

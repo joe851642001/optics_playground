@@ -1,3 +1,19 @@
+# Optics Playground — handoff (current as of 16 October 2026, 03:34)
+
+> **Start here.** This file is a running log: the sections below were written as the site evolved, and later sections override earlier ones. The authoritative description of the *current* site is this summary; the dated sections that follow give the detail and the reasoning.
+
+## Current state in one page
+
+- **One file**: `index.html` (plus `.nojekyll`, `README.md`, `SETUP.md`, this file, and `apply_all_tabs.py`, the script that converted the tabs to the editorial template; kept as a record only). GA4 `G-VB4PLZGGJV` in `<head>` (gtag snippet + `gtag('config')`), one `track()` helper, 27 event call sites — audited 16/10/2026, see the table in `SETUP.md`. Every change to the site must keep the GA snippet and the `track()` calls; verify with `grep -c G-VB4PLZGGJV index.html` (expect 2) and `grep -o "track('[a-z_]*'" index.html | sort | uniq -c`.
+- **Design system** (section 24 and later): ivory paper `#F6F3EC`, plate white, ink `#1F2A44`, muted `#7A7366`, rule `#D9D2C3`, accent oxblood `#8C2F39` (UI only). Fonts: Fraunces 500 (headings, italic captions), IBM Plex Sans 400/500 (text, labels, canvas), KaTeX for equations. No bold weights other than headings; `.primary` on a button means a *selected state* only.
+- **Tab template** (`.ed-*`): the panel is a two-column grid — title, brief and figure column on the left; `aside.ed-side` (320 px) on the right starting level with the title. Figure column = `.ed-plate` (canvas/SVG, white) + italic "Figure." caption + colour-keyed legend + one `.ed-controls` row. Margin = formula(s), `.ed-readout` rows, `.ed-status` sentence, `.ed-howto` block. Refraction is the exception: three columns (figure | stacked controls | Snell's law).
+- **Figure conventions**: purple `#7A3FE4` / green `#15A06A` / navy `#1F2A44` for the three principal rays (colour-blind safe), glass stroke `#2F6BD6` with light-blue gradient (`microDrawLens`, `thickness` and `concave` options), focal points purple, green tree objects (`drawArrow` name kept), direction arrowheads on rays, label halos, dimension lines in the Lens tab, no in-canvas legends. Label sizes: Lens 14 px, Waves plot 13 px, Fermat 18–19 px, all other canvases 16 px.
+- **Hi-DPI**: all canvases draw in logical coordinates with a dpr-scaled backing store (`canvasSize`, `setCanvasLogicalHeight`); never read `canvas.width/height` for layout.
+- **Physics notes**: Lens thickness profile from the sagitta of each surface; Fermat lens from the equal-OPL condition; Mirror uses a real spherical reflecting curve for the ray geometry: coloured rays terminate on the curve and are reflected about the local radius/normal; the Gaussian image equation remains a paraxial readout; Telescope supports Keplerian (f_eye = +24) and Galilean (f_eye = −24); Waves wavelength 400–700 nm with the figure coloured by `wavelengthCss`.
+- **Fit**: every tab fits one screen at 1280 × 900; short viewports (< 800 px) get a compact mode (Lens canvas 300 px tall, scaled canvases elsewhere).
+
+---
+
 # Optics Playground — Project Handoff for a New Chat
 
 ## 1. Project purpose
@@ -59,33 +75,33 @@ The page should remain usable on smaller screens using a responsive one-column l
 
 # 3. Visual style
 
-## Typography
+## Typography (changed 15/10/2026)
 
-Use **Source Sans 3** throughout the site.
+Text is set in **Arial** (system font, no web-font import) for all HTML, canvas and SVG text: stack `Arial,"Helvetica Neue",Helvetica,sans-serif`. This matches the look of Optic Sketcher, which the owner likes. Equations are rendered by KaTeX in its own Computer Modern fonts.
 
-Google Fonts import:
+**Italic symbols in figures.** In every figure, variable symbols are italic and words are upright (as in LaTeX). Canvas text goes through `fillRich(ctx, str, x, y)`, where `*…*` marks an italic segment, e.g. `fillRich(ctx, 'Air, *n* = 1  (*v* = *c*)', x, y)`; it honours `ctx.textAlign`. `microDrawFocalPoint` labels use the same markup (`'*F′*'`). SVG labels use `<tspan font-style="italic">`. Live status lines written with `innerHTML` use `<i>…</i>` for symbols. Keep this convention for any new label.
 
-```html
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+The type scale is deliberately flat so sizes do not vary across the page:
+
+```text
+h1: 24 px
+headings (panel title, card headings): 16.5 px
+everything else (body, labels, buttons, tabs, badges, notes, metric values, footer): 14.5 px
+metric captions (<small>): 13.5 px
+line height: 1.65 everywhere (h1 1.25)
+canvas labels: 13 px (600 weight for emphasis); the 🐈 glyph is 25 px
+SVG schematic captions: 15 (viewBox units)
 ```
 
-CSS stack:
+Only weight 400 is used: no bold anywhere (headings are distinguished by size, emphasis in muted paragraphs by colour via `.muted b{color:var(--text)}`, metric values by colour). Do not add new sizes or weights.
 
-```css
-"Source Sans 3","Segoe UI",Arial,sans-serif
-```
+## Equations (added 15/10/2026)
 
-Canvas text should use the same stack.
+Equations are written in LaTeX and rendered by **KaTeX 0.16.11** (loaded from cdnjs in `<head>`, `defer`). Inline math uses `\( … \)`, display math `\[ … \]`, inside a `.eq` box or the existing equation boxes. `renderAllMath()` runs once KaTeX is available. Live numeric equations (e.g. the Snell's-law substitution) go through `setMath(el, tex, plain)`, which stores the TeX in `data-tex` and falls back to plain text if KaTeX is unavailable. Dynamic status lines written with `innerHTML` stay as plain HTML.
 
-The site currently redraws canvases after:
+## Type scale (added 15/10/2026)
 
-```js
-document.fonts.ready
-```
-
-Do not introduce Courier, Aptos, or other unrelated fonts.
+See the Typography section for the flat type scale. All labels, canvas captions and SVG captions start with a capital letter (single-letter variables such as `n = 1.5` excepted). Spacing is deliberately tight (body padding 16/20 px, card padding 13/14 px, grid gaps 14 px) so that each tab fits in roughly one screen at 1280 px width.
 
 ---
 
@@ -135,6 +151,7 @@ Existing custom events include:
 Current `simulation_started` activities include:
 
 - `wave_to_ray`
+- `fermat`
 - `refraction`
 - `lens`
 - `mirror`
@@ -160,7 +177,8 @@ This is a standing project requirement.
 The current intended tab order is:
 
 1. **Waves → Rays**
-2. **Refraction**
+2. **Fermat's Principle**
+3. **Refraction**
 3. **Lens**
 4. **Mirror**
 5. **Microscope**
@@ -182,8 +200,11 @@ Do not restore them unless explicitly requested.
 
 The user strongly prefers compact simulation frames and minimal vertical scrolling.
 
+Redundancy pass (15/10/2026): each idea is stated once per tab. Removed: the Waves tab's "Red light" box and wavelength metric (replaced by a screen-resolution Δx metric) and its duplicated plot description; the Mirror tab's Concave/Convex preset buttons (the Mirror type select does this); the Off-Axis "What to look for" paragraph that repeated the subtitle; two of three overlapping Eye Focus paragraphs; the "Objective/Eyepiece fixed at …" lines in Microscope and Telescope (already in the metric cards); and the Aberrations control notes that repeated the metric note (spherical, coma, astigmatism; distortion shortened). Avoid reintroducing text that restates the subtitle, the badge, the metric note or the status line.
+
 Current approximate canvas/frame sizes:
 
+- Fermat canvas: `860 × 400`
 - Lens canvas: `860 × 400`
 - Mirror canvas: `860 × 400`
 - Microscope canvas: `860 × 390`
@@ -245,14 +266,13 @@ Central maximum width:
 2L\lambda/a
 \]
 
-Buttons:
-
-- **Strong diffraction**
-- **Toward ray limit**
+No preset buttons and no regime badge (removed 15/10/2026 at the owner's request); the status line below the metrics still describes the regime. The schematic shows only: Incident light (label on the arrow), Single slit, Slit width a (dimension arrow), Screen distance L, Screen →. No beam arrow after the slit.
 
 User prefers small schematic arrowheads.
 
 Current wave metrics were moved into unused left-column space rather than a full-width strip.
+
+Alignment rule (15/10/2026): the schematic SVG ( `preserveAspectRatio="xMidYMid meet"`) and the screen canvas (330 × 440) (viewBox 520 × 440, `width:100%; height:auto`, so it fills its panel at any page width; canvas 330 × 440 in a 272 px column) are kept the same rendered height by `syncWaveCanvasHeight()`, which sets the canvas's internal height from the schematic's rendered height on every update, on resize and when the tab is shown. The plot's padding is computed so its zero line sits at exactly 218/440 of the canvas height whatever that height is. Both panels have identical headers, and the slit axis sits at y = 218 in both (canvas: padT + plotH/2). A red dashed "ray-optics centre" line runs from the slit across the schematic and continues in the plot. The slit bar is 14 units wide, so the slit centre lines up exactly with the "Ray-optics centre" line of the plot (the red beam arrow itself was removed). Keep these numbers in step if either drawing changes. The regime status line was removed; the four metric cards and the "Tuning knobs" heading were removed; the controls (wavelength, slit width, screen distance) sit in one full-width card directly under the drawings, three columns; all explanatory text lives in the "Diffraction pattern" card in the right column. The tab fits one screen (~700 px panel height).
 
 ---
 
@@ -364,16 +384,15 @@ Tab name should remain:
 
 not “Curved Mirror”.
 
-Uses the spherical/paraxial mirror approximation.
+The figure is a **true spherical curved mirror**, not a flat paraxial reflecting plane. The Gaussian quantities shown in the margin remain paraxial approximations, while the coloured rays are traced against the actual circular reflecting surface.
 
 Controls:
 
-- concave / convex
+- concave / convex (select)
 - `|R|`
-- object distance
-- presets
+- object distance `s₁`
 
-Physics:
+Paraxial readouts:
 
 \[
 f=\frac{R}{2}
@@ -387,16 +406,28 @@ f=\frac{R}{2}
 m=-\frac{s_2}{s_1}
 \]
 
-Object and image use tree drawings.
+Sign convention: concave mirrors have `R,f > 0`; convex mirrors have `R,f < 0`; a real object has `s₁ > 0`; a real image has `s₂ > 0`, while a virtual image has `s₂ < 0`.
 
-Three principal rays are shown.
+Current curved-surface ray model:
 
-One principal ray was changed from red to **purple** to match the Lens tab.
+- The blue mirror is a circular arc drawn in the same isotropic x/y scale as the rays.
+- Concave: the sphere centre `C` is on the object side (left) and the reflecting cap is the right-hand branch of the circle. Convex is the opposite.
+- Every coloured incident ray terminates on the actual curved surface.
+- Reflection uses the local spherical normal (the radius through `C`) and the exact vector reflection law `d_out = d_in - 2(d_in·n)n`.
+- Three sample rays are drawn from the object tip: a purple ray initially parallel to the axis, a green ray to the mirror vertex, and a navy oblique ray to the lower part of the aperture. These are sample physical rays, not idealised principal rays forced through `F` or `C`.
+- A short dotted normal is drawn at the purple ray's hit point to make the local-normal construction visible.
+- For virtual images, reflected rays are dashed backwards behind the curved mirror.
+- The Gaussian image tree is retained as a comparison and labelled **Paraxial image** / **Virtual paraxial image**. Exact finite-height spherical rays may miss it slightly; that is the expected spherical-aberration departure from the paraxial approximation.
 
-For convex mirrors:
+Object/image drawing:
 
-- green construction line toward virtual focus is dotted
-- green dashed back-extension of reflected horizontal ray passes through the virtual image-tree tip
+- Object and image are green tree drawings.
+- The Mirror object tree is deliberately enlarged for legibility. Its nominal height is `1.9 ×` the previous base size, with an aperture-dependent cap (`0.96 ×` the spherical aperture) so the object-tip ray still intersects the physical mirror for small `|R|`.
+- The image-tree height is still `m` times the object-tree height, so changing the display size does not change the optical magnification.
+- The mirror vertex keeps the small blue dot but has **no `V` text label**.
+- `Object` / image, `F`, and `C` labels use 16 px IBM Plex Sans, matching the other ray-diagram tabs.
+
+Visual colours follow the site convention: purple `#7A3FE4`, green `#15A06A`, navy `#1F2A44`; the reflecting surface is glass blue `#2F6BD6`.
 
 ---
 
@@ -830,7 +861,7 @@ Purple focal dots are a strong visual convention and should remain consistent.
 Footer text should use:
 
 ```text
-Joe Chen. Centre for Photonics, Department of Physics, University of Bath. Created by ChatGPT GPT-5.6 Sol on 26/09/2026.
+Joe Chen. Centre for Photonics, Department of Physics, University of Bath. Created by ChatGPT GPT-5.6 Sol and Claude Fable 5.1 in 2026.
 ```
 
 Do not change Joe Chen to “Dr Joe Chen” unless explicitly requested.
@@ -981,3 +1012,125 @@ The user can say something like:
 
 Also always run a JavaScript syntax check before returning an updated build.
 
+
+---
+
+# 23. Fermat's Principle tab (added 15/10/2026)
+
+Tab id: `fermat` (`panel-fermat`, canvas `#fermatCanvas`, 860 × 400). The whole tab fits one screen at 1280 × 900; keep it that way. Layout (15/10/2026): canvas with a slim full-width controls card under it (angle slider | time slider | Play/Restart); the right column holds the four metrics as a single-column list (caption left, value right) and the "What to look for" card. Subtitle is one line and says "photon (cat)". No badge: ΔOPL is shown inside the OPL metric card. Sits immediately after Waves → Rays.
+
+Key idea: the first variational principle students meet. Every ray from object point A to image point B has the same optical path length, so a small change of launch direction causes no first-order change in OPL: `d(OPL)/dθ = 0`, and `t = OPL/c` is identical for every ray.
+
+Model (thin-lens teaching model, stated on the page):
+
+```text
+A at x = -80 mm, B at x = +80 mm (lens centre plane at x = 0), so f = 40 mm
+n = 1.5, centre thickness t(0) = 12 mm, half-aperture 19 mm
+```
+
+Inside the glass each ray is drawn parallel to the axis. The lens thickness profile `t(y)` is solved by bisection so that
+
+```text
+sqrt((s1 - t/2)^2 + y^2) + n t + sqrt((s2 - t/2)^2 + y^2) = OPL0 = s1 + s2 + (n - 1) t(0) = 166 mm
+```
+
+holds exactly for every height, i.e. the lens shape is *derived* from Fermat's principle. The resulting profile matches a spherical biconvex lens with R = 40 mm to a fraction of a millimetre.
+
+Controls:
+
+- launch angle θ (−13° to +13°); no preset buttons (removed 15/10/2026)
+- time scrubber with Play/Pause and Restart (auto-plays, 6.5 s per trip, loops)
+
+No "Air / Glass" labels on the canvas and no narrated status line under the cards (both removed 15/10/2026).
+
+Visuals:
+
+- green on-axis reference ray, purple chosen ray (plus a faint mirror ray at −θ)
+- 🐈 emoji (flipped to face B, rotated along the ray) at the head of each ray
+- orange wavefront traced through an 81-ray fan at equal OPL from A; cats always sit on it
+- inset at top-right: OPL versus θ, flat with the lens vs curved without the lens
+- purple focal dots F and F′, standard colours
+
+2×2 metrics: θ, geometric air/glass path, OPL (with ΔOPL), arrival time t = OPL/c. No model note under the cards; the d(OPL)/dθ = 0 statement lives in "What to look for", which is plain text in one colour (no bold/dark emphasis). No θ label on the canvas.
+
+Events: `simulation_started` (`activity: fermat`).
+
+
+## Refraction tab layout (15/10/2026)
+
+No subtitle, no mode badge, no live numeric Snell substitution. Under the readouts, the Snell equation sits left-aligned with the live explanation text beside it. The right column has the Controls card (three sliders plus a 2-column button grid: Air → glass, Water → air, Glass → air, Swap media, and a full-width "Try total internal reflection"; the Diamond preset was removed) only; the Mini challenge card and its critical-angle button were removed (the `critical_angle_reached` event still fires when the slider reaches the critical angle). The equation row reads "Snell's law: [equation] [live explanation]". The tab fits one screen.
+
+
+## Lens tab layout (15/10/2026)
+
+The canvas caption is a colour-keyed legend of the three principal rays (purple: parallel ray → through F′; green: centre ray, undeviated; black: ray through F → parallel), drawn with `fillRich`/`richWidth`; it replaces the old "Thin-lens approximation…" caption.
+
+Equation boxes are titled "Lens-maker formula" and "Gaussian lens formula". The Signed R₁/R₂ metric cards and the sign-convention note were removed; only Focal length f and Image distance s₂ remain, as one-line pills. The equation boxes are compact rows (title left, formula right), and the preset buttons are a 2 × 2 grid of small buttons; the "Lens surfaces" heading was removed. The live status line sits in the right column under the controls card. Panel height ≈ 730 px at 1280 × 900.
+
+
+---
+
+# 24. Editorial redesign (started 15/10/2026)
+
+The site is being moved to a "warm editorial" design system, one tab at a time. The **Lens tab is the reference implementation**; copy its structure when converting the others.
+
+Tokens (CSS `:root`): paper `--bg #F6F3EC`, plate `--card #FBF9F4`, ink `--text #1F2A44`, muted `#7A7366`, rule `--border #D9D2C3`, accent (oxblood) `--accent #8C2F39`. Optical colours (colour-blind safe: no red next to green; the owner wants them bright, not muted): `--ray1 #7A3FE4` purple (parallel ray), `--ray2 #15A06A` green (centre ray), `--ray3 #1F2A44` navy (focal ray), glass stroke `#2F6BD6` with a light-blue gradient fill, focal points purple. The figure plate is white (`.ed-plate`, canvas paper `#FFFFFF`, halo colour white) so the colours pop against the ivory page. The oxblood accent is for the UI only (active tab, status rule), never for rays. Typography: Fraunces 500 (headings, captions in italic 400) and IBM Plex Sans 400/500 (everything else, including canvas labels at 13.5 px). Equations stay in KaTeX. No bold, no cards-in-cards, no badges.
+
+Tab template (`.ed-*` classes): `h2.ed-title` + `p.ed-sub`; `.ed-layout` = figure column (`.ed-plate` canvas 860 × 390, `.ed-caption` "Figure. …" italic serif, `.ed-legend` colour-keyed swatches, then `.ed-controls` as ONE slim row of four groups directly under the figure: Left surface | Right surface | Glass and object | Presets, Fraunces `h4` headings, selects/ranges, 2×2 `.pz` preset grid) and `aside.ed-side` 320 px holding the formulas (serif `h3` + display equations), the `.ed-status` conclusion, and an `.ed-howto` block ("Finding the image with three rays": a numbered, colour-swatched description of the three principal rays and the virtual-image / diverging-lens cases). There are no readout cards: the figure's dimension lines show f, s₁, s₂ (the `#lensFocalMetric/#lensImageMetric` spans are kept hidden for the JS). Principle: controls sit next to what they control; the margin is reference only. The canvas is always drawn at its true proportions (never squashed by CSS). On short viewports (`window.innerHeight < 800`) the Lens canvas is re-created 300 px tall instead of 390 (`lensCanvasHeightForViewport`, redrawn on resize, with lens half-height and object height derived from H), and a `@media (max-height:800px)` block tightens spacing and type, so the tab fits one screen even in a zoomed browser (verified at 1335 × 690, 1280 × 900 and 1790 × 830).
+
+Figure conventions: paper background, dashed axis in `#C9C2B4`, object and image as the green tree with a brown trunk used in the Mirror tab (`drawArrow` — kept its name — draws it; negative height = inverted; a virtual image is drawn at 55 % opacity). The owner prefers the tree to a bare arrow, no in-canvas legend (legend is HTML), lens plane as a faint dotted line, labels in Plex 16.5 px with a paper-coloured halo (`haloText`) so they stay legible over rays, a small arrowhead on each incoming ray (`rayArrowhead`) to show the direction of light, and dimension lines below the axis for s₁, s₂ and f (`dimensionLine`, label placed under the bar so short bars stay visible; rows at H−30, H−56, H−82) so the figure quotes the quantities used in the formulas. The lens profile is derived from the surface radii (`surfaceBulge` uses the real sagitta, exaggerated for legibility); the edge half-thickness is computed per frame so that concave surfaces never cross at the centre (a quadratic Bézier's midpoint lies half-way to its control point, so the edge grows by half the inward bulge). The radius sliders visibly change the shape. Virtual-image labels are placed to the left of the dashed arrow. The caption is written live by JS (`#lensCaption`). Reuse these helpers in every other figure.
+
+Masthead: site name in Fraunces on the left, tabs as text links on the right (active = oxblood underline).
+
+**All ten tabs now use the `.ed-*` template** (converted 15/10/2026 by `apply_all_tabs.py`, kept in the working folder as a record). Per tab: `h2.ed-title`, `p.ed-sub`, figure plate (canvas, or the SVG for Refraction, or the two-panel SVG+canvas for Waves), italic "Figure." caption, optional colour-keyed legend, one controls row (`.ed-controls`, column widths set inline per tab), and a 320 px `aside.ed-side` with the formula(s), `.ed-readout` rows, the live `.ed-status` sentence and an `.ed-howto` block. Old badge elements are kept as hidden spans (`*StatusBadge`) because the JS still writes to them; the Aberrations tab uses its badge as the side heading. All old canvas colours were remapped to the editorial palette (purple #7A3FE4, green #15A06A, navy #1F2A44, glass blue #2F6BD6, red #E03E3E only where red light or TIR is meant, axis/grid #C9C2B4/#DDD6C8, muted text #7A7366). Off-axis bundle rays are all purple; Refraction rays use the CSS `--ray1/2/3` tokens (incident purple, refracted green, reflected navy dashed).
+
+Short viewports: the Lens canvas is redrawn at 300 px; other canvases are scaled down by CSS keeping their aspect (`.ed-plate canvas:not(#lensCanvas)` under `@media (max-height:800px)`); the Waves panels are 280 px and the Refraction SVG 320 px tall there.
+
+Button convention: the dark `.primary` style is a *state* (the selected mode in the Aberrations tab), never a decoration. Preset/action buttons (On axis, Try TIR, Pause) have no `primary` class.
+
+`microDrawLens` (used by Off-axis, Eye focus, Microscope, Telescope, Aberrations) now draws the same glass look as the Lens tab: thin edge, two arc surfaces, blue stroke with a light-blue gradient; the eye lens (colour #1F2A44) gets a grey-navy gradient instead.
+
+Lens heights (half-height px) chosen to cover every drawn ray: Microscope objective 72 / eyepiece 168 (rays reach ~150 px below the axis at the extremes); Telescope objective 118 / eyepiece 90; Aberrations lens = half the max aperture in px + 14. `microDrawLens` keeps the glass slim (bulge 8–14 px) regardless of height; labels sit just above each lens.
+
+Waves schematic: the screen (dashed line `#schematicScreen`, label `#schematicScreenLabel` below it, the red centre line `#schematicAxis` and the `Distance L` dimension) moves with the screen-distance slider: x = 365 + (L − 0.2)/2.8 × 145 in viewBox units.
+
+Waves tab: wavelength is now a slider (400–700 nm). The figure is coloured by the chosen wavelength (`wavelengthCss`), so blue light gives a blue curve/arrow, red light a red one.
+
+Telescope tab (16/10/2026): a Design toggle (`#telKeplerBtn` / `#telGalileoBtn`, state buttons) switches `telescopeState.type` between `keplerian` (f_eye = +24 mm, normal L = 144 mm, M = −5, inverted) and `galilean` (f_eye = −24 mm, normal L = 96 mm, M = +5, upright). `telEyepieceFocal()` and `telNormalSeparation()` replace the old constants; the slider is re-ranged on each switch: normal ± 12 mm (Keplerian) or ± 6 mm (Galilean, which defocuses twice as fast). The eye lens and retina are 152 px half-height, and the eye lens is drawn at 0.55× thickness (`microDrawLens(..., concave, thickness)`), so the rays stay inside a slim eye at every slider extreme. `microDrawLens(..., concave=true)` draws the diverging eyepiece as a biconcave lens. In the Galilean case the objective's would-be intermediate image is drawn translucent with the note "(would-be image: never forms)". The figure caption `#telescopeCaption` is set live. Events: `preset_used` with preset `keplerian` / `galilean`.
+
+Fermat inset (16/10/2026): 360 × 150 px at the top right of the canvas; dark axes, blue 3 px "with lens" line, dark navy dashed "no lens" curve, 6 px purple marker. Waves plot: the small "Screen" label above the plot was removed (the panel header already says it).
+
+Refraction tab layout (16/10/2026): THREE columns (`.ed-layout.ed-layout-3`, 1fr / 250 px / 250 px): figure (plate, caption, legend) | controls stacked (`.ed-col2`: Medium 1, Medium 2, Incidence + TIR button, Presets as single-column buttons) | Snell's law (`.ed-col3`: formula, readouts, live explanation). The SVG fills its plate. Below 1100 px the third column drops under the first two. Panel ≈ 665 px tall at 1280 × 900.
+
+Refraction SVG: each ray carries a direction arrowhead (`#incidentArrow`, `#refractedArrow`, `#reflectedArrow` polygons, positioned by `placeArrow()` at 55 % along the ray; the refracted arrow is hidden under TIR).
+
+Mirror tab (16/10/2026, superseded later the same day): the earlier vertex-plane construction was replaced after review. The current version traces rays on the actual spherical curve; see the final note below.
+
+Canvas label sizes (16/10/2026, tuned per tab at the owner's request): Lens 16 px (Object/Image and dimension labels 15 px); Off-axis and Eye focus 16 px (matching Microscope/Telescope/Aberrations); Waves plot 13 px with the schematic SVG at 19 viewBox units; Fermat 18–19 px (inset title 20 px, inset text 18 px); all other canvases 16 px. The Refraction SVG is unchanged. The Waves plot legend shows only the intensity curve (the 'Fixed 0.20 mm resolution' entry was removed; the pale band itself still draws).
+
+## Hi-DPI canvases (16/10/2026)
+
+All canvases are drawn in a fixed logical coordinate system (their HTML `width`/`height`), while the backing store is scaled by `devicePixelRatio` (capped at 3) so lines and text stay sharp on HiDPI screens and zoomed browsers. `CANVAS_LOGICAL[id]` holds the logical size; every draw routine starts with `const { W, H } = canvasSize(canvas, ctx)` (sets the backing size and `ctx.setTransform(dpr,…)`). Never read `canvas.width/height` for layout; use `canvasSize`. Canvases whose logical height changes (Lens on short viewports, Waves to match the schematic) go through `setCanvasLogicalHeight()`. The resize handler redraws every figure when the zoom level (dpr) changes. Lens labels are 14 px (Object/Image labels 13 px — set inside `drawArrow`, which has its own font line — dimension labels 13.5 px) with a 3.5 px halo.
+
+## Mirror physics/rendering correction (16/10/2026, superseded)
+
+An intermediate version temporarily drew an effective flat reflecting plane with the curve only as a visual cue. **Do not restore that model.** It was superseded later the same day by the true curved-surface model below.
+
+
+## Mirror curved-surface correction (16/10/2026, final)
+
+The Mirror figure must visibly and physically be a **curved spherical mirror**, not a flat effective plane. The old 01:33-era file was used only as a visual reference for the curved profile; its rays still terminated at a separate vertex plane, which was not retained.
+
+Current model:
+
+- The blue mirror line is a true circular arc in the same isotropic x/y scale as the rays.
+- Concave: sphere centre `C` lies on the object side (left) and the reflecting cap is the right-hand branch; convex is the opposite.
+- Every coloured incident ray terminates on that curved arc.
+- Reflection uses the exact vector law `d_out = d_in - 2(d_in·n)n`, where `n` is the local radius/normal through `C`.
+- Three sample rays are shown: a parallel incident ray, a vertex ray, and an oblique ray. They are no longer falsely forced to obey ideal principal-ray rules away from the axis.
+- `f = R/2`, the Gaussian mirror equation and `m = -s2/s1` remain as **paraxial** readouts. The drawn image tree is explicitly labelled “Paraxial image”. Exact spherical rays may miss it slightly at finite height, correctly showing spherical aberration.
+- For virtual images, reflected rays are back-extended with dashed lines behind the curved mirror.
+- Keep GA4 and all existing tracking calls unchanged.
+
+- Mirror object tree is enlarged for legibility: its nominal height is `1.9 ×` the previous base size, capped at `0.96 ×` the spherical aperture so the object-tip ray still lands on the physical mirror. The paraxial image height still follows the calculated magnification exactly.
+- The mirror vertex dot is retained but its `V` text label has been removed. Remaining Mirror figure labels (`Object`, `Paraxial image` / `Virtual paraxial image`, `F`, `C`) use 16 px IBM Plex Sans, matching the label scale used across the other ray-diagram tabs.

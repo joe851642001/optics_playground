@@ -384,7 +384,7 @@ Tab name should remain:
 
 not “Curved Mirror”.
 
-The figure is a **true spherical curved mirror**, not a flat paraxial reflecting plane. The Gaussian quantities shown in the margin remain paraxial approximations, while the coloured rays are traced against the actual circular reflecting surface.
+The figure is a **visibly curved spherical mirror** using the textbook **paraxial three-principal-ray construction**. The mirror profile remains curved, but the small spherical sag at the ray heights is neglected when applying the principal-ray rules (equivalently, the rays use the tangent plane through the mirror vertex). This makes the textbook rules exact on the diagram: the parallel ray passes through `F`, the focal ray reflects parallel, and all three rays locate the same Gaussian image (or their dashed back-extensions meet at the virtual image).
 
 Controls:
 
@@ -408,24 +408,26 @@ m=-\frac{s_2}{s_1}
 
 Sign convention: concave mirrors have `R,f > 0`; convex mirrors have `R,f < 0`; a real object has `s₁ > 0`; a real image has `s₂ > 0`, while a virtual image has `s₂ < 0`.
 
-Current curved-surface ray model:
+Current curved-mirror principal-ray model:
 
-- The blue mirror is a circular arc drawn in the same isotropic x/y scale as the rays.
-- Concave: the sphere centre `C` is on the object side (left) and the reflecting cap is the right-hand branch of the circle. Convex is the opposite.
-- Every coloured incident ray terminates on the actual curved surface.
-- Reflection uses the local spherical normal (the radius through `C`) and the exact vector reflection law `d_out = d_in - 2(d_in·n)n`.
-- Three sample rays are drawn from the object tip: a purple ray initially parallel to the axis, a green ray to the mirror vertex, and a navy oblique ray to the lower part of the aperture. These are sample physical rays, not idealised principal rays forced through `F` or `C`.
-- A short dotted normal is drawn at the purple ray's hit point to make the local-normal construction visible.
-- For virtual images, reflected rays are dashed backwards behind the curved mirror.
-- The Gaussian image tree is retained as a comparison and labelled **Paraxial image** / **Virtual paraxial image**. Exact finite-height spherical rays may miss it slightly; that is the expected spherical-aberration departure from the paraxial approximation.
+- The blue mirror remains visibly curved for both concave and convex cases; never replace it with a visibly flat mirror.
+- The construction itself is **paraxial**: ray intercepts use the tangent plane through the mirror vertex (`x = 0`). The spherical sag at the small model ray heights is second order and is intentionally neglected when applying the textbook ray rules.
+- The visible mirror curve is drawn from the spherical sag with a mild horizontal exaggeration so its curvature remains obvious while the paraxial intercept plane stays visually close to the blue surface.
+- Purple ray: incident parallel to the optical axis, reflected through `F` for a concave mirror (or reflected as if from virtual `F` for a convex mirror). The `F` marker must lie exactly on the purple reflected ray/back-extension.
+- Green ray: directed through (or toward) `F`, then reflected parallel to the optical axis.
+- Navy ray: directed through (or toward) `C`, so it retraces its path in the paraxial construction. Near the degenerate `s₁=|R|` case, use the vertex ray as the stable limiting third construction.
+- The three rays meet exactly at the Gaussian image for `s₂>0`; for `s₂<0`, their dashed back-extensions meet exactly at the virtual image.
+- At `s₁=f` for a concave mirror, the image is at infinity and all three reflected rays are parallel; the green focal ray uses a stable limiting construction because the literal focal ray would strike outside the finite drawing aperture.
+- Keep `C` marked on the axis as the centre of curvature.
+- Do not reintroduce exact finite-aperture spherical ray tracing in this tab: spherical aberration would make the rays miss the common Gaussian image and undermine the intended first-year principal-ray construction.
 
 Object/image drawing:
 
 - Object and image are green tree drawings.
-- The Mirror object tree is deliberately enlarged for legibility. Its nominal height is `1.9 ×` the previous base size, with an aperture-dependent cap (`0.96 ×` the spherical aperture) so the object-tip ray still intersects the physical mirror for small `|R|`.
-- The image-tree height is still `m` times the object-tree height, so changing the display size does not change the optical magnification.
+- The optical object height is kept paraxial (`min(30 mm, 0.16|R|)`), while a separate vertical drawing scale renders the object tree at about `96 px` high. This preserves the large, readable tree requested by the owner without pushing the ray construction outside the paraxial regime.
+- The image-tree height is `m` times the displayed object-tree height, so the image remains visually consistent with the magnification readout.
 - The mirror vertex keeps the small blue dot but has **no `V` text label**.
-- `Object` / image, `F`, and `C` labels use 16 px IBM Plex Sans, matching the other ray-diagram tabs.
+- `Object`, `Image` / `Virtual image`, `F`, and `C` labels use 16 px IBM Plex Sans, matching the other ray-diagram tabs.
 
 Visual colours follow the site convention: purple `#7A3FE4`, green `#15A06A`, navy `#1F2A44`; the reflecting surface is glass blue `#2F6BD6`.
 
@@ -1150,7 +1152,7 @@ All canvases are drawn in a fixed logical coordinate system (their HTML `width`/
 An intermediate version temporarily drew an effective flat reflecting plane with the curve only as a visual cue. **Do not restore that model.** It was superseded later the same day by the true curved-surface model below.
 
 
-## Mirror curved-surface correction (16/10/2026, final)
+## Mirror curved-surface correction (16/10/2026, superseded)
 
 The Mirror figure must visibly and physically be a **curved spherical mirror**, not a flat effective plane. The old 01:33-era file was used only as a visual reference for the curved profile; its rays still terminated at a separate vertex plane, which was not retained.
 
@@ -1172,3 +1174,26 @@ Current model:
 ## Fermat Lens / No lens toggle (16/10/2026, final)
 
 The Fermat tab now has an `Optical element` mode switch. `Lens` preserves the equal-OPL lens animation. `No lens` removes all lens/focal-point graphics but keeps the same A→B comparison family as trial paths. At a common elapsed time the straight green path reaches B first; off-axis purple trial paths arrive later according to their longer geometric path. The inset highlights whichever model is active. Do not turn the no-lens off-axis comparison paths into physical bent rays in air; they are variational trial paths used to demonstrate the minimum-time principle.
+
+## Mirror principal-ray convergence correction (16/10/2026, final)
+
+The Mirror tab was changed back to a **paraxial principal-ray teaching construction while retaining the visibly curved spherical mirror**. The exact finite-aperture spherical-reflection version was not appropriate here because spherical aberration made the three coloured rays miss the Gaussian image, which conflicts with the purpose of a principal-ray diagram.
+
+Current required behaviour:
+
+- Keep the blue reflecting profile visibly curved for both concave and convex mirrors.
+- Use the Gaussian mirror relations `f=R/2`, `1/f=1/s₁+1/s₂`, `m=-s₂/s₁`.
+- Draw three colour-coded principal construction rays from the object tip. Their incident portions meet the visible curved arc.
+- For `s₂>0`, all three reflected rays must pass through the same real image tip.
+- For `s₂<0`, all three dashed back-extensions must pass through the same virtual image tip.
+- At the concave focal condition `s₁=f`, the reflected rays are parallel and the image readout is infinity.
+- The object tree remains enlarged for visibility (`1.9 ×` base, aperture-capped), the vertex has a dot but no `V` text label, and Mirror labels remain 16 px.
+- Do **not** restore either of the two superseded variants: (1) the visibly flat effective mirror, or (2) exact finite-aperture spherical ray tracing that shows aberration instead of a common principal-ray image.
+- Keep GA4 and all existing tracking calls unchanged.
+
+
+## Mirror focal-point alignment correction (16/10/2026, current)
+
+The final Mirror correction fixes the purple principal ray so that the paraxial focal point `F` lies **exactly on the purple reflected ray** (or on its dashed back-extension for a convex mirror). The previous curved-contact construction forced all rays to the Gaussian image from points on the finite-sag spherical arc; with the deliberately large object this made the purple line miss `F`, which is inconsistent with the textbook principal-ray rule.
+
+Current implementation therefore uses the standard tangent-plane paraxial construction while retaining a clearly curved blue mirror profile. This gives an internally consistent teaching diagram across concave and convex modes: purple through `F`, green reflected parallel, navy through/toward `C` (with a vertex fallback only at the degenerate `s₁=|R|` case), and all three meeting at the Gaussian image (or its virtual back-intersection).

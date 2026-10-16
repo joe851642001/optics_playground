@@ -1155,11 +1155,11 @@
         <div class="ed-plate">
           <canvas id="mirrorCanvas" width="860" height="400" role="img" aria-label="Interactive spherical-mirror ray diagram with object tree, image tree and principal rays."></canvas>
         </div>
-        <p class="ed-caption"><b>Figure.</b> <span id="mirrorCaption">The blue curve is the reflecting spherical surface. Each coloured ray meets that curve and is reflected about the local surface normal. <i>F</i> and <i>C</i> mark the paraxial focus and centre of curvature.</span></p>
+        <p class="ed-caption"><b>Figure.</b> <span id="mirrorCaption">A curved spherical mirror shown with the paraxial three-ray construction. The mirror remains visibly curved, while the tiny surface sag at each ray height is neglected when applying the textbook ray rules.</span></p>
         <div class="ed-legend">
-          <span><i class="sw" style="background:var(--ray1)"></i>Parallel incident ray</span>
-          <span><i class="sw" style="background:var(--ray2)"></i>Ray to the mirror vertex</span>
-          <span><i class="sw" style="background:var(--ray3)"></i>Oblique ray to the curved surface</span>
+          <span><i class="sw" style="background:var(--ray1)"></i>Parallel principal ray</span>
+          <span><i class="sw" style="background:var(--ray2)"></i>Focal principal ray</span>
+          <span><i class="sw" style="background:var(--ray3)"></i>Centre-of-curvature principal ray</span>
         </div>
         <div class="ed-controls" style="grid-template-columns:1fr 1.3fr 1.3fr">
           <div>
@@ -1194,8 +1194,8 @@
         <p id="mirrorStatus" class="ed-status" aria-live="polite">The current concave mirror forms a real, inverted image.</p>
         <span id="mirrorTypeBadge" hidden></span>
         <div class="ed-howto">
-          <h3>Reflection from the curved surface</h3>
-          <p>The ray intersection is found on the spherical mirror itself. At each hit point the radius toward <i>C</i> is the local normal, and the outgoing direction obeys \(	heta_i=	heta_r\). The tree marked “Paraxial image” is the Gaussian prediction from the mirror equation. Away from the axis, exact spherical rays can miss that point slightly: that is spherical aberration, not a drawing error.</p>
+          <h3>Three principal rays</h3>
+          <p>This is the textbook paraxial construction for a spherical mirror. The purple ray is incident parallel to the axis and reflects through <i>F</i>; the green ray is directed through (or toward) <i>F</i> and reflects parallel to the axis; the navy ray is directed through (or toward) <i>C</i> and retraces its path. All three locate the same Gaussian image; for a virtual image, extend the reflected rays backwards (dashed) until they meet.</p>
         </div>
       </aside>
     </div>
@@ -2458,7 +2458,7 @@
     const Rmag = +mirrorRadiusRange.value;
     const s1 = +mirrorObjectDistanceRange.value;
 
-    // Sign convention for the paraxial readouts: concave f,R > 0; convex f,R < 0.
+    // Gaussian/paraxial sign convention: concave f,R > 0; convex f,R < 0.
     const R = type === 'concave' ? Rmag : -Rmag;
     const f = R / 2;
     const denom = 1 / f - 1 / s1;
@@ -2476,16 +2476,16 @@
     let status = '';
     if (type === 'concave') {
       badge = 'Concave mirror';
-      if (Math.abs(s1 - f) < 1e-6) {
-        status = 'The object base is at the paraxial focal distance, so the Gaussian image is at infinity. Exact spherical rays are traced from the object tip on the curved surface.';
+      if (!Number.isFinite(s2)) {
+        status = 'The object is at the focal distance, so the three paraxial reflected rays are parallel and the image is at infinity.';
       } else if (s1 > f) {
-        status = `This concave mirror has a paraxial <b>real, inverted</b> image at s₂ = ${formatMirrorSigned(s2)}.`;
+        status = `This concave mirror forms a <b>real, inverted</b> image at s₂ = ${formatMirrorSigned(s2)}; the three principal rays meet at the image.`;
       } else {
-        status = `The object is inside the paraxial focal length, so the concave mirror has a <b>virtual, upright, magnified</b> paraxial image behind the mirror.`;
+        status = `The object is inside the focal length, so the concave mirror forms a <b>virtual, upright, magnified</b> image behind the mirror; the dashed back-extensions meet at the image.`;
       }
     } else {
       badge = 'Convex mirror';
-      status = `A convex spherical mirror has a <b>virtual, upright, reduced</b> paraxial image behind the mirror for every real object position.`;
+      status = 'A convex mirror forms a <b>virtual, upright, reduced</b> image behind the mirror; the dashed back-extensions of the three principal rays meet at that image.';
     }
     q('#mirrorTypeBadge').textContent = badge;
     q('#mirrorStatus').innerHTML = status;
@@ -2495,44 +2495,32 @@
     const axisY = H / 2;
     const mirrorX = W * 0.67;
     const leftMargin = 70;
+    const pxPerMmX = (mirrorX - leftMargin) / 700;
 
-    // One isotropic scale is used in x and y so the curved surface and reflection
-    // angles are not distorted.  The longest object distance (700 mm) sets it.
-    const pxPerMm = (mirrorX - leftMargin) / 700;
+    // Keep the construction genuinely paraxial in the model, but use a larger
+    // vertical drawing scale so the object and its reduced image stay readable.
+    // An affine x/y scale preserves straight lines and ray intersections.
+    const objectHeightMm = Math.min(30, 0.16 * Rmag);
+    const objectHeightPx = 96;
+    const pxPerMmY = objectHeightPx / objectHeightMm;
+
     const concave = type === 'concave';
     const centreXmm = concave ? -Rmag : Rmag;
     const focusXmm = centreXmm / 2;
-    const maxApertureMm = Math.max(20, (H / 2 - 34) / pxPerMm);
-    const apertureMm = Math.min(0.86 * Rmag, maxApertureMm);
-    // Keep the tree prominent enough that the (often reduced) mirror image is easy to see.
-    // The aperture cap keeps the object-tip ray on the physical spherical surface at small |R|.
-    const objectHeightBaseMm = Math.min(55, 0.55 * Rmag, 0.70 * apertureMm);
-    const objectHeightMm = Math.min(1.9 * objectHeightBaseMm, 0.96 * apertureMm);
 
     const toCanvas = p => ({
-      x: mirrorX + p.x * pxPerMm,
-      y: axisY - p.y * pxPerMm
+      x: mirrorX + p.x * pxPerMmX,
+      y: axisY - p.y * pxPerMmY
     });
-    const surfaceXAtY = y => {
-      const root = Math.sqrt(Math.max(0, Rmag * Rmag - y * y));
-      return centreXmm + (concave ? root : -root);
-    };
     const unit = v => {
       const L = Math.hypot(v.x, v.y) || 1;
       return { x: v.x / L, y: v.y / L };
     };
-    const reflectAtSphere = (d, p) => {
-      // The sphere radius is the local surface normal.  The reflection formula is
-      // independent of which normal orientation is chosen.
-      const n = unit({ x: p.x - centreXmm, y: p.y });
-      const dot = d.x * n.x + d.y * n.y;
-      return { x: d.x - 2 * dot * n.x, y: d.y - 2 * dot * n.y };
-    };
     const extendToBox = (p, d) => {
-      const xMin = (30 - mirrorX) / pxPerMm;
-      const xMax = (W - 30 - mirrorX) / pxPerMm;
-      const yMax = (axisY - 28) / pxPerMm;
-      const yMin = (axisY - (H - 28)) / pxPerMm;
+      const xMin = (30 - mirrorX) / pxPerMmX;
+      const xMax = (W - 30 - mirrorX) / pxPerMmX;
+      const yMax = (axisY - 28) / pxPerMmY;
+      const yMin = (axisY - (H - 28)) / pxPerMmY;
       const candidates = [];
       const add = t => {
         if (!(t > 1e-8) || !Number.isFinite(t)) return;
@@ -2570,15 +2558,93 @@
     ctx.stroke();
     ctx.restore();
 
-    // Actual spherical reflecting surface.  Concave mirrors use the right-hand
-    // branch of a circle whose centre is left of V; convex mirrors use the
-    // left-hand branch of a circle whose centre is right of V.
+    const objectPhys = { x: -s1, y: objectHeightMm };
+    const imagePhys = Number.isFinite(s2) && Number.isFinite(m)
+      ? { x: -s2, y: objectHeightMm * m }
+      : null;
+
+    // In the paraxial construction the mirror sag is neglected when applying
+    // the three principal-ray rules, so the ray intercepts are taken on the
+    // tangent plane through the vertex (x = 0).  The visible blue profile is
+    // still curved and follows |R|; at these small model heights its sag is only
+    // a few pixels, so the construction remains visually attached to the mirror.
+    const hit1 = { x: 0, y: objectHeightMm }; // parallel ray
+
+    const focalDenom = focusXmm + s1;
+    let hit2Y = Math.abs(focalDenom) < 1e-10
+      ? -0.65 * objectHeightMm
+      : objectHeightMm * focusXmm / focalDenom;
+    // Very close to s1=f the textbook focal ray would strike far outside the
+    // finite drawing aperture. Use a stable limiting construction there.
+    if (!Number.isFinite(hit2Y) || Math.abs(hit2Y) > 1.65 * objectHeightMm) {
+      hit2Y = -0.65 * objectHeightMm;
+    }
+    const hit2 = { x: 0, y: hit2Y };
+
+    // Third ray: through/toward C, so it retraces its path in the paraxial
+    // construction. Near s1=|R| that ray becomes degenerate; use the vertex ray
+    // as the stable limiting third construction.
+    const centreDenom = centreXmm + s1;
+    let hit3Y = Math.abs(centreDenom) < 1e-10
+      ? 0
+      : objectHeightMm * centreXmm / centreDenom;
+    if (!Number.isFinite(hit3Y) || Math.abs(hit3Y) > 1.65 * objectHeightMm) hit3Y = 0;
+    const hit3 = { x: 0, y: hit3Y };
+
+    const drawPrincipalRay = (hitPhys, color, width) => {
+      const o = toCanvas(objectPhys);
+      const h = toCanvas(hitPhys);
+      mirrorLine(ctx, o.x, o.y, h.x, h.y, color, false, width);
+      rayArrowhead(ctx, o.x, o.y, h.x, h.y, color, 0.58, 6);
+
+      if (imagePhys) {
+        if (s2 > 0) {
+          const dOut = unit({ x: imagePhys.x - hitPhys.x, y: imagePhys.y - hitPhys.y });
+          const endPhys = extendToBox(hitPhys, dOut);
+          const e = toCanvas(endPhys);
+          mirrorLine(ctx, h.x, h.y, e.x, e.y, color, false, width);
+          rayArrowhead(ctx, h.x, h.y, e.x, e.y, color, 0.30, 6);
+        } else {
+          const towardVirtual = unit({ x: imagePhys.x - hitPhys.x, y: imagePhys.y - hitPhys.y });
+          const dOut = { x: -towardVirtual.x, y: -towardVirtual.y };
+          const endPhys = extendToBox(hitPhys, dOut);
+          const e = toCanvas(endPhys);
+          mirrorLine(ctx, h.x, h.y, e.x, e.y, color, false, width);
+          rayArrowhead(ctx, h.x, h.y, e.x, e.y, color, 0.30, 6);
+          const i = toCanvas(imagePhys);
+          mirrorLine(ctx, h.x, h.y, i.x, i.y, color, true, Math.max(1.2, width - 0.8), 0.68);
+        }
+      } else {
+        // At s1=f all reflected paraxial rays have the same direction.
+        const dInf = unit({ x: -s1, y: -objectHeightMm });
+        const endPhys = extendToBox(hitPhys, dInf);
+        const e = toCanvas(endPhys);
+        mirrorLine(ctx, h.x, h.y, e.x, e.y, color, false, width);
+        rayArrowhead(ctx, h.x, h.y, e.x, e.y, color, 0.30, 6);
+      }
+    };
+
+    drawPrincipalRay(hit1, '#7A3FE4', 2.5);
+    drawPrincipalRay(hit2, '#15A06A', 2.35);
+    drawPrincipalRay(hit3, '#1F2A44', 2.0);
+
+    // Curved mirror symbol.  Use the spherical sag, mildly exaggerated in x so
+    // curvature remains obvious even though the paraxial ray heights are small.
+    const apertureMm = Math.min(
+      0.28 * Rmag,
+      (H / 2 - 34) / pxPerMmY
+    );
     const surfacePts = [];
     const nSurface = 96;
+    const sagExaggeration = 1.8;
     for (let k = 0; k <= nSurface; k++) {
       const y = -apertureMm + 2 * apertureMm * k / nSurface;
-      surfacePts.push(toCanvas({ x: surfaceXAtY(y), y }));
+      const root = Math.sqrt(Math.max(0, Rmag * Rmag - y * y));
+      const sag = Rmag - root;
+      const x = concave ? -sag * sagExaggeration : sag * sagExaggeration;
+      surfacePts.push(toCanvas({ x, y }));
     }
+    const backingSign = concave ? 1 : -1;
     const traceSurface = dx => {
       ctx.beginPath();
       surfacePts.forEach((pt, i) => {
@@ -2590,9 +2656,7 @@
     ctx.save();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    // Backing/coating is behind the mirror, i.e. to the right of the reflecting
-    // surface because the object and incident light are on the left.
-    traceSurface(7);
+    traceSurface(backingSign * 7);
     ctx.strokeStyle = '#E6E1D6';
     ctx.lineWidth = 11;
     ctx.stroke();
@@ -2601,11 +2665,11 @@
     for (let k = 4; k < surfacePts.length - 4; k += 5) {
       const pt = surfacePts[k];
       ctx.beginPath();
-      ctx.moveTo(pt.x + 5, pt.y - 2);
-      ctx.lineTo(pt.x + 16, pt.y + 6);
+      ctx.moveTo(pt.x + backingSign * 5, pt.y - 2);
+      ctx.lineTo(pt.x + backingSign * 16, pt.y + 6);
       ctx.stroke();
     }
-    traceSurface(2.2);
+    traceSurface(backingSign * 2.2);
     ctx.strokeStyle = 'rgba(90,150,255,0.35)';
     ctx.lineWidth = 6;
     ctx.stroke();
@@ -2616,9 +2680,6 @@
     ctx.restore();
 
     // Vertex, paraxial focus and centre of curvature.
-    ctx.font = '16px "IBM Plex Sans", Arial, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'alphabetic';
     const vertex = toCanvas({ x: 0, y: 0 });
     ctx.fillStyle = '#2F6BD6';
     ctx.beginPath();
@@ -2648,15 +2709,13 @@
       fillRich(ctx, '*C*', cCanvas.x, cCanvas.y + 9);
     }
 
-    // Object and paraxial image tree.
-    const objectPhys = { x: -s1, y: objectHeightMm };
+    // Trees are drawn last so their tips clearly sit at the common ray
+    // intersection/back-intersection.
     const objectCanvasX = toCanvas({ x: -s1, y: 0 }).x;
-    const objectHeightPx = objectHeightMm * pxPerMm;
     drawMirrorTree(ctx, objectCanvasX, axisY, objectHeightPx, 'Object');
 
-    if (Number.isFinite(s2) && Number.isFinite(m)) {
-      const imagePhysX = -s2; // positive s2 is a real image on the object side (left)
-      const imageCanvasX = toCanvas({ x: imagePhysX, y: 0 }).x;
+    if (imagePhys) {
+      const imageCanvasX = toCanvas({ x: imagePhys.x, y: 0 }).x;
       const imageHeightPx = objectHeightPx * m;
       if (imageCanvasX > 25 && imageCanvasX < W - 25 && Math.abs(imageHeightPx) < H * 0.72) {
         drawMirrorTree(
@@ -2664,71 +2723,11 @@
           imageCanvasX,
           axisY,
           imageHeightPx,
-          s2 > 0 ? 'Paraxial image' : 'Virtual paraxial image',
+          s2 > 0 ? 'Image' : 'Virtual image',
           s2 > 0 ? 1 : 0.62
         );
       }
     }
-
-    // Draw an exact reflected ray whose incident segment ends on the curved
-    // surface.  The outgoing direction comes from d' = d - 2(d·n)n.
-    const drawExactRay = (hitPhys, color, width) => {
-      const dIn = unit({ x: hitPhys.x - objectPhys.x, y: hitPhys.y - objectPhys.y });
-      const dOut = reflectAtSphere(dIn, hitPhys);
-      const o = toCanvas(objectPhys);
-      const h = toCanvas(hitPhys);
-      const outPhys = extendToBox(hitPhys, dOut);
-      const e = toCanvas(outPhys);
-
-      mirrorLine(ctx, o.x, o.y, h.x, h.y, color, false, width);
-      rayArrowhead(ctx, o.x, o.y, h.x, h.y, color, 0.58, 6);
-      mirrorLine(ctx, h.x, h.y, e.x, e.y, color, false, width);
-      rayArrowhead(ctx, h.x, h.y, e.x, e.y, color, 0.32, 6);
-
-      // Hit marker: makes it unambiguous that reflection occurs on the curve.
-      ctx.save();
-      ctx.fillStyle = '#FFFFFF';
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.8;
-      ctx.beginPath();
-      ctx.arc(h.x, h.y, 3.6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
-
-      // Virtual-image construction: extend the reflected ray backwards behind
-      // the mirror.  The exact extensions need not meet perfectly because a
-      // spherical mirror has spherical aberration away from the axis.
-      if (Number.isFinite(s2) && s2 < 0) {
-        const back = { x: -dOut.x, y: -dOut.y };
-        const backPhys = extendToBox(hitPhys, back);
-        const b = toCanvas(backPhys);
-        mirrorLine(ctx, h.x, h.y, b.x, b.y, color, true, Math.max(1.2, width - 0.8), 0.62);
-      }
-    };
-
-    // Ray 1: parallel to the optical axis.
-    const hit1 = { x: surfaceXAtY(objectHeightMm), y: objectHeightMm };
-    drawExactRay(hit1, '#7A3FE4', 2.5);
-
-    // Ray 2: to the mirror vertex.  The local normal here is the optical axis.
-    const hit2 = { x: 0, y: 0 };
-    drawExactRay(hit2, '#15A06A', 2.35);
-
-    // Ray 3: an oblique sample ray to the lower part of the same spherical cap.
-    const y3 = -Math.min(apertureMm * 0.42, Math.max(16, objectHeightMm * 0.72));
-    const hit3 = { x: surfaceXAtY(y3), y: y3 };
-    drawExactRay(hit3, '#1F2A44', 2.0);
-
-    // A short normal at the parallel-ray hit visually ties the law of reflection
-    // to the sphere centre C without adding a full construction line.
-    const nHit = toCanvas(hit1);
-    const normalDir = unit({ x: centreXmm - hit1.x, y: -hit1.y });
-    const normalEnd = toCanvas({
-      x: hit1.x + normalDir.x * Math.min(45, Rmag * 0.28),
-      y: hit1.y + normalDir.y * Math.min(45, Rmag * 0.28)
-    });
-    mirrorDottedLine(ctx, nHit.x, nHit.y, normalEnd.x, normalEnd.y, '#7A7366', 1.1, 0.65);
   }
 
   [mirrorType, mirrorRadiusRange, mirrorObjectDistanceRange].forEach(el => {

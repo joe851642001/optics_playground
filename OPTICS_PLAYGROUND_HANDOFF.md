@@ -9,7 +9,7 @@
 - **Tab template** (`.ed-*`): the panel is a two-column grid — title, brief and figure column on the left; `aside.ed-side` (320 px) on the right starting level with the title. Figure column = `.ed-plate` (canvas/SVG, white) + italic "Figure." caption + colour-keyed legend + one `.ed-controls` row. Margin = formula(s), `.ed-readout` rows, `.ed-status` sentence, `.ed-howto` block. Refraction is the exception: three columns (figure | stacked controls | Snell's law).
 - **Figure conventions**: purple `#7A3FE4` / green `#15A06A` / navy `#1F2A44` for the three principal rays (colour-blind safe), glass stroke `#2F6BD6` with light-blue gradient (`microDrawLens`, `thickness` and `concave` options), focal points purple, green tree objects (`drawArrow` name kept), direction arrowheads on rays, label halos, dimension lines in the Lens tab, no in-canvas legends. Label sizes: Lens 14 px, Waves plot 13 px, Fermat 18–19 px, all other canvases 16 px.
 - **Hi-DPI**: all canvases draw in logical coordinates with a dpr-scaled backing store (`canvasSize`, `setCanvasLogicalHeight`); never read `canvas.width/height` for layout.
-- **Physics notes**: Lens thickness profile from the sagitta of each surface; Fermat lens from the equal-OPL condition; Mirror uses a real spherical reflecting curve for the ray geometry: coloured rays terminate on the curve and are reflected about the local radius/normal; the Gaussian image equation remains a paraxial readout; Telescope supports Keplerian (f_eye = +24) and Galilean (f_eye = −24); Waves wavelength 400–700 nm with the figure coloured by `wavelengthCss`.
+- **Physics notes**: Lens thickness profile from the sagitta of each surface; Fermat has a Lens / No lens toggle: the shaped lens gives equal OPL for the displayed A→B family, while No lens retains the same family as variational trial paths and shows the straight central path as the unique minimum-time route; Mirror uses a real spherical reflecting curve for the ray geometry: coloured rays terminate on the curve and are reflected about the local radius/normal; the Gaussian image equation remains a paraxial readout; Telescope supports Keplerian (f_eye = +24) and Galilean (f_eye = −24); Waves wavelength 400–700 nm with the figure coloured by `wavelengthCss`.
 - **Fit**: every tab fits one screen at 1280 × 900; short viewports (< 800 px) get a compact mode (Lens canvas 300 px tall, scaled canvases elsewhere).
 
 ---
@@ -1015,45 +1015,78 @@ Also always run a JavaScript syntax check before returning an updated build.
 
 ---
 
-# 23. Fermat's Principle tab (added 15/10/2026)
+# 23. Fermat's Principle tab (added 15/10/2026; Lens / No lens comparison added 16/10/2026)
 
-Tab id: `fermat` (`panel-fermat`, canvas `#fermatCanvas`, 860 × 400). The whole tab fits one screen at 1280 × 900; keep it that way. Layout (15/10/2026): canvas with a slim full-width controls card under it (angle slider | time slider | Play/Restart); the right column holds the four metrics as a single-column list (caption left, value right) and the "What to look for" card. Subtitle is one line and says "photon (cat)". No badge: ΔOPL is shown inside the OPL metric card. Sits immediately after Waves → Rays.
+Tab id: `fermat` (`panel-fermat`, canvas `#fermatCanvas`, 860 × 400). Keep the tab compact enough to fit one screen at 1280 × 900. The controls row is now four groups: path-angle slider | time slider | Optical element (`Lens` / `No lens`) | Play/Restart. The right column holds the four live readouts, one live status sentence and the "What to look for" explanation.
 
-Key idea: the first variational principle students meet. Every ray from object point A to image point B has the same optical path length, so a small change of launch direction causes no first-order change in OPL: `d(OPL)/dθ = 0`, and `t = OPL/c` is identical for every ray.
+### Teaching goal
 
-Model (thin-lens teaching model, stated on the page):
+The tab now compares two related Fermat-principle ideas without changing the displayed A→B path family:
+
+1. **Lens mode** — a specially shaped lens equalises the optical path length of all displayed paths from A to B, so the cats arrive at B together.
+2. **No lens mode** — the lens disappears but the same A→B family is retained as **variational trial paths**. In homogeneous air, the straight central path (`θ = 0`) has the minimum OPL and therefore reaches B first. The kinked off-axis paths are deliberately comparison paths, **not physical free-space rays**; this distinction is stated on the page.
+
+This is important: do not describe the kinked off-axis no-lens paths as rays that spontaneously bend in air. The true physical ray from A to B in uniform air is the straight central line.
+
+### Fixed geometry and lens model
 
 ```text
-A at x = -80 mm, B at x = +80 mm (lens centre plane at x = 0), so f = 40 mm
-n = 1.5, centre thickness t(0) = 12 mm, half-aperture 19 mm
+A at x = -80 mm, B at x = +80 mm
+lens / trial-path centre plane at x = 0
+n = 1.5 in lens mode
+centre thickness t(0) = 12 mm
+half-aperture / trial-path height limit = 19 mm
+f = 40 mm for the lens conjugate pair
+c = 299.792458 mm/ns
 ```
 
-Inside the glass each ray is drawn parallel to the axis. The lens thickness profile `t(y)` is solved by bisection so that
+In Lens mode, each ray is drawn horizontally through the glass. The lens thickness profile `t(y)` is solved by bisection so that
 
 ```text
-sqrt((s1 - t/2)^2 + y^2) + n t + sqrt((s2 - t/2)^2 + y^2) = OPL0 = s1 + s2 + (n - 1) t(0) = 166 mm
+sqrt((s1 - t/2)^2 + y^2) + n t + sqrt((s2 - t/2)^2 + y^2)
+    = OPL0
+    = s1 + s2 + (n - 1)t(0)
+    = 166 mm
 ```
 
-holds exactly for every height, i.e. the lens shape is *derived* from Fermat's principle. The resulting profile matches a spherical biconvex lens with R = 40 mm to a fraction of a millimetre.
+for every displayed height. Therefore every Lens-mode path has identical OPL and identical arrival time.
 
-Controls:
+In No lens mode, the comparison path at centre-plane height `y` is
 
-- launch angle θ (−13° to +13°); no preset buttons (removed 15/10/2026)
-- time scrubber with Play/Pause and Restart (auto-plays, 6.5 s per trip, loops)
+```text
+A (-80,0) -> (0,y) -> B (+80,0)
+OPL_air(y) = sqrt(80^2 + y^2) + sqrt(80^2 + y^2)
+```
 
-No "Air / Glass" labels on the canvas and no narrated status line under the cards (both removed 15/10/2026).
+so the central path has `OPL = 160 mm`, and every non-zero `|y|` is longer. For the path-angle control, `y = 80 tan θ` (clamped to the displayed ±19 mm family). At `θ = 8°`, for example, the no-lens trial path is about `1.57 mm` longer than the central path, corresponding to about `0.00525 ns` extra travel time.
 
-Visuals:
+### Controls and animation
 
-- green on-axis reference ray, purple chosen ray (plus a faint mirror ray at −θ)
-- 🐈 emoji (flipped to face B, rotated along the ray) at the head of each ray
-- orange wavefront traced through an 81-ray fan at equal OPL from A; cats always sit on it
-- inset at top-right: OPL versus θ, flat with the lens vs curved without the lens
-- purple focal dots F and F′, standard colours
+- path angle `θ`: −13° to +13°
+- time scrubber with Play/Pause and Restart; auto-plays and loops
+- `Lens` / `No lens` state buttons (`#fermatLensBtn`, `#fermatNoLensBtn`)
+- changing optical-element mode resets the displayed trip to the start but preserves whether playback was running or paused
+- `simulation_started` remains the only Fermat GA event (`activity: fermat`); no extra analytics event was added for the toggle
 
-2×2 metrics: θ, geometric air/glass path, OPL (with ΔOPL), arrival time t = OPL/c. No model note under the cards; the d(OPL)/dθ = 0 statement lives in "What to look for", which is plain text in one colour (no bold/dark emphasis). No θ label on the canvas.
+The animation uses a common elapsed time for all displayed cats. In Lens mode all arrive together. In No lens mode the timeline extends to the longest displayed trial path, so the green central cat visibly reaches B before the purple off-axis cats and waits there while they finish.
 
-Events: `simulation_started` (`activity: fermat`).
+### Visuals
+
+- green on-axis reference path
+- purple selected path plus a faint mirror path at `−θ`
+- 🐈 at the head of each travelled path
+- shaped blue lens, focal points F/F′ and orange physical wavefront **only in Lens mode**
+- No lens mode removes the lens and focal points completely; bottom-right canvas note reads `No lens: n = 1 everywhere`
+- A/B remain fixed; B is labelled `Image point` in Lens mode and `Point B` in No lens mode
+- inset remains at top-right and always shows both OPL curves: blue flat Lens curve and dark No-lens minimum curve; the active mode is visually emphasised and the purple marker moves onto the active curve
+- the orange wavefront legend item is hidden in No lens mode because the kinked trial-path family is not a physical free-space wavefront
+
+### Live readouts and wording
+
+Readouts remain: path angle, air / glass path, OPL (including Δ relative to the central path), and arrival time at B. In Lens mode ΔOPL is zero. In No lens mode the selected off-axis path reports a positive ΔOPL and corresponding later arrival time.
+
+The page title is now **“Fermat's principle: what changes when the lens is removed”**. The subtitle and status explicitly state that the no-lens central path is the minimum-time route. Keep the phrase **trial paths** in the no-lens explanation to avoid implying unphysical refraction in empty space.
+
 
 
 ## Refraction tab layout (15/10/2026)
@@ -1134,3 +1167,8 @@ Current model:
 
 - Mirror object tree is enlarged for legibility: its nominal height is `1.9 ×` the previous base size, capped at `0.96 ×` the spherical aperture so the object-tip ray still lands on the physical mirror. The paraxial image height still follows the calculated magnification exactly.
 - The mirror vertex dot is retained but its `V` text label has been removed. Remaining Mirror figure labels (`Object`, `Paraxial image` / `Virtual paraxial image`, `F`, `C`) use 16 px IBM Plex Sans, matching the label scale used across the other ray-diagram tabs.
+
+
+## Fermat Lens / No lens toggle (16/10/2026, final)
+
+The Fermat tab now has an `Optical element` mode switch. `Lens` preserves the equal-OPL lens animation. `No lens` removes all lens/focal-point graphics but keeps the same A→B comparison family as trial paths. At a common elapsed time the straight green path reaches B first; off-axis purple trial paths arrive later according to their longer geometric path. The inset highlights whichever model is active. Do not turn the no-lens off-axis comparison paths into physical bent rays in air; they are variational trial paths used to demonstrate the minimum-time principle.

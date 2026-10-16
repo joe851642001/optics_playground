@@ -4,10 +4,10 @@ Interactive web pages for exploring basic ray- and wave-optics concepts, designe
 
 ## Activities (tabs)
 - **Waves → Rays** — single-slit diffraction with tunable wavelength (400–700 nm, figure coloured by the light), slit width and screen distance; the schematic screen moves with the distance slider and the slit centre lines up with the intensity plot's centre.
-- **Fermat** — Fermat's principle of least time: photons (cats) launched from A at different angles reach B together through a lens whose thickness profile is derived from the equal-OPL condition; animated wavefront; inset of OPL vs launch angle with and without the lens.
+- **Fermat** — compare a shaped equal-OPL lens with no lens. With the lens, the cats on all displayed A→B paths arrive together; without it, the same family is kept as variational trial paths and the straight central path reaches B first. Includes the animated Lens/No lens toggle and an OPL-vs-angle inset.
 - **Refraction** — Snell's law at a plane interface with direction arrows on the incident, refracted and reflected rays; presets; total internal reflection and critical angle.
 - **Lens** — build a lens from two surfaces (convex / plano / concave, radii, index, object distance); three principal rays with direction arrows; dimension lines for s₁, s₂ and f; live caption; "finding the image with three rays" guide.
-- **Mirror** — spherical concave / convex mirror (paraxial three-ray construction; the mirror symbol's curvature follows R).
+- **Mirror** — spherical concave / convex mirror with rays intersecting the actual curved surface and reflecting from the local spherical normal; Gaussian mirror readouts remain explicitly paraxial.
 - **Off-axis rays** — a collimated bundle at angle θ focuses on the back focal plane at y′ = f tan θ.
 - **Eye focus** — object at the front focal plane of a lens; the eye can move axially and stays focused.
 - **Microscope** — objective, intermediate image, eyepiece, eye lens and retina; adjustable object distance.

@@ -922,29 +922,36 @@
   </section>
 
   <section id="panel-fermat" class="tab-panel ed" role="tabpanel" aria-labelledby="tab-fermat" hidden>
-    <h2 class="ed-title">Fermat's principle: every ray from A to B takes the same time</h2>
-    <p class="ed-sub">Launch a photon (cat) from A in any direction: fast in air, slow in glass, yet every one reaches B at the same instant because \(\mathrm{OPL} = \sum n L\) is the same for every ray.</p>
+    <h2 class="ed-title">Fermat's principle: what changes when the lens is removed</h2>
+    <p class="ed-sub">With the shaped lens, every shown A→B path has the same optical path length. Remove it and the straight central path is the minimum-time route; off-axis trial paths arrive later.</p>
     <div class="ed-layout">
       <div>
         <div class="ed-plate">
-          <canvas id="fermatCanvas" width="860" height="400" role="img" aria-label="Point source A on the left, a biconvex lens in the middle and image point B on the right. Cats ride at the head of each ray and sit on the wavefront; all of them arrive at B at the same time."></canvas>
+          <canvas id="fermatCanvas" width="860" height="400" role="img" aria-label="Fermat-principle comparison between an equal-optical-path lens and no lens. Cats move along the central and off-axis A-to-B paths at equal elapsed times."></canvas>
         </div>
-        <p class="ed-caption"><b>Figure.</b> <span>Photons launched from A at different angles are shown at equal times; the lens thickness is chosen so that every path from A to B has the same optical length.</span></p>
+        <p class="ed-caption"><b>Figure.</b> <span id="fermatCaption">With the lens, photons launched from A at different angles are shown at equal times; the thickness profile makes every A→B path have the same optical length.</span></p>
         <div class="ed-legend">
-          <span><i class="sw" style="background:#15A06A"></i>On-axis reference ray</span>
-          <span><i class="sw" style="background:#7A3FE4"></i>Chosen ray at angle <i>θ</i> (and its mirror)</span>
-          <span><i class="sw" style="background:#f59e0b"></i>Wavefront: equal OPL from A</span>
+          <span><i class="sw" style="background:#15A06A"></i>On-axis reference path</span>
+          <span><i class="sw" style="background:#7A3FE4"></i>Chosen path at angle <i>θ</i> (and its mirror)</span>
+          <span id="fermatWavefrontLegend"><i class="sw" style="background:#f59e0b"></i>Wavefront: equal OPL from A</span>
         </div>
-        <div class="ed-controls" style="grid-template-columns:1.3fr 1.3fr 1fr">
+        <div class="ed-controls" style="grid-template-columns:1.2fr 1.2fr .9fr 1fr">
           <div>
             <h4>Launch direction</h4>
-            <label for="fermatAngle"><span>Ray angle from A, <i>θ</i></span><b id="fermatAngleValue">+8.0°</b></label>
+            <label for="fermatAngle"><span>Path angle from A, <i>θ</i></span><b id="fermatAngleValue">+8.0°</b></label>
             <input id="fermatAngle" type="range" min="-13" max="13" step="0.5" value="8">
           </div>
           <div>
             <h4>Time</h4>
             <label for="fermatTime"><span>Elapsed</span><b id="fermatTimeValue">0.000 ns</b></label>
             <input id="fermatTime" type="range" min="0" max="1000" step="1" value="0">
+          </div>
+          <div>
+            <h4>Optical element</h4>
+            <div class="pz">
+              <button id="fermatLensBtn" class="primary">Lens</button>
+              <button id="fermatNoLensBtn">No lens</button>
+            </div>
           </div>
           <div>
             <h4>Playback</h4>
@@ -959,15 +966,16 @@
         <div class="block">
           <h3>Optical path length</h3>
           \[ \mathrm{OPL} = \sum_i n_i L_i, \qquad t = \frac{\mathrm{OPL}}{c} \]
-          <div class="ed-readout"><span>Ray angle <i>θ</i> at A</span><b id="fermatAngleMetric">+8.0°</b></div>
+          <div class="ed-readout"><span>Path angle <i>θ</i> at A</span><b id="fermatAngleMetric">+8.0°</b></div>
           <div class="ed-readout"><span>Air / glass path</span><b id="fermatGeoMetric">— / — mm</b></div>
           <div class="ed-readout"><span>OPL</span><b id="fermatOplMetric">— mm</b></div>
           <div class="ed-readout"><span>Arrival time at B</span><b id="fermatTimeMetric">— ns</b></div>
         </div>
+        <p id="fermatStatus" class="ed-status">With the lens, the shaped glass compensates the longer off-axis air path, so all shown paths reach B together.</p>
         <div class="ed-howto">
           <h3>What to look for</h3>
-          <p>The green on-axis cat is the reference: it reaches the glass first, then crawls through the thickest part of the lens at \(v = c/n\). The purple cat takes a longer air path at full speed \(c\) and crosses only a thin sliver of glass.</p>
-          <p>The longer air path and the thinner glass cancel exactly, so \(d(\mathrm{OPL})/d\theta = 0\): equal OPL means equal time. The orange wavefront stays perpendicular to every ray, all cats sit on it, and they meet at B together.</p>
+          <p><b>Lens:</b> the green on-axis cat crosses more glass while the purple off-axis cat travels farther in air. Those effects cancel, giving equal OPL and equal arrival time at B.</p>
+          <p><b>No lens:</b> the same family is kept as A→B <em>trial paths</em>. In uniform air the true ray is the straight central path; it has the shortest OPL and reaches B first. The kinked off-axis lines are comparison paths, not physical free-space rays.</p>
         </div>
       </aside>
     </div>
@@ -2957,24 +2965,29 @@
   updateOffAxisPlayground();
 
 
-  // ---------- Fermat's principle: equal optical path A -> B through a lens ----------
+  // ---------- Fermat's principle: compare equal-OPL lens with no lens ----------
   const fermatCanvas = q('#fermatCanvas');
   const fermatCtx = fermatCanvas.getContext('2d');
   const fermatAngle = q('#fermatAngle');
   const fermatTime = q('#fermatTime');
+  const fermatLensBtn = q('#fermatLensBtn');
+  const fermatNoLensBtn = q('#fermatNoLensBtn');
 
   const fermatN = 1.5;            // refractive index of the glass
   const fermatS1 = 80;            // A to lens centre plane (mm)
   const fermatS2 = 80;            // lens centre plane to B (mm)
   const fermatT0 = 12;            // centre thickness of the lens (mm)
-  const fermatHalfAperture = 19;  // half-height of the lens (mm)
+  const fermatHalfAperture = 19;  // half-height of the lens / trial-path family (mm)
   const fermatF = 1 / (1 / fermatS1 + 1 / fermatS2); // thin-lens focal length for this conjugate pair
   const fermatC = 299.792458;     // speed of light, mm per ns
-  const fermatOPL0 = fermatS1 + fermatS2 + (fermatN - 1) * fermatT0; // OPL of the on-axis ray
+  const fermatOPL0 = fermatS1 + fermatS2 + (fermatN - 1) * fermatT0; // lens-mode OPL of every path
+  const fermatAirOPL0 = fermatS1 + fermatS2;                         // straight A -> B path in air
+  const fermatAirMaxOPL = 2 * Math.hypot(fermatS1, fermatHalfAperture); // longest displayed no-lens trial path
   const fermatThetaMaxDeg = 13;
-  const fermatCycleSeconds = 6.5; // wall-clock seconds for one A -> B trip
-  const fermatHoldSeconds = 1.2;  // pause at B before the cats restart
+  const fermatCycleSeconds = 6.5; // wall-clock seconds for one displayed trip
+  const fermatHoldSeconds = 1.2;  // pause after the final displayed path reaches B
 
+  let fermatMode = 'lens';        // 'lens' or 'air'
   let fermatSimulationStartedTracked = false;
   function markFermatSimulationStarted() {
     if (fermatSimulationStartedTracked) return;
@@ -2996,7 +3009,7 @@
     return 0.5 * (lo + hi);
   }
 
-  function fermatPath(y) {
+  function fermatLensPath(y) {
     const t = fermatThickness(y);
     const pts = [
       { x: -fermatS1, y: 0 },
@@ -3014,32 +3027,51 @@
     return { y, t, pts, segs, air: L1 + L2, glass: t, opl: L1 + fermatN * t + L2 };
   }
 
-  // Position of the "cat" on a path once an optical path tau (= c * time) has been travelled.
+  // No-lens comparison: keep the same A-to-B family as trial paths, constrained to pass through
+  // the centre plane at height y. In uniform air the only physical ray between A and B is the
+  // straight y = 0 path; the kinked off-axis paths are variational comparison paths.
+  function fermatAirPath(y) {
+    const pts = [
+      { x: -fermatS1, y: 0 },
+      { x: 0, y },
+      { x: fermatS2, y: 0 }
+    ];
+    const L1 = Math.hypot(fermatS1, y);
+    const L2 = Math.hypot(fermatS2, y);
+    const segs = [
+      { L: L1, n: 1 },
+      { L: L2, n: 1 }
+    ];
+    return { y, t: 0, pts, segs, air: L1 + L2, glass: 0, opl: L1 + L2 };
+  }
+
+  // Position of a cat on any piecewise path once an optical path tau (= c * time) has been travelled.
   function fermatPosition(path, tau) {
     let rem = Math.max(0, tau);
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < path.segs.length; i++) {
       const seg = path.segs[i];
-      const opl = seg.L * seg.n;
+      const segOpl = seg.L * seg.n;
       const p0 = path.pts[i], p1 = path.pts[i + 1];
-      if (opl <= 0) continue;
-      if (rem <= opl || i === 2) {
-        const f = Math.min(1, rem / opl);
+      if (segOpl <= 0) continue;
+      if (rem <= segOpl) {
+        const f = Math.min(1, rem / segOpl);
         return {
           x: p0.x + (p1.x - p0.x) * f,
           y: p0.y + (p1.y - p0.y) * f,
           seg: i,
           dx: p1.x - p0.x,
           dy: p1.y - p0.y,
-          done: i === 2 && rem >= opl - 1e-6
+          done: false
         };
       }
-      rem -= opl;
+      rem -= segOpl;
     }
-    const last = path.pts[3];
-    return { x: last.x, y: last.y, seg: 2, dx: 1, dy: 0, done: true };
+    const last = path.pts[path.pts.length - 1];
+    const prev = path.pts[path.pts.length - 2];
+    return { x: last.x, y: last.y, seg: path.segs.length - 1, dx: last.x - prev.x, dy: last.y - prev.y, done: true };
   }
 
-  // Height y at which a ray launched from A at angle theta meets the first surface (fixed-point iteration).
+  // Height at which a lens-mode ray launched from A at angle theta meets the first surface.
   function fermatHeightForAngle(thetaRad) {
     const tanT = Math.tan(thetaRad);
     let y = (fermatS1 - fermatT0 / 2) * tanT;
@@ -3050,13 +3082,18 @@
     return y;
   }
 
-  // A dense fan of rays, used only to trace the wavefront (surface of equal optical path from A).
+  // In no-lens mode theta is the angle of the first straight segment from A to the midpoint plane.
+  function fermatAirHeightForAngle(thetaRad) {
+    return Math.max(-fermatHalfAperture, Math.min(fermatHalfAperture, fermatS1 * Math.tan(thetaRad)));
+  }
+
+  // A dense fan used to trace the physical equal-OPL wavefront in lens mode.
   const fermatFan = [];
   {
     const nFan = 81;
     for (let i = 0; i < nFan; i++) {
       const y = -fermatHalfAperture + 2 * fermatHalfAperture * i / (nFan - 1);
-      fermatFan.push(fermatPath(y));
+      fermatFan.push(fermatLensPath(y));
     }
   }
 
@@ -3072,7 +3109,7 @@
 
   function fermatToCanvas(xMm, yMm, W, H) {
     const xMin = -92, xMax = 92, marginX = 34;
-    const s = (W - 2 * marginX) / (xMax - xMin);   // same scale in x and y so angles and the wavefront look right
+    const s = (W - 2 * marginX) / (xMax - xMin);   // same scale in x and y so angles look right
     const axisY = H / 2 + 28;
     return { x: marginX + (xMm - xMin) * s, y: axisY - yMm * s, s, axisY };
   }
@@ -3121,32 +3158,34 @@
     return `${v.toFixed(3)} ns`;
   }
 
-  let fermatProgress = 0;      // 0 -> 1 is the trip A -> B
+  let fermatProgress = 0;      // 0 -> 1 is one displayed comparison cycle
   let fermatPlaying = true;
   let fermatRafId = null;
   let fermatLastTs = null;
   let fermatHoldLeft = 0;
-  let fermatPaths = null;      // cached reference / chosen / mirror paths for the current angle
-  let fermatCachedAngle = null;
+  let fermatPaths = null;      // cached reference / chosen / mirror paths
+  let fermatCachedKey = null;
 
   function fermatEnsurePaths() {
     const thetaDeg = +fermatAngle.value;
-    if (fermatPaths && fermatCachedAngle === thetaDeg) return fermatPaths;
+    const key = `${fermatMode}:${thetaDeg}`;
+    if (fermatPaths && fermatCachedKey === key) return fermatPaths;
     const thetaRad = thetaDeg * Math.PI / 180;
-    const y = fermatHeightForAngle(thetaRad);
+    const y = fermatMode === 'lens' ? fermatHeightForAngle(thetaRad) : fermatAirHeightForAngle(thetaRad);
+    const makePath = fermatMode === 'lens' ? fermatLensPath : fermatAirPath;
     fermatPaths = {
       thetaDeg,
-      reference: fermatPath(0),
-      chosen: fermatPath(y),
-      mirror: fermatPath(-y)
+      reference: makePath(0),
+      chosen: makePath(y),
+      mirror: makePath(-y)
     };
-    fermatCachedAngle = thetaDeg;
+    fermatCachedKey = key;
     return fermatPaths;
   }
 
   function fermatDrawInset(ctx, W, thetaDeg) {
-    // OPL of the path A -> (height y at the lens) -> B as a function of launch angle:
-    // with the lens it is flat (every path is a real ray); without the lens only theta = 0 is stationary.
+    // OPL of the A -> B trial-path family as a function of launch angle. The shaped lens makes
+    // the curve flat; in uniform air the central straight path is the unique minimum.
     const x0 = W - 372, y0 = 8, w = 360, h = 150;
     const px = x0 + 50, py = y0 + 30, pw = w - 64, ph = h - 54;
     const oplMin = 156, oplMax = 170;
@@ -3163,9 +3202,9 @@
     ctx.font = '19px "IBM Plex Sans", Arial, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
-    fillRich(ctx, 'OPL from *A* to *B* vs launch angle *θ*', x0 + 10, y0 + 7);
+    fillRich(ctx, 'OPL from *A* to *B* vs path angle *θ*', x0 + 10, y0 + 7);
 
-    // Axes
+    // Axes.
     ctx.strokeStyle = '#9C948A';
     ctx.lineWidth = 1.2;
     ctx.beginPath();
@@ -3177,7 +3216,6 @@
     ctx.textBaseline = 'middle';
     ctx.fillText(`${oplMax} mm`, px - 4, py);
     ctx.fillText(`${oplMin} mm`, px - 4, py + ph);
-    ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.textAlign = 'left';
     ctx.fillText(`−${fermatThetaMaxDeg}°`, px, py + ph + 3);
@@ -3189,62 +3227,87 @@
     const toX = th => px + pw * (th + fermatThetaMaxDeg) / (2 * fermatThetaMaxDeg);
     const toY = opl => py + ph * (oplMax - opl) / (oplMax - oplMin);
 
-    // Without the lens: straight segments A -> (0, y) -> B, same y as the real ray would use.
+    // No lens: A -> (0,y) -> B trial paths in uniform air.
+    ctx.save();
+    ctx.globalAlpha = fermatMode === 'air' ? 1 : 0.48;
     ctx.strokeStyle = '#1F2A44';
-    ctx.setLineDash([6, 4]);
-    ctx.lineWidth = 2.2;
+    ctx.setLineDash(fermatMode === 'air' ? [] : [6, 4]);
+    ctx.lineWidth = fermatMode === 'air' ? 3 : 2.1;
     ctx.beginPath();
     let first = true;
     for (let th = -fermatThetaMaxDeg; th <= fermatThetaMaxDeg + 1e-9; th += 0.5) {
-      const y = fermatHeightForAngle(th * Math.PI / 180);
-      const opl = Math.hypot(fermatS1, y) + Math.hypot(fermatS2, y);
+      const y = fermatAirHeightForAngle(th * Math.PI / 180);
+      const opl = fermatAirPath(y).opl;
       const cx = toX(th), cy = toY(opl);
       if (first) { ctx.moveTo(cx, cy); first = false; } else ctx.lineTo(cx, cy);
     }
     ctx.stroke();
-    ctx.setLineDash([]);
+    ctx.restore();
 
     // With the lens: flat line at OPL0.
+    ctx.save();
+    ctx.globalAlpha = fermatMode === 'lens' ? 1 : 0.38;
     ctx.strokeStyle = '#2F6BD6';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = fermatMode === 'lens' ? 3 : 2.1;
     ctx.beginPath();
     ctx.moveTo(toX(-fermatThetaMaxDeg), toY(fermatOPL0));
     ctx.lineTo(toX(fermatThetaMaxDeg), toY(fermatOPL0));
     ctx.stroke();
+    ctx.restore();
 
-    // Marker for the chosen ray.
+    // Marker for the chosen path on the active curve.
+    const markerOpl = fermatMode === 'lens'
+      ? fermatOPL0
+      : fermatAirPath(fermatAirHeightForAngle(thetaDeg * Math.PI / 180)).opl;
     ctx.fillStyle = '#7A3FE4';
     ctx.beginPath();
-    ctx.arc(toX(thetaDeg), toY(fermatOPL0), 6, 0, Math.PI * 2);
+    ctx.arc(toX(thetaDeg), toY(markerOpl), 6, 0, Math.PI * 2);
     ctx.fill();
 
-    // Legend
+    // Short labels.
     ctx.font = '17px "IBM Plex Sans", Arial, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#2F6BD6';
-    fillRich(ctx, 'With lens: flat, d(OPL)/d*θ* = 0', px + 6, toY(fermatOPL0) - 9);
+    fillRich(ctx, 'Lens: equal OPL', px + 6, toY(fermatOPL0) - 9);
     ctx.fillStyle = '#1F2A44';
     ctx.textAlign = 'center';
-    fillRich(ctx, 'No lens: only *θ* = 0 is stationary', px + pw / 2, py + ph - 8);
+    fillRich(ctx, 'No lens: minimum at *θ* = 0', px + pw / 2, py + ph - 8);
     ctx.restore();
   }
 
   function updateFermatPlayground() {
     const paths = fermatEnsurePaths();
     const thetaDeg = paths.thetaDeg;
-    const tau = fermatOPL0 * Math.min(1, Math.max(0, fermatProgress));
+    const displayMaxOpl = fermatMode === 'lens' ? fermatOPL0 : fermatAirMaxOPL;
+    const tau = displayMaxOpl * Math.min(1, Math.max(0, fermatProgress));
     const tNs = tau / fermatC;
-    const tTotalNs = fermatOPL0 / fermatC;
     const onAxis = Math.abs(thetaDeg) < 0.01;
+    const deltaOpl = paths.chosen.opl - paths.reference.opl;
+    const delayNs = deltaOpl / fermatC;
 
-    // Live values.
+    // Live text and mode state.
+    fermatLensBtn.classList.toggle('primary', fermatMode === 'lens');
+    fermatNoLensBtn.classList.toggle('primary', fermatMode === 'air');
+    q('#fermatWavefrontLegend').hidden = fermatMode !== 'lens';
     q('#fermatAngleValue').textContent = formatSignedDeg(thetaDeg);
     q('#fermatAngleMetric').textContent = formatSignedDeg(thetaDeg);
     q('#fermatGeoMetric').textContent = `${paths.chosen.air.toFixed(1)} / ${paths.chosen.glass.toFixed(1)} mm`;
-    q('#fermatOplMetric').textContent = `${paths.chosen.opl.toFixed(1)} mm (Δ = 0)`;
+    q('#fermatOplMetric').textContent = fermatMode === 'lens'
+      ? `${paths.chosen.opl.toFixed(1)} mm (Δ = 0)`
+      : `${paths.chosen.opl.toFixed(1)} mm (Δ = +${Math.max(0, deltaOpl).toFixed(1)} mm)`;
     q('#fermatTimeMetric').textContent = `${(paths.chosen.opl / fermatC).toFixed(4)} ns`;
     q('#fermatTimeValue').textContent = fermatFormatNs(tNs);
+
+    if (fermatMode === 'lens') {
+      q('#fermatCaption').innerHTML = 'With the lens, photons launched from A at different angles are shown at equal times; the thickness profile makes every A→B path have the same optical length.';
+      q('#fermatStatus').innerHTML = `With the lens, every shown path has OPL = ${fermatOPL0.toFixed(1)} mm and reaches B at the same time.`;
+    } else {
+      q('#fermatCaption').innerHTML = 'With no lens, the same A→B family is retained as trial paths in uniform air. The straight green path is shortest, so it reaches B before the off-axis paths.';
+      q('#fermatStatus').innerHTML = onAxis
+        ? `With no lens, this is the straight minimum-time path: OPL = ${fermatAirOPL0.toFixed(1)} mm.`
+        : `With no lens, the straight green path reaches B first; the selected path is ${deltaOpl.toFixed(1)} mm longer and arrives ${delayNs.toFixed(4)} ns later.`;
+    }
 
     const ctx = fermatCtx;
     const { W, H } = canvasSize(fermatCanvas, ctx);
@@ -3265,59 +3328,70 @@
     ctx.stroke();
     ctx.restore();
 
-    // Lens body from the Fermat thickness profile.
-    ctx.save();
-    ctx.beginPath();
-    fermatLensOutline.forEach((p, i) => {
-      const c = fermatToCanvas(-p.t / 2, p.y, W, H);
-      if (i === 0) ctx.moveTo(c.x, c.y); else ctx.lineTo(c.x, c.y);
-    });
-    for (let i = fermatLensOutline.length - 1; i >= 0; i--) {
-      const p = fermatLensOutline[i];
-      const c = fermatToCanvas(p.t / 2, p.y, W, H);
-      ctx.lineTo(c.x, c.y);
-    }
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(90,150,255,0.13)';
-    ctx.fill();
-    ctx.strokeStyle = '#2F6BD6';
-    ctx.lineWidth = 2.4;
-    ctx.lineJoin = 'round';
-    ctx.stroke();
-    ctx.restore();
-
-    // Focal points for reference (thin-lens f for this conjugate pair).
-    const fLeft = fermatToCanvas(-fermatF, 0, W, H);
-    const fRight = fermatToCanvas(fermatF, 0, W, H);
-    microDrawFocalPoint(ctx, fLeft.x, axisY, '*F*', 'below');
-    microDrawFocalPoint(ctx, fRight.x, axisY, '*F′*', 'below');
-
-    // Lens caption.
-    ctx.save();
-    ctx.fillStyle = '#7A7366';
-    ctx.font = '18px "IBM Plex Sans", Arial, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'bottom';
-    fillRich(ctx, `Lens: *n* = ${fermatN.toFixed(1)}, *f* = ${fermatF.toFixed(0)} mm`, W - 16, H - 8);
-    ctx.restore();
-
-    // Wavefront: points on the dense fan at equal optical path from A.
-    const wf = fermatFan.map(p => fermatPosition(p, tau));
-    const wfPts = wf.map(p => ({ x: p.x, y: p.y }));
-    const wfExtent = Math.abs(wfPts[wfPts.length - 1].y - wfPts[0].y);
-    if (wfExtent > 1.5) {
-      fermatDrawPolyline(ctx, wfPts, W, H, '#f59e0b', 2.6, 0.95, null);
-      const bottom = fermatToCanvas(wfPts[0].x, wfPts[0].y, W, H);
+    if (fermatMode === 'lens') {
+      // Lens body from the equal-OPL thickness profile.
       ctx.save();
-      ctx.fillStyle = '#C2570B';
+      ctx.beginPath();
+      fermatLensOutline.forEach((p, i) => {
+        const c = fermatToCanvas(-p.t / 2, p.y, W, H);
+        if (i === 0) ctx.moveTo(c.x, c.y); else ctx.lineTo(c.x, c.y);
+      });
+      for (let i = fermatLensOutline.length - 1; i >= 0; i--) {
+        const p = fermatLensOutline[i];
+        const c = fermatToCanvas(p.t / 2, p.y, W, H);
+        ctx.lineTo(c.x, c.y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(90,150,255,0.13)';
+      ctx.fill();
+      ctx.strokeStyle = '#2F6BD6';
+      ctx.lineWidth = 2.4;
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+      ctx.restore();
+
+      // Focal points for reference.
+      const fLeft = fermatToCanvas(-fermatF, 0, W, H);
+      const fRight = fermatToCanvas(fermatF, 0, W, H);
+      microDrawFocalPoint(ctx, fLeft.x, axisY, '*F*', 'below');
+      microDrawFocalPoint(ctx, fRight.x, axisY, '*F′*', 'below');
+
+      ctx.save();
+      ctx.fillStyle = '#7A7366';
       ctx.font = '18px "IBM Plex Sans", Arial, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      ctx.fillText('Wavefront', bottom.x, bottom.y + 5);
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      fillRich(ctx, `Lens: *n* = ${fermatN.toFixed(1)}, *f* = ${fermatF.toFixed(0)} mm`, W - 16, H - 8);
+      ctx.restore();
+
+      // Physical wavefront: points on the dense fan at equal optical path from A.
+      const wf = fermatFan.map(p => fermatPosition(p, tau));
+      const wfPts = wf.map(p => ({ x: p.x, y: p.y }));
+      const wfExtent = Math.abs(wfPts[wfPts.length - 1].y - wfPts[0].y);
+      if (wfExtent > 1.5) {
+        fermatDrawPolyline(ctx, wfPts, W, H, '#f59e0b', 2.6, 0.95, null);
+        const bottom = fermatToCanvas(wfPts[0].x, wfPts[0].y, W, H);
+        ctx.save();
+        ctx.fillStyle = '#C2570B';
+        ctx.font = '18px "IBM Plex Sans", Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText('Wavefront', bottom.x, bottom.y + 5);
+        ctx.restore();
+      }
+    } else {
+      // No physical element is present. The coloured off-axis lines below are deliberately retained
+      // as variational trial paths, not as free-space rays that would kink spontaneously.
+      ctx.save();
+      ctx.fillStyle = '#7A7366';
+      ctx.font = '18px "IBM Plex Sans", Arial, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      fillRich(ctx, 'No lens: *n* = 1 everywhere', W - 16, H - 8);
       ctx.restore();
     }
 
-    // Full ray paths (faint) then the travelled portions (bold) with cats at the head.
+    // Full paths (faint) then travelled portions (bold) with cats at equal elapsed times.
     const refColor = '#15A06A';
     const chosenColor = '#7A3FE4';
     if (!onAxis) {
@@ -3345,20 +3419,17 @@
     ctx.textBaseline = 'top';
     fillRich(ctx, '*A*', aPt.x, aPt.y + 13);
     fillRich(ctx, '*B*', bPt.x, bPt.y + 13);
-    ctx.font = '18px "IBM Plex Sans", Arial, sans-serif';
     ctx.fillStyle = '#7A7366';
     ctx.fillText('Object point', aPt.x, aPt.y + 30);
-    ctx.fillText('Image point', bPt.x, bPt.y + 30);
+    ctx.fillText(fermatMode === 'lens' ? 'Image point' : 'Point B', bPt.x, bPt.y + 30);
     ctx.restore();
 
-    // Cats ride at the head of each ray and therefore sit on the wavefront.
     if (mirrorPos) fermatDrawCat(ctx, mirrorPos, W, H, 0.55);
     if (chosenPos) fermatDrawCat(ctx, chosenPos, W, H, 1);
     fermatDrawCat(ctx, refPos, W, H, 1);
 
-    // Inset: OPL versus launch angle.
+    // Inset: OPL versus path angle, with the active mode emphasised.
     fermatDrawInset(ctx, W, thetaDeg);
-
   }
 
   function fermatSyncSlider() {
@@ -3392,8 +3463,23 @@
     }
   }
 
+  function fermatSetMode(mode) {
+    if (mode !== 'lens' && mode !== 'air') return;
+    markFermatSimulationStarted();
+    fermatMode = mode;
+    fermatPaths = null;
+    fermatCachedKey = null;
+    fermatProgress = 0;
+    fermatHoldLeft = 0;
+    fermatLastTs = null;
+    fermatSyncSlider();
+    updateFermatPlayground();
+  }
+
   fermatAngle.addEventListener('input', () => {
     markFermatSimulationStarted();
+    fermatPaths = null;
+    fermatCachedKey = null;
     updateFermatPlayground();
   });
 
@@ -3404,6 +3490,9 @@
     fermatProgress = (+fermatTime.value) / 1000;
     updateFermatPlayground();
   });
+
+  fermatLensBtn.addEventListener('click', () => fermatSetMode('lens'));
+  fermatNoLensBtn.addEventListener('click', () => fermatSetMode('air'));
 
   q('#fermatPlayBtn').addEventListener('click', () => {
     markFermatSimulationStarted();
@@ -3418,7 +3507,6 @@
     updateFermatPlayground();
     fermatSetPlaying(true);
   });
-
 
   updateFermatPlayground();
   fermatSetPlaying(true);
